@@ -1,0 +1,152 @@
+﻿namespace Modular.Core
+{
+
+    [Serializable]
+    public class CreditItem : ModularBase
+    {
+
+        #region "  Constructors  "
+
+        public CreditItem()
+        {
+        }
+
+        #endregion
+
+        #region "  Constants  "
+
+        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_InvoiceLine";
+
+        #endregion
+
+        #region "  Enums  "
+
+        public enum InvoiceType
+        {
+            Unknown = 0,
+            Invoice = 1,
+            Credit = 2,
+            Quote = 3
+        }
+
+        #endregion
+
+        #region "  Variables  "
+
+        private Guid _InvoiceID;
+
+        private InvoiceType _Type;
+
+        private OwnerObjectType _ObjectType;
+
+        private Guid _ObjectID;
+
+
+        private decimal _UnitPrice;
+
+        private decimal _Quantity;
+
+        #endregion
+
+        #region "  Properties  "
+
+        public Guid InvoiceID
+        {
+            get
+            {
+                return _InvoiceID;
+            }
+            set
+            {
+                if (_InvoiceID != value)
+                {
+                    _InvoiceID = value;
+                    OnPropertyChanged("InvoiceID");
+                }
+            }
+        }
+
+        public InvoiceType Type
+        {
+            get
+            {
+                return _Type;
+            }
+            set
+            {
+                if (_Type != value)
+                {
+                    _Type = value;
+                    OnPropertyChanged("InvoiceType");
+                }
+            }
+        }
+
+        public OwnerObjectType ObjectType
+        {
+            get
+            {
+                return _ObjectType;
+            }
+            set
+            {
+                if (_ObjectType != value)
+                {
+                    _ObjectType = value;
+                    OnPropertyChanged("ObjectType");
+                }
+            }
+        }
+
+        public Guid ObjectID
+        {
+            get
+            {
+                return _ObjectID;
+            }
+            set
+            {
+                if (_ObjectID != value)
+                {
+                    _ObjectID = value;
+                    OnPropertyChanged("ObjectID");
+                }
+            }
+        }
+
+        public decimal UnitPrice
+        {
+            get
+            {
+                return _UnitPrice;
+            }
+            set
+            {
+                if (_UnitPrice != value)
+                {
+                    _UnitPrice = value;
+                    OnPropertyChanged("UnitPrice");
+                }
+            }
+        }
+
+        public decimal Quantity
+        {
+            get
+            {
+                return _Quantity;
+            }
+            set
+            {
+                if (_Quantity != value)
+                {
+                    _Quantity = value;
+                    OnPropertyChanged("Quantity");
+                }
+            }
+        }
+
+        #endregion
+
+    }
+}
