@@ -1,4 +1,6 @@
-﻿namespace Modular.Core
+﻿using System.Linq;
+
+namespace Modular.Core
 {
     public static class Security
     {
@@ -59,17 +61,7 @@
 
         public static bool CheckSecurity(Enum SecurityPermission)
         {
-            Account objAccount = ModularUtils.GetCurrentUserObject();
-            if (objAccount != null)
-            {
-                Role objRole = Role.Load(objAccount.RoleID);
-                return objRole.Permissions.Where(RolePermission => RolePermission.Permission == SecurityPermission).First() != null;
-            }
-            else
-            {
-                return false;
-            }
+            return ModularSystem.Context.Identity.CurrentUser.Role.Permissions.First(RolePermission => RolePermission.Permission == SecurityPermission) != null;
         }
-
     }
 }

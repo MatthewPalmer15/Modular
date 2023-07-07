@@ -148,7 +148,7 @@ namespace Modular.Core
             {
                 Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
 
-                PropertyInfo[]? AllProperties = GetProperties();
+                PropertyInfo[] AllProperties = GetProperties();
 
                 switch (DatabaseConnectionMode)
                 {
@@ -162,7 +162,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; ///todo: add stored procedure name
+                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -267,7 +267,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; ///todo: add stored procedure name
+                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -353,7 +353,7 @@ namespace Modular.Core
         {
             RolePermission obj = new RolePermission();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -366,7 +366,7 @@ namespace Modular.Core
         {
             RolePermission obj = new RolePermission();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);

@@ -249,7 +249,7 @@ namespace Modular.Core
             // DataType: StringW
             if (Property.PropertyType == typeof(string))
             {
-                MaxLengthAttribute? MaxLengthAttribute = Property.GetCustomAttribute<MaxLengthAttribute>();
+                MaxLengthAttribute MaxLengthAttribute = Property.GetCustomAttribute<MaxLengthAttribute>();
                 return MaxLengthAttribute != null ? $"NVARCHAR({MaxLengthAttribute.Length})" : "NVARCHAR(MAX)";
             }
 

@@ -7,15 +7,7 @@ namespace Modular.Core
 
         public static string GetValue(string Key)
         {
-            string? ConfigValue = ConfigurationManager.AppSettings[Key];
-            if (ConfigValue != null)
-            {
-                return ConfigValue;
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return ConfigurationManager.AppSettings[Key] ?? string.Empty;
         }
 
     }

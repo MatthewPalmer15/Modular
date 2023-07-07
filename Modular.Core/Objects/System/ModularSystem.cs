@@ -25,7 +25,7 @@
 
         #region "  Variables  "
 
-        private static ModularSystem? _Context;
+        private static ModularSystem _Context;
 
         #endregion
 
@@ -35,7 +35,7 @@
         {
             get
             {
-                return _Context != null ? _Context : new ModularSystem();
+                return _Context ?? new ModularSystem();
             }
         }
 
@@ -53,7 +53,7 @@
             {
             }
 
-            private Account? _CurrentUser;
+            private Account _CurrentUser;
 
             public Account CurrentUser
             {
@@ -78,7 +78,7 @@
             {
             }
 
-            public string Name
+            public static string Name
             {
                 get
                 {
@@ -86,7 +86,7 @@
                 }
             }
 
-            public ApplicationModeType Mode
+            public static ApplicationModeType Mode
             {
                 get
                 {
@@ -100,7 +100,7 @@
                 }
             }
 
-            public bool Maintenance
+            public static bool Maintenance
             {
                 get
                 {

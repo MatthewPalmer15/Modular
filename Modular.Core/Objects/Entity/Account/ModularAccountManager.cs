@@ -14,9 +14,9 @@
 
         #region "  Variables  "
 
-        private static AccountManager? _Instance;
+        private static AccountManager _Instance;
 
-        private Account? _CurrentUser;
+        private Account _CurrentUser;
 
         #endregion
 
@@ -26,7 +26,7 @@
         {
             get
             {
-                return _Instance != null ? _Instance : new AccountManager();
+                return _Instance ?? new AccountManager();
             }
         }
 

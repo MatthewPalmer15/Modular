@@ -309,9 +309,9 @@ namespace Modular.Core
                 if (IsNew)
                 {
                     CreatedDate = DateTime.Now;
-                    CreatedBy = ModularUtils.GetCurrentUserID();
+                    CreatedBy = ModularSystem.Context.Identity.CurrentUser.ID;
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularUtils.GetCurrentUserID();
+                    ModifiedBy = ModularSystem.Context.Identity.CurrentUser.ID;
 
                     Insert();
                     IsModified = false;
@@ -320,7 +320,7 @@ namespace Modular.Core
                 else
                 {
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularUtils.GetCurrentUserID();
+                    ModifiedBy = ModularSystem.Context.Identity.CurrentUser.ID;
 
                     Update();
                     IsModified = false;
@@ -331,7 +331,7 @@ namespace Modular.Core
         /// <summary>
         /// Marks the current instance for deletion.
         /// </summary>
-        public void MarkForDeletion()
+        public virtual void MarkForDeletion()
         {
             if (!IsNew)
             {
@@ -1215,7 +1215,7 @@ namespace Modular.Core
 
         #region "  System Methods  "
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string Property)
         {
@@ -1227,14 +1227,14 @@ namespace Modular.Core
 
         #region "  Other Methods  "
 
-        public static Type? GetClassType()
+        public static Type GetClassType()
         {
             return MethodBase.GetCurrentMethod()?.DeclaringType;
         }
 
         public static PropertyInfo GetProperty(string Name)
         {
-            Type? ClassType = GetClassType();
+            Type ClassType = GetClassType();
             if (ClassType != null)
             {
                 PropertyInfo[] AllProperties = ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -1252,7 +1252,7 @@ namespace Modular.Core
 
         public static PropertyInfo[] GetProperties()
         {
-            Type? ClassType = GetClassType();
+            Type ClassType = GetClassType();
             if (ClassType != null)
             {
                 return ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);

@@ -97,7 +97,7 @@ namespace Modular.Core
             if (Database.CheckDatabaseConnection())
             {
                 Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
-                PropertyInfo[]? AllProperties = GetProperties();
+                PropertyInfo[] AllProperties = GetProperties();
                 if (AllProperties != null)
                 {
                     switch (DatabaseConnectionMode)
@@ -183,7 +183,7 @@ namespace Modular.Core
         {
             Occupation obj = new Occupation();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -196,7 +196,7 @@ namespace Modular.Core
         {
             Occupation obj = new Occupation();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
