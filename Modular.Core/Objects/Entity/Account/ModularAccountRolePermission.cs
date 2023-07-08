@@ -90,7 +90,7 @@ namespace Modular.Core
         public static RolePermission Load(Guid AccountID, Enum Permission)
         {
             RolePermission obj = new RolePermission();
-            obj.DataFetch(AccountID, Permission);
+            obj.Fetch(AccountID, Permission);
             return obj;
         }
 
@@ -110,7 +110,7 @@ namespace Modular.Core
 
         #region "  Data Methods  "
 
-        protected void DataFetch(Guid AccountID, Enum Permission)
+        protected void Fetch(Guid AccountID, Enum Permission)
         {
             SqlConnection cn = new SqlConnection(Database.ConnectionString);
             SqlCommand cm = new SqlCommand

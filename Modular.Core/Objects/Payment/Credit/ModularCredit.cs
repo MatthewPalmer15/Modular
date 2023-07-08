@@ -26,13 +26,9 @@
 
         private Guid _ObjectID;
 
-        private string _InvoiceNumber = string.Empty;
+        private string _CreditNumber = string.Empty;
 
-        private DateTime _InvoiceDate;
-
-        private bool _IsPaid;
-
-        private DateTime _PaidDate;
+        private DateTime _CreditDate;
 
         #endregion
 
@@ -86,68 +82,63 @@
             }
         }
 
-        public string InvoiceNumber
+        public string CreditNumber
         {
             get
             {
-                return _InvoiceNumber;
+                return _CreditNumber;
             }
             set
             {
-                if (_InvoiceNumber != value)
+                if (_CreditNumber != value)
                 {
-                    _InvoiceNumber = value;
+                    _CreditNumber = value;
                     OnPropertyChanged("InvoiceNumber");
                 }
             }
         }
 
-        public DateTime InvoiceDate
+        public DateTime CreditDate
         {
             get
             {
-                return _InvoiceDate;
+                return _CreditDate;
             }
             set
             {
-                if (_InvoiceDate != value)
+                if (_CreditDate != value)
                 {
-                    _InvoiceDate = value;
+                    _CreditDate = value;
                     OnPropertyChanged("InvoiceDate");
                 }
             }
         }
 
-        public bool IsPaid
+        #endregion
+
+        #region "  Static Methods  "
+
+        public static new Credit Create()
         {
-            get
-            {
-                return _IsPaid;
-            }
-            set
-            {
-                if (_IsPaid != value)
-                {
-                    _IsPaid = value;
-                    OnPropertyChanged("IsPaid");
-                }
-            }
+            Credit obj = new Credit();
+            obj.SetDefaultValues();
+            return obj;
         }
 
-        public DateTime PaidDate
+        public static new Credit Load(Guid ID)
         {
-            get
-            {
-                return _PaidDate;
-            }
-            set
-            {
-                if (_PaidDate != value)
-                {
-                    _PaidDate = value;
-                    OnPropertyChanged("PaidDate");
-                }
-            }
+            Credit obj = new Credit();
+            obj.Fetch(ID);
+            return obj;
+        }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return $"Credit #{CreditNumber}";
         }
 
         #endregion

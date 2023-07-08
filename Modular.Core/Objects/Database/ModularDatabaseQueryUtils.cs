@@ -88,6 +88,10 @@ namespace Modular.Core
 
         #endregion
 
+        #region "  Methods (Triggers)  "
+
+        #endregion
+
         #region "  Methods (Fetch)  "
 
         public static string CreateFetchQuery(string DatabaseTableName)

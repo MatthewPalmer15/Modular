@@ -127,5 +127,32 @@
 
         #endregion
 
+        #region "  Static Methods  "
+
+        public static new Profile Create()
+        {
+            Profile obj = new Profile();
+            obj.SetDefaultValues();
+            return obj;
+        }
+
+        public static new Profile Load(Guid ID)
+        {
+            Profile obj = new Profile();
+            obj.Fetch(ID);
+            return obj;
+        }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion
+
     }
 }

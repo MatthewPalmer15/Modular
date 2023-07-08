@@ -50,6 +50,8 @@ namespace Modular.Core
 
         private bool _IsDeleted;
 
+        private bool _IsFlagged;
+
         #endregion
 
         #region "  Properties  "
@@ -167,6 +169,18 @@ namespace Modular.Core
                     _IsDeleted = value;
                     OnPropertyChanged("IsDeleted");
                 }
+            }
+        }
+
+        // TODO: Add support for database triggers to set this value.
+        // It should check if the record is orphaned, and if so, set this value to true.
+        // This should help identify orphaned records, and allow them to be cleaned up.
+        [SystemManaged]
+        public bool IsFlagged
+        {
+            get
+            {
+                return _IsFlagged;
             }
         }
 

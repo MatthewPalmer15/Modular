@@ -34,7 +34,7 @@
 
         #region "  Variables  "
 
-        private Guid _InvoiceID;
+        private Guid _CreditID;
 
         private string _Reference = string.Empty;
 
@@ -48,18 +48,18 @@
 
         #region "  Properties  "
 
-        public Guid InvoiceID
+        public Guid CreditID
         {
             get
             {
-                return _InvoiceID;
+                return _CreditID;
             }
             set
             {
-                if (_InvoiceID != value)
+                if (_CreditID != value)
                 {
-                    _InvoiceID = value;
-                    OnPropertyChanged("InvoiceID");
+                    _CreditID = value;
+                    OnPropertyChanged("CreditID");
                 }
             }
         }
@@ -126,6 +126,25 @@
                     OnPropertyChanged("Amount");
                 }
             }
+        }
+
+        #endregion
+
+        #region "  Static Methods  "
+
+        public static CreditPayment Create(Guid CreditID)
+        {
+            CreditPayment obj = new CreditPayment();
+            obj.SetDefaultValues();
+            obj.CreditID = CreditID;
+            return obj;
+        }
+
+        public static new CreditPayment Load(Guid ID)
+        {
+            CreditPayment obj = new CreditPayment();
+            obj.Fetch(ID);
+            return obj;
         }
 
         #endregion
