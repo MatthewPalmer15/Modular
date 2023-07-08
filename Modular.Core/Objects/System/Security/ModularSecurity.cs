@@ -61,7 +61,7 @@ namespace Modular.Core
 
         public static bool CheckSecurity(Enum SecurityPermission)
         {
-            return ModularSystem.Context.Identity.CurrentUser.Role.Permissions.First(RolePermission => RolePermission.Permission == SecurityPermission) != null;
+            return ModularSystem.Context.Identity.Role.Permissions.First(RolePermission => RolePermission.Permission == SecurityPermission) != null;
         }
     }
 }

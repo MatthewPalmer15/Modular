@@ -5,7 +5,7 @@
 
         #region "  Constructors  "
 
-        public InvoicePayment()
+        private InvoicePayment()
         {
         }
 
@@ -132,10 +132,11 @@
 
         #region "  Static Methods  "
 
-        public static new InvoicePayment Create()
+        public static InvoicePayment Create(Guid InvoiceID)
         {
             InvoicePayment obj = new InvoicePayment();
             obj.SetDefaultValues();
+            obj.InvoiceID = InvoiceID;
             return obj;
         }
 

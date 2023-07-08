@@ -166,10 +166,11 @@
 
         #region "  Static Methods  "
 
-        public static new InvoiceItem Create()
+        public static InvoiceItem Create(Guid InvoiceID)
         {
             InvoiceItem obj = new InvoiceItem();
             obj.SetDefaultValues();
+            obj.InvoiceID = InvoiceID;
             return obj;
         }
 

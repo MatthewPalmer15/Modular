@@ -29,6 +29,7 @@
 
         #region "  Properties  "
 
+        [Unique]
         public string Name
         {
             get
@@ -79,8 +80,39 @@
 
         #endregion
 
+        #region "  Static Methods  "
 
+        public static new Sequence Create()
+        {
+            Sequence obj = new Sequence();
+            obj.SetDefaultValues();
+            return obj;
+        }
 
+        public static new Sequence Load(Guid ID)
+        {
+            Sequence obj = new Sequence();
+            obj.Fetch(ID);
+            return obj;
+        }
+
+        public static Sequence Load(string Name)
+        {
+            Sequence obj = new Sequence();
+            obj.Fetch(GetProperty(Name), Name);
+            return obj;
+        }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion
 
     }
 }

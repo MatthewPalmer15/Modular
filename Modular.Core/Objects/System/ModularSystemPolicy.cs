@@ -1,6 +1,7 @@
 ﻿namespace Modular.Core
 {
-    public class ModularSystemPolicy
+    public class SystemPolicy : ModularBase
     {
+
     }
 }

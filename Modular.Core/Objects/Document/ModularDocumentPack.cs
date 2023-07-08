@@ -41,6 +41,14 @@
             }
         }
 
+        public List<Document> Documents
+        {
+            get
+            {
+                return Document.LoadInstances().Where(RolePermission => RolePermission.DocumentPackID == ID).ToList();
+            }
+        }
+
         #endregion
 
     }

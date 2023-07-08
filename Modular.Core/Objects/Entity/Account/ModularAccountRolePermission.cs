@@ -110,16 +110,18 @@ namespace Modular.Core
 
         #region "  Data Methods  "
 
-        protected void DataFetch(Guid prAccountID, Enum prPermission)
+        protected void DataFetch(Guid AccountID, Enum Permission)
         {
             SqlConnection cn = new SqlConnection(Database.ConnectionString);
-            SqlCommand cm = new SqlCommand();
-            cm.Connection = cn;
-            cm.CommandType = System.Data.CommandType.StoredProcedure;
-            cm.CommandText = $"_Fetch"; //todo: add stored procedure name
+            SqlCommand cm = new SqlCommand
+            {
+                Connection = cn,
+                CommandType = CommandType.StoredProcedure,
+                CommandText = $"_Fetch" // TODO: add stored procedure name
+            };
 
-            cm.Parameters.AddWithValue("@ContactID", prAccountID);
-            cm.Parameters.AddWithValue("@Permission", prPermission);
+            cm.Parameters.AddWithValue("@ContactID", AccountID);
+            cm.Parameters.AddWithValue("@Permission", Permission);
 
             SqlDataReader dr = cm.ExecuteReader();
 
@@ -131,7 +133,7 @@ namespace Modular.Core
             ModifiedDate = dr.GetDateTime(dr.GetOrdinal("ModifiedDate"));
             ModifiedBy = dr.GetGuid(dr.GetOrdinal("ModifiedBy"));
 
-            AccountID = dr.GetGuid(dr.GetOrdinal("AccountID"));
+            this.AccountID = dr.GetGuid(dr.GetOrdinal("AccountID"));
         }
 
 

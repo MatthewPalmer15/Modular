@@ -197,6 +197,11 @@
 
         #region "  Static Methods  "
 
+        public static new List<Document> LoadInstances()
+        {
+            return new List<Document>();
+        }
+
         public static new Document Create()
         {
             Document obj = new Document();

@@ -309,9 +309,9 @@ namespace Modular.Core
                 if (IsNew)
                 {
                     CreatedDate = DateTime.Now;
-                    CreatedBy = ModularSystem.Context.Identity.CurrentUser.ID;
+                    CreatedBy = ModularSystem.Context.Identity.ID;
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularSystem.Context.Identity.CurrentUser.ID;
+                    ModifiedBy = ModularSystem.Context.Identity.ID;
 
                     Insert();
                     IsModified = false;
@@ -320,7 +320,7 @@ namespace Modular.Core
                 else
                 {
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularSystem.Context.Identity.CurrentUser.ID;
+                    ModifiedBy = ModularSystem.Context.Identity.ID;
 
                     Update();
                     IsModified = false;
