@@ -1,14 +1,7 @@
-﻿namespace Modular.Core
-{
+﻿using System.ComponentModel.DataAnnotations;
 
-    /// <summary>
-    /// Attribute which will not allow a property to be the same as another property in the database.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class UniqueAttribute : Attribute
-    {
-        public string ErrorMessage { get; set; } = string.Empty;
-    }
+namespace Modular.Core
+{
 
     /// <summary>
     /// Attribute that will ignore a property when saving to the database.
@@ -16,7 +9,6 @@
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class IgnoreAttribute : Attribute
     {
-        public string ErrorMessage { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -25,8 +17,15 @@
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class SystemManagedAttribute : Attribute
     {
-        public string ErrorMessage { get; set; } = string.Empty;
+
     }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class IdentifierAttribute : Attribute
+    {
+        // This is a marker attribute that indicates that a property is significant and should be included in the search index.
+    }
+
 }
 
 

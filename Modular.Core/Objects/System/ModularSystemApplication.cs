@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Modular.Core
 {
-    public static class Application
+    public static class SystemApplication
     {
 
         #region "  Enums  "
@@ -20,6 +20,8 @@ namespace Modular.Core
         }
 
         #endregion
+
+        #region "  Properties  "
 
         public static string Name
         {
@@ -50,6 +52,8 @@ namespace Modular.Core
                 return AppConfig.GetValue("Application:Maintenance").ToUpper() == "TRUE";
             }
         }
+
+        #endregion
 
     }
 }

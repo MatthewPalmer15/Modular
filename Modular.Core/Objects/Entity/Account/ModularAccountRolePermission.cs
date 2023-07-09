@@ -24,7 +24,7 @@ namespace Modular.Core
 
         #region "  Variables  "
 
-        private Guid _AccountID;
+        private Guid _RoleID;
 
         private Enum _Permission;
 
@@ -32,19 +32,27 @@ namespace Modular.Core
 
         #region "  Properties  "
 
-        public Guid AccountID
+        public Guid RoleID
         {
             get
             {
-                return _AccountID;
+                return _RoleID;
             }
             set
             {
-                if (_AccountID != value)
+                if (_RoleID != value)
                 {
-                    _AccountID = value;
+                    _RoleID = value;
                     OnPropertyChanged("AccountID");
                 }
+            }
+        }
+
+        public Role Role
+        {
+            get
+            {
+                return Role.Load(RoleID);
             }
         }
 
@@ -133,7 +141,7 @@ namespace Modular.Core
             ModifiedDate = dr.GetDateTime(dr.GetOrdinal("ModifiedDate"));
             ModifiedBy = dr.GetGuid(dr.GetOrdinal("ModifiedBy"));
 
-            this.AccountID = dr.GetGuid(dr.GetOrdinal("AccountID"));
+            this.RoleID = dr.GetGuid(dr.GetOrdinal("RoleID"));
         }
 
 

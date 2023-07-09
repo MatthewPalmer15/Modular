@@ -35,9 +35,7 @@
 
         private Guid _CreditID;
 
-        private InvoiceType _Type;
-
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -65,23 +63,7 @@
             }
         }
 
-        public InvoiceType Type
-        {
-            get
-            {
-                return _Type;
-            }
-            set
-            {
-                if (_Type != value)
-                {
-                    _Type = value;
-                    OnPropertyChanged("InvoiceType");
-                }
-            }
-        }
-
-        public OwnerObjectType ObjectType
+        public ObjectType ObjectType
         {
             get
             {

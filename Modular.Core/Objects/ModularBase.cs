@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Modular.Core
 {
-    public class ModularBase : ModularBindableBase, ICloneable, INotifyPropertyChanged
+    public class ModularBase : ICloneable, INotifyPropertyChanged
     {
 
         #region "  Constructors  "
@@ -50,7 +50,15 @@ namespace Modular.Core
 
         private bool _IsDeleted;
 
+        //private DateTime _DeletedDate;
+        //
+        //private DateTime _DeletedBy;
+
         private bool _IsFlagged;
+
+        //private DateTime _FlaggedDate;
+        //
+        //private Guid _FlaggedBy;
 
         #endregion
 
@@ -373,7 +381,203 @@ namespace Modular.Core
         /// <param name="ID"></param>
         public void Fetch(Guid ID)
         {
-            Fetch(GetProperty("ID"), ID.ToString());
+            // Check if the database can be connected to.
+            if (Database.CheckDatabaseConnection())
+            {
+                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                }
+
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                            {
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
+                            }
+
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+
+                                Command.Connection = Connection;
+
+                                // If stored procedures are enabled, use the stored procedure, otherwise use a query.
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+
+                                Command.Parameters.Add(new SqlParameter($"@ID", ID));
+
+                                SqlDataReader DataReader = Command.ExecuteReader();
+
+                                // If data was returned, set the property values.
+                                if (DataReader.HasRows)
+                                {
+                                    DataReader.Read();
+                                    SetPropertyValues(AllProperties, DataReader);
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    // If the database is a local database, connect to it.
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
+                            {
+                                Command.Connection = Connection;
+
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+
+                                Command.Parameters.Add(new SqliteParameter($"@ID", ID));
+
+                                SqliteDataReader DataReader = Command.ExecuteReader();
+
+                                // If data was returned, set the property values.
+                                if (DataReader.HasRows)
+                                {
+                                    DataReader.Read();
+                                    SetPropertyValues(AllProperties, DataReader);
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    // If the database connection mode was not defined, throw an exception.
+                    default:
+                        throw new ModularException(ExceptionType.DatabaseConnectivityNotDefined, "Database Connection Mode was not defined.");
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, $"There was an issue trying to connect to the database.");
+            }
+        }
+
+        /// <summary>
+        /// Function which fetches the data from the database, using the specified ID.
+        /// </summary>
+        /// <param name="Value"></param>
+        public void Fetch(string Value)
+        {
+            // Check if the database can be connected to.
+            if (Database.CheckDatabaseConnection())
+            {
+                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                // Gets the property which has the Identifier attribute.
+                PropertyInfo Property = AllProperties.FirstOrDefault(Property => Property.GetCustomAttributes(typeof(IdentifierAttribute), false).Length > 0);
+                if (Property == null)
+                {
+                    return;
+                }
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                }
+
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchBy{Property.Name}";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                            {
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property));
+                            }
+
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+
+                                Command.Connection = Connection;
+
+                                // If stored procedures are enabled, use the stored procedure, otherwise use a query.
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property);
+
+                                Command.Parameters.Add(new SqlParameter($"@{Property.Name}", Value));
+
+                                SqlDataReader DataReader = Command.ExecuteReader();
+
+                                // If data was returned, set the property values.
+                                if (DataReader.HasRows)
+                                {
+                                    DataReader.Read();
+                                    SetPropertyValues(AllProperties, DataReader);
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    // If the database is a local database, connect to it.
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
+                            {
+                                Command.Connection = Connection;
+
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+
+                                Command.Parameters.Add(new SqliteParameter($"@ID", ID));
+
+                                SqliteDataReader DataReader = Command.ExecuteReader();
+
+                                // If data was returned, set the property values.
+                                if (DataReader.HasRows)
+                                {
+                                    DataReader.Read();
+                                    SetPropertyValues(AllProperties, DataReader);
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    // If the database connection mode was not defined, throw an exception.
+                    default:
+                        throw new ModularException(ExceptionType.DatabaseConnectivityNotDefined, "Database Connection Mode was not defined.");
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, $"There was an issue trying to connect to the database.");
+            }
         }
 
         /// <summary>

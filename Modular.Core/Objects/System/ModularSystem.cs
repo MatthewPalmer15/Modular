@@ -1,6 +1,6 @@
 ﻿namespace Modular.Core
 {
-    public class ModularSystem
+    public partial class ModularSystem
     {
 
         #region "  Constructors  "
@@ -15,7 +15,7 @@
 
         private static ModularSystem _Context;
 
-        private Account _CurrentIdentity;
+        private Account _Identity;
 
         #endregion
 
@@ -33,9 +33,9 @@
         {
             get
             {
-                if (_CurrentIdentity != null)
+                if (_Identity != null)
                 {
-                    return _CurrentIdentity;
+                    return _Identity;
                 }
                 else
                 {
@@ -43,8 +43,6 @@
                 }
             }
         }
-
-        // TODO: Get organsation policy from user
 
         #endregion
 

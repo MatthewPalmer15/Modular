@@ -22,7 +22,7 @@
 
         private Guid _ContactID;
 
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -50,7 +50,7 @@
             }
         }
 
-        public OwnerObjectType ObjectType
+        public ObjectType ObjectType
         {
             get
             {

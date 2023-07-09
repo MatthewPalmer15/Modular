@@ -20,7 +20,7 @@ namespace Modular.Core
 
         #region "  Variables  "
 
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -31,7 +31,7 @@ namespace Modular.Core
         #region "  Properties  "
 
         [Required]
-        public OwnerObjectType OwnerObjectType
+        public ObjectType ObjectType
         {
             get
             {

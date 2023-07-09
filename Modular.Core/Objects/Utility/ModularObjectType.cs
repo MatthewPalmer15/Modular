@@ -1,6 +1,7 @@
 ﻿namespace Modular.Core
 {
-    public enum OwnerObjectType
+
+    public enum ObjectType
     {
         Unknown                 = 000000,
 
