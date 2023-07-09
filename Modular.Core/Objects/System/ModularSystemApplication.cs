@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Modular.Core
+﻿namespace Modular.Core
 {
     public static class SystemApplication
     {

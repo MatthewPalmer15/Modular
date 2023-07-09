@@ -45,7 +45,7 @@
         {
             get
             {
-                return Document.LoadInstances().Where(RolePermission => RolePermission.DocumentPackID == ID).ToList();
+                return Document.LoadAll().Where(RolePermission => RolePermission.DocumentPackID == ID).ToList();
             }
         }
 
@@ -53,7 +53,7 @@
 
         #region "  Static Methods  "
 
-        public static new List<DocumentPack> LoadInstances()
+        public static new List<DocumentPack> LoadAll()
         {
             return new List<DocumentPack>();
         }

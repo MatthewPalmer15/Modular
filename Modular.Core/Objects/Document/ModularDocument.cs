@@ -179,7 +179,7 @@
 
         #region "  Static Methods  "
 
-        public static new List<Document> LoadInstances()
+        public static new List<Document> LoadAll()
         {
             return new List<Document>();
         }

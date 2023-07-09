@@ -58,7 +58,7 @@ namespace Modular.Core
             return objIndustry;
         }
 
-        public static new List<Industry> LoadInstances()
+        public static new List<Industry> LoadAll()
         {
             return FetchAll();
         }
@@ -86,7 +86,7 @@ namespace Modular.Core
         /// <summary>
         /// Fetches all the contacts from the database
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>s
         protected static List<Industry> FetchAll()
         {
             List<Industry> AllObjects = new List<Industry>();

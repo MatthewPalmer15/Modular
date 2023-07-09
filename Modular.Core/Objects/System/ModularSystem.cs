@@ -13,7 +13,7 @@
 
         #region "  Variables  "
 
-        private static ModularSystem _Context;
+        private static readonly ModularSystem _Context = new ModularSystem();
 
         private Account _Identity;
 
@@ -25,7 +25,7 @@
         {
             get
             {
-                return _Context ?? new ModularSystem();
+                return _Context;
             }
         }
 
@@ -41,6 +41,10 @@
                 {
                     return Account.Create();
                 }
+            }
+            set
+            {
+                _Identity = value;
             }
         }
 

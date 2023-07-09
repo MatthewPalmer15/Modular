@@ -66,7 +66,7 @@ namespace Modular.Core
             return obj;
         }
 
-        public static new List<Role> LoadInstances()
+        public static new List<Role> LoadAll()
         {
             return FetchAll();
         }

@@ -155,7 +155,7 @@
 
         #region "  Data Methods  "
 
-        public static new List<InvoiceItem> LoadInstances()
+        public static new List<InvoiceItem> LoadAll()
         {
             // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<InvoiceItem>();

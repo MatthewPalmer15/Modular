@@ -196,12 +196,12 @@
 
         public List<InvoiceItem> GetInvoiceItems()
         {
-            return InvoiceItem.LoadInstances().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
+            return InvoiceItem.LoadAll().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
         }
 
         public List<InvoicePayment> GetInvoicePayments()
         {
-            return InvoicePayment.LoadInstances().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
+            return InvoicePayment.LoadAll().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
         }
 
         #endregion

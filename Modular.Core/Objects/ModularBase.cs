@@ -50,15 +50,7 @@ namespace Modular.Core
 
         private bool _IsDeleted;
 
-        //private DateTime _DeletedDate;
-        //
-        //private DateTime _DeletedBy;
-
         private bool _IsFlagged;
-
-        //private DateTime _FlaggedDate;
-        //
-        //private Guid _FlaggedBy;
 
         #endregion
 
@@ -170,7 +162,7 @@ namespace Modular.Core
             {
                 return _IsDeleted;
             }
-            set
+           set
             {
                 if (_IsDeleted != value)
                 {
@@ -190,29 +182,37 @@ namespace Modular.Core
             {
                 return _IsFlagged;
             }
+            private set
+            {
+                if (_IsFlagged != value)
+                {
+                    _IsFlagged = value;
+                    OnPropertyChanged("IsFlagged");
+                }
+            }
         }
 
         [Ignore]
         [DefaultValue(false)]
-        public bool IsNew { get; set; }
+        public bool IsNew { get; private set; }
 
         [Ignore]
         [DefaultValue(false)]
-        public bool IsModified { get; set; }
+        public bool IsModified { get; private set; }
 
         // This gets all the properties, and checks if the data annotation restrictions are met.
         public bool IsValid
         {
             get
             {
-                var properties = GetType().GetProperties();
-                return properties.All(prop =>
+                var AllProperties = GetType().GetProperties();
+                return AllProperties.All(Property =>
                 {
-                    var attrs = prop.GetCustomAttributes(true);
-                    return attrs.OfType<ValidationAttribute>().All(attr =>
+                    var AllAttributes = Property.GetCustomAttributes(true);
+                    return AllAttributes.OfType<ValidationAttribute>().All(Attribute =>
                     {
-                        var value = prop.GetValue(attr);
-                        return attr.IsValid(value);
+                        var value = Property.GetValue(Attribute);
+                        return Attribute.IsValid(value);
                     });
                 });
             }
@@ -222,16 +222,16 @@ namespace Modular.Core
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder StrBuilder = new StringBuilder();
 
                 IEnumerable<string> AllErrors = ValidationErrors;
                 foreach (var Error in AllErrors)
                 {
-                    sb.Append(Error);
-                    sb.Append(Environment.NewLine);
+                    StrBuilder.Append(Error);
+                    StrBuilder.Append(Environment.NewLine);
                 }
 
-                return sb.ToString();
+                return StrBuilder.ToString();
             }
         }
 
@@ -239,25 +239,25 @@ namespace Modular.Core
         {
             get
             {
-                var properties = GetType().GetProperties();
-                var errorMessages = new List<string>();
+                var AllProperties = GetType().GetProperties();
+                var AllValidationErrorMessages = new List<string>();
 
-                foreach (var prop in properties)
+                foreach (var Property in AllProperties)
                 {
-                    var attrs = prop.GetCustomAttributes(true);
+                    var AllAttributes = Property.GetCustomAttributes(true);
 
-                    foreach (var attr in attrs.OfType<ValidationAttribute>())
+                    foreach (var Attribute in AllAttributes.OfType<ValidationAttribute>())
                     {
-                        var value = prop.GetValue(this);
+                        var value = Property.GetValue(this);
 
-                        if (!attr.IsValid(value) && !String.IsNullOrEmpty(attr.ErrorMessage))
+                        if (!Attribute.IsValid(value) && !string.IsNullOrEmpty(Attribute.ErrorMessage))
                         {
-                            errorMessages.Add(attr.ErrorMessage);
+                            AllValidationErrorMessages.Add(Attribute.ErrorMessage);
                         }
                     }
                 }
 
-                return errorMessages;
+                return AllValidationErrorMessages;
             }
         }
 
@@ -280,7 +280,7 @@ namespace Modular.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ModularException"></exception>
-        protected static List<ModularBase> LoadInstances()
+        protected static List<ModularBase> LoadAll()
         {
             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
         }
@@ -328,12 +328,14 @@ namespace Modular.Core
         {
             if (IsModified && IsValid)
             {
+                Guid CurrentUserID = ModularSystem.Context.Identity.ID;
+
                 if (IsNew)
                 {
                     CreatedDate = DateTime.Now;
-                    CreatedBy = ModularSystem.Context.Identity.ID;
+                    CreatedBy = CurrentUserID;
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularSystem.Context.Identity.ID;
+                    ModifiedBy = CurrentUserID;
 
                     Insert();
                     IsModified = false;
@@ -342,22 +344,11 @@ namespace Modular.Core
                 else
                 {
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = ModularSystem.Context.Identity.ID;
+                    ModifiedBy = CurrentUserID;
 
                     Update();
                     IsModified = false;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Marks the current instance for deletion.
-        /// </summary>
-        public virtual void MarkForDeletion()
-        {
-            if (!IsNew)
-            {
-                IsDeleted = true;
             }
         }
 
@@ -887,86 +878,96 @@ namespace Modular.Core
         /// Function which updates a record in the database, using the object.
         /// </summary>
         /// <exception cref="ModularException"></exception>
-        public virtual void Delete()
+        public virtual void Delete(bool HardDelete = false)
         {
             // Check if the instance is not new. If it is new, it means it has not been saved to the database yet.
             if (!IsNew)
             {
-                if (Database.CheckDatabaseConnection())
+                if (HardDelete)
                 {
-                    PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-                    // If table does not exist within the database, create it.
-                    if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                    if (Database.CheckDatabaseConnection())
                     {
-                        DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                        PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                        // If table does not exist within the database, create it.
+                        if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                        {
+                            DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                        }
+
+                        switch (Database.ConnectionMode)
+                        {
+                            // If the database is a remote database, connect to it.
+                            case Database.DatabaseConnectivityMode.Remote:
+                                using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                                {
+                                    Connection.Open();
+
+                                    string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Delete";
+
+                                    // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                                    if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                                    {
+                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
+                                    }
+
+                                    using (SqlCommand Command = new SqlCommand())
+                                    {
+                                        Command.Connection = Connection;
+
+                                        // If stored procedures are enabled, use the stored procedure, otherwise use a query.
+                                        Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+
+                                        Command.Parameters.AddWithValue("@ID", ID);
+
+                                        Command.ExecuteNonQuery();
+                                    }
+
+                                    Connection.Close();
+                                }
+                                break;
+
+                            // If the database is a local database, connect to it.  
+                            case Database.DatabaseConnectivityMode.Local:
+                                using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                                {
+                                    Connection.Open();
+
+                                    using (SqliteCommand Command = new SqliteCommand())
+                                    {
+                                        Command.Connection = Connection;
+
+                                        // Stored procedures are not supported in SQLite, so use a query.
+                                        Command.CommandType = CommandType.Text;
+                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+
+                                        Command.Parameters.AddWithValue("@ID", ID);
+
+                                        Command.ExecuteNonQuery();
+                                    }
+
+                                    Connection.Close();
+                                }
+                                break;
+
+                            // If the database connection mode was not defined, throw an exception.
+                            default:
+                                throw new ModularException(ExceptionType.DatabaseConnectivityNotDefined, "Database Connection Mode was not defined.");
+                        }
+                    }
+                    else
+                    {
+                        throw new ModularException(ExceptionType.DatabaseConnectionError, $"There was an issue trying to connect to the database.");
                     }
 
-                    switch (Database.ConnectionMode)
-                    {
-                        // If the database is a remote database, connect to it.
-                        case Database.DatabaseConnectivityMode.Remote:
-                            using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
-                            {
-                                Connection.Open();
-
-                                string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Delete";
-
-                                // If stored procedures are enabled, and the stored procedure does not exist, create it.
-                                if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
-                                {
-                                    DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
-                                }
-
-                                using (SqlCommand Command = new SqlCommand())
-                                {
-                                    Command.Connection = Connection;
-
-                                    // If stored procedures are enabled, use the stored procedure, otherwise use a query.
-                                    Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                    Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
-
-                                    Command.Parameters.AddWithValue("@ID", ID);
-
-                                    Command.ExecuteNonQuery();
-                                }
-
-                                Connection.Close();
-                            }
-                            break;
-
-                        // If the database is a local database, connect to it.  
-                        case Database.DatabaseConnectivityMode.Local:
-                            using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
-                            {
-                                Connection.Open();
-
-                                using (SqliteCommand Command = new SqliteCommand())
-                                {
-                                    Command.Connection = Connection;
-
-                                    // Stored procedures are not supported in SQLite, so use a query.
-                                    Command.CommandType = CommandType.Text;
-                                    Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
-
-                                    Command.Parameters.AddWithValue("@ID", ID);
-
-                                    Command.ExecuteNonQuery();
-                                }
-
-                                Connection.Close();
-                            }
-                            break;
-
-                        // If the database connection mode was not defined, throw an exception.
-                        default:
-                            throw new ModularException(ExceptionType.DatabaseConnectivityNotDefined, "Database Connection Mode was not defined.");
-                    }
                 }
                 else
                 {
-                    throw new ModularException(ExceptionType.DatabaseConnectionError, $"There was an issue trying to connect to the database.");
+                    IsDeleted = true;
+                    Save();
                 }
+
             }
         }
 
@@ -1433,7 +1434,7 @@ namespace Modular.Core
 
         #region "  System Methods  "
 
-        public event PropertyChangedEventHandler PropertyChanged;
+         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string Property)
         {

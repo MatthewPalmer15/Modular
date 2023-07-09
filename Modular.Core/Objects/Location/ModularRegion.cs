@@ -30,7 +30,7 @@ namespace Modular.Core
 
         #region "  Static Methods  "
 
-        public static new List<Region> LoadInstances()
+        public static new List<Region> LoadAll()
         {
             return FetchAll();
         }

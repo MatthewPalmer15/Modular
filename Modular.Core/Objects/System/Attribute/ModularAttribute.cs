@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Modular.Core
+﻿namespace Modular.Core
 {
 
     /// <summary>
