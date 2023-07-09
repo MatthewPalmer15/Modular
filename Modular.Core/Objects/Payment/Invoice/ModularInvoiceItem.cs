@@ -19,25 +19,11 @@
 
         #endregion
 
-        #region "  Enums  "
-
-        public enum InvoiceType
-        {
-            Unknown = 0,
-            Invoice = 1,
-            Credit = 2,
-            Quote = 3
-        }
-
-        #endregion
-
         #region "  Variables  "
 
         private Guid _InvoiceID;
 
-        private InvoiceType _Type;
-
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -74,23 +60,7 @@
             }
         }
 
-        public InvoiceType Type
-        {
-            get
-            {
-                return _Type;
-            }
-            set
-            {
-                if (_Type != value)
-                {
-                    _Type = value;
-                    OnPropertyChanged("InvoiceType");
-                }
-            }
-        }
-
-        public OwnerObjectType ObjectType
+        public ObjectType ObjectType
         {
             get
             {
@@ -166,10 +136,11 @@
 
         #region "  Static Methods  "
 
-        public static new InvoiceItem Create()
+        public static InvoiceItem Create(Guid InvoiceID)
         {
             InvoiceItem obj = new InvoiceItem();
             obj.SetDefaultValues();
+            obj.InvoiceID = InvoiceID;
             return obj;
         }
 

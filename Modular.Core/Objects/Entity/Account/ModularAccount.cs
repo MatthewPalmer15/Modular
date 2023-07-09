@@ -87,6 +87,14 @@ namespace Modular.Core
             }
         }
 
+        public Role Role
+        {
+            get
+            {
+                return Role.Load(RoleID);
+            }
+        }
+
         public Contact Contact
         {
             get
@@ -160,7 +168,7 @@ namespace Modular.Core
             }
         }
 
-        public string? AuthenticationType
+        public string AuthenticationType
         {
             get
             {
@@ -553,7 +561,7 @@ namespace Modular.Core
         {
             Account obj = new Account();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -566,7 +574,7 @@ namespace Modular.Core
         {
             Account obj = new Account();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);

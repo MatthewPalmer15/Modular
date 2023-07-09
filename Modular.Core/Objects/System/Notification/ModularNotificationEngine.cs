@@ -33,7 +33,7 @@
 
         private void GetPendingNotifications()
         {
-            _NotificationsToSend = Notification.LoadAll().Where(Notification => Notification.Status.Equals(Notification.NotificationStatusType.Pending) && Notification.ContactID.Equals(ModularSystem.Context.Identity.CurrentUser.ContactID)).ToList();
+            _NotificationsToSend = Notification.LoadAll().Where(Notification => Notification.Status.Equals(Notification.NotificationStatusType.Pending) && Notification.ContactID.Equals(ModularSystem.Context.Identity.ContactID)).ToList();
 
             foreach (Notification Notification in _NotificationsToSend)
             {

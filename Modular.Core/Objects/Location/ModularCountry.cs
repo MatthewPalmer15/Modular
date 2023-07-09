@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Modular.Core
 {
-    public class Country : ModularReadOnlyBase
+    public class Country : ModularBase
     {
 
         #region "  Static Guids  "
@@ -326,7 +326,7 @@ namespace Modular.Core
 
         #region "  Static Methods  "
 
-        public static new List<Country> Load()
+        public static new List<Country> LoadInstances()
         {
             return FetchAll();
         }
@@ -358,7 +358,7 @@ namespace Modular.Core
             if (Database.CheckDatabaseConnection())
             {
                 Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
-                PropertyInfo[]? AllProperties = GetProperties();
+                PropertyInfo[] AllProperties = GetProperties();
                 if (AllProperties != null)
                 {
                     switch (DatabaseConnectionMode)
@@ -443,7 +443,7 @@ namespace Modular.Core
         {
             Country obj = new Country();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -456,7 +456,7 @@ namespace Modular.Core
         {
             Country obj = new Country();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);

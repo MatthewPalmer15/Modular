@@ -22,7 +22,7 @@
 
         private Guid _ContactID;
 
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -54,7 +54,7 @@
             }
         }
 
-        public OwnerObjectType ObjectType
+        public ObjectType ObjectType
         {
             get
             {
@@ -150,26 +150,11 @@
             }
         }
 
-        public List<InvoiceItem> InvoiceLines
-        {
-            get
-            {
-                return InvoiceItem.LoadInstances();
-            }
-        }
-
-        public List<InvoicePayment> InvoicePayments
-        {
-            get
-            {
-                return InvoicePayment.LoadInstances();
-            }
-        }
-
         public decimal TotalPrice
         {
             get
             {
+                List<InvoiceItem> InvoiceLines = GetInvoiceItems();
                 decimal total = 0;
                 foreach (InvoiceItem item in InvoiceLines)
                 {
@@ -195,6 +180,28 @@
             Invoice obj = new Invoice();
             obj.Fetch(ID);
             return obj;
+        }
+
+        public InvoiceItem CreateInvoiceItem()
+        {
+            InvoiceItem obj = InvoiceItem.Create(ID);
+            return obj;
+        }
+
+        public InvoicePayment CreateInvoicePayment()
+        {
+            InvoicePayment obj = InvoicePayment.Create(ID);
+            return obj;
+        }
+
+        public List<InvoiceItem> GetInvoiceItems()
+        {
+            return InvoiceItem.LoadInstances().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
+        }
+
+        public List<InvoicePayment> GetInvoicePayments()
+        {
+            return InvoicePayment.LoadInstances().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
         }
 
         #endregion

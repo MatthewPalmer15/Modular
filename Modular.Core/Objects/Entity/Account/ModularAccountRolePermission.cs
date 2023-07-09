@@ -24,7 +24,7 @@ namespace Modular.Core
 
         #region "  Variables  "
 
-        private Guid _AccountID;
+        private Guid _RoleID;
 
         private Enum _Permission;
 
@@ -32,19 +32,27 @@ namespace Modular.Core
 
         #region "  Properties  "
 
-        public Guid AccountID
+        public Guid RoleID
         {
             get
             {
-                return _AccountID;
+                return _RoleID;
             }
             set
             {
-                if (_AccountID != value)
+                if (_RoleID != value)
                 {
-                    _AccountID = value;
+                    _RoleID = value;
                     OnPropertyChanged("AccountID");
                 }
+            }
+        }
+
+        public Role Role
+        {
+            get
+            {
+                return Role.Load(RoleID);
             }
         }
 
@@ -90,7 +98,7 @@ namespace Modular.Core
         public static RolePermission Load(Guid AccountID, Enum Permission)
         {
             RolePermission obj = new RolePermission();
-            obj.DataFetch(AccountID, Permission);
+            obj.Fetch(AccountID, Permission);
             return obj;
         }
 
@@ -110,16 +118,18 @@ namespace Modular.Core
 
         #region "  Data Methods  "
 
-        protected void DataFetch(Guid prAccountID, Enum prPermission)
+        protected void Fetch(Guid AccountID, Enum Permission)
         {
             SqlConnection cn = new SqlConnection(Database.ConnectionString);
-            SqlCommand cm = new SqlCommand();
-            cm.Connection = cn;
-            cm.CommandType = System.Data.CommandType.StoredProcedure;
-            cm.CommandText = $"_Fetch"; //todo: add stored procedure name
+            SqlCommand cm = new SqlCommand
+            {
+                Connection = cn,
+                CommandType = CommandType.StoredProcedure,
+                CommandText = $"_Fetch" // TODO: add stored procedure name
+            };
 
-            cm.Parameters.AddWithValue("@ContactID", prAccountID);
-            cm.Parameters.AddWithValue("@Permission", prPermission);
+            cm.Parameters.AddWithValue("@ContactID", AccountID);
+            cm.Parameters.AddWithValue("@Permission", Permission);
 
             SqlDataReader dr = cm.ExecuteReader();
 
@@ -131,7 +141,7 @@ namespace Modular.Core
             ModifiedDate = dr.GetDateTime(dr.GetOrdinal("ModifiedDate"));
             ModifiedBy = dr.GetGuid(dr.GetOrdinal("ModifiedBy"));
 
-            AccountID = dr.GetGuid(dr.GetOrdinal("AccountID"));
+            this.RoleID = dr.GetGuid(dr.GetOrdinal("RoleID"));
         }
 
 
@@ -148,7 +158,7 @@ namespace Modular.Core
             {
                 Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
 
-                PropertyInfo[]? AllProperties = GetProperties();
+                PropertyInfo[] AllProperties = GetProperties();
 
                 switch (DatabaseConnectionMode)
                 {
@@ -162,7 +172,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; ///todo: add stored procedure name
+                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -267,7 +277,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; ///todo: add stored procedure name
+                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -353,7 +363,7 @@ namespace Modular.Core
         {
             RolePermission obj = new RolePermission();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -366,7 +376,7 @@ namespace Modular.Core
         {
             RolePermission obj = new RolePermission();
 
-            PropertyInfo[]? AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);

@@ -41,6 +41,46 @@
             }
         }
 
+        public List<Document> Documents
+        {
+            get
+            {
+                return Document.LoadInstances().Where(RolePermission => RolePermission.DocumentPackID == ID).ToList();
+            }
+        }
+
+        #endregion
+
+        #region "  Static Methods  "
+
+        public static new List<DocumentPack> LoadInstances()
+        {
+            return new List<DocumentPack>();
+        }
+
+        public static new DocumentPack Create()
+        {
+            DocumentPack obj = new DocumentPack();
+            obj.SetDefaultValues();
+            return obj;
+        }
+
+        public static new DocumentPack Load(Guid ID)
+        {
+            DocumentPack obj = new DocumentPack();
+            obj.Fetch(ID);
+            return obj;
+        }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
         #endregion
 
     }

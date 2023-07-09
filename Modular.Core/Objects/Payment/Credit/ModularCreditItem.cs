@@ -33,14 +33,11 @@
 
         #region "  Variables  "
 
-        private Guid _InvoiceID;
+        private Guid _CreditID;
 
-        private InvoiceType _Type;
-
-        private OwnerObjectType _ObjectType;
+        private ObjectType _ObjectType;
 
         private Guid _ObjectID;
-
 
         private decimal _UnitPrice;
 
@@ -50,39 +47,23 @@
 
         #region "  Properties  "
 
-        public Guid InvoiceID
+        public Guid CreditID
         {
             get
             {
-                return _InvoiceID;
+                return _CreditID;
             }
             set
             {
-                if (_InvoiceID != value)
+                if (_CreditID != value)
                 {
-                    _InvoiceID = value;
+                    _CreditID = value;
                     OnPropertyChanged("InvoiceID");
                 }
             }
         }
 
-        public InvoiceType Type
-        {
-            get
-            {
-                return _Type;
-            }
-            set
-            {
-                if (_Type != value)
-                {
-                    _Type = value;
-                    OnPropertyChanged("InvoiceType");
-                }
-            }
-        }
-
-        public OwnerObjectType ObjectType
+        public ObjectType ObjectType
         {
             get
             {
@@ -144,6 +125,25 @@
                     OnPropertyChanged("Quantity");
                 }
             }
+        }
+
+        #endregion
+
+        #region "  Static Methods  "
+
+        public static CreditItem Create(Guid CreditID)
+        {
+            CreditItem obj = new CreditItem();
+            obj.SetDefaultValues();
+            obj.CreditID = CreditID;
+            return obj;
+        }
+
+        public static new CreditItem Load(Guid ID)
+        {
+            CreditItem obj = new CreditItem();
+            obj.Fetch(ID);
+            return obj;
         }
 
         #endregion

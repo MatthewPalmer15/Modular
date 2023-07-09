@@ -88,6 +88,10 @@ namespace Modular.Core
 
         #endregion
 
+        #region "  Methods (Triggers)  "
+
+        #endregion
+
         #region "  Methods (Fetch)  "
 
         public static string CreateFetchQuery(string DatabaseTableName)
@@ -249,7 +253,7 @@ namespace Modular.Core
             // DataType: StringW
             if (Property.PropertyType == typeof(string))
             {
-                MaxLengthAttribute? MaxLengthAttribute = Property.GetCustomAttribute<MaxLengthAttribute>();
+                MaxLengthAttribute MaxLengthAttribute = Property.GetCustomAttribute<MaxLengthAttribute>();
                 return MaxLengthAttribute != null ? $"NVARCHAR({MaxLengthAttribute.Length})" : "NVARCHAR(MAX)";
             }
 

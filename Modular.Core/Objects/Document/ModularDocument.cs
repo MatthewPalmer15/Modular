@@ -17,24 +17,6 @@
 
         #endregion
 
-        #region "  Enums  "
-
-        public enum FileType
-        {
-            Unknown = 0,
-            PDF = 1,
-            DOC = 2,
-            DOCX = 3,
-            XLS = 4,
-            XLSX = 5,
-            PPT = 6,
-            PPTX = 7,
-            TXT = 8,
-            MSG = 9,
-        }
-
-        #endregion
-
         #region "  Variables  "
 
         private Guid _DocumentPackID;
@@ -197,6 +179,11 @@
 
         #region "  Static Methods  "
 
+        public static new List<Document> LoadInstances()
+        {
+            return new List<Document>();
+        }
+
         public static new Document Create()
         {
             Document obj = new Document();
@@ -217,7 +204,7 @@
 
         public override string ToString()
         {
-            return Filename;
+            return FullFilename;
         }
 
         #endregion
