@@ -44,6 +44,10 @@
 
         private decimal _Amount;
 
+        private bool _IsSuccessful;
+
+        private string _Notes = string.Empty;
+
         #endregion
 
         #region "  Properties  "
@@ -124,6 +128,38 @@
                 {
                     _Amount = value;
                     OnPropertyChanged("Amount");
+                }
+            }
+        }
+
+        public bool IsSuccessful
+        {
+            get
+            {
+                return _IsSuccessful;
+            }
+            set
+            {
+                if (_IsSuccessful != value)
+                {
+                    _IsSuccessful = value;
+                    OnPropertyChanged("IsSuccessful");
+                }
+            }
+        }
+
+        public string Notes
+        {
+            get
+            {
+                return _Notes;
+            }
+            set
+            {
+                if (_Notes != value)
+                {
+                    _Notes = value;
+                    OnPropertyChanged("Notes");
                 }
             }
         }
