@@ -7,7 +7,6 @@ using System.Reflection;
 
 namespace Modular.Core
 {
-    [Serializable]
     public class Contact : ModularBase
     {
         #region "  Constructors  "
@@ -552,7 +551,7 @@ namespace Modular.Core
             return obj;
         }
 
-        public static new List<Contact> LoadInstances()
+        public static new List<Contact> LoadAll()
         {
             return FetchAll();
         }

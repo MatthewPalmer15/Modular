@@ -247,7 +247,7 @@ namespace Modular.Core
             }
         }
 
-        public static new List<Account> LoadInstances()
+        public static new List<Account> LoadAll()
         {
             return FetchAll();
         }
@@ -362,19 +362,37 @@ namespace Modular.Core
                             {
                                 Command.Connection = Connection;
 
-                                if (Database.EnableStoredProcedures)
+                                switch (LoginType)
                                 {
+                                    case LoginMethodType.Email:
+                                        if (Database.EnableStoredProcedures)
+                                        {
+                                            Command.CommandType = CommandType.StoredProcedure;
+                                            Command.CommandText = "usp_Modular_Contact_Account_Login_ByEmail";
+                                            Command.Parameters.AddWithValue("@Email", Credentials);
+                                        }
+                                        else
+                                        {
+                                            Command.CommandType = CommandType.Text;
+                                            Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                            Command.Parameters.AddWithValue("@Email", Credentials);
+                                        }
+                                        break;
 
-                                    Command.CommandType = CommandType.StoredProcedure;
-                                    Command.CommandText = "usp_Modular_Contact_Account_Login_ByEmail";
-                                    Command.Parameters.AddWithValue("@Email", Credentials);
-
-                                }
-                                else
-                                {
-                                    Command.CommandType = CommandType.Text;
-                                    Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllProperties);
-                                    Command.Parameters.AddWithValue("@Email", Credentials);
+                                    case LoginMethodType.Username:
+                                        if (Database.EnableStoredProcedures)
+                                        {
+                                            Command.CommandType = CommandType.StoredProcedure;
+                                            Command.CommandText = "usp_Modular_Contact_Account_Login_ByUsername";
+                                            Command.Parameters.AddWithValue("@Username", Credentials);
+                                        }
+                                        else
+                                        {
+                                            Command.CommandType = CommandType.Text;
+                                            Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                            Command.Parameters.AddWithValue("@Username", Credentials);
+                                        }
+                                        break;
                                 }
 
                                 SqlDataReader DataReader = Command.ExecuteReader();
@@ -400,50 +418,9 @@ namespace Modular.Core
 
                 return IsAuthenticationSuccessful;
             }
-
-            SqlConnection cn = new SqlConnection(Database.ConnectionString);
-            SqlCommand cm = new SqlCommand();
-            cm.Connection = cn;
-            cm.CommandType = CommandType.StoredProcedure;
-
-
-            switch (LoginType)
-            {
-                case LoginMethodType.Email:
-                    {
-                        cm.CommandText = "usp_Modular_Contact_Account_Login_ByEmail";
-                        cm.Parameters.AddWithValue("@Email", Credentials);
-                        break;
-                    }
-                case LoginMethodType.Username:
-                    {
-                        cm.CommandText = "usp_Modular_Contact_Account_Login_ByUsername";
-                        cm.Parameters.AddWithValue("@Username", Credentials);
-                        break;
-                    }
-                case LoginMethodType.Admin:
-                    {
-                        break;
-                    }
-                default:
-                    {
-                        throw new ModularException(ExceptionType.InvalidCast, "Unknown Login Method Type.");
-                    }
-
-            }
-
-            SqlDataReader dr = cm.ExecuteReader();
-            dr.Read();
-
-            string UserPassword = dr.GetString("password");
-
-            if (!string.IsNullOrEmpty(UserPassword))
-            {
-                return HashPassword(InputPassword) == UserPassword;
-            }
             else
             {
-                return false;
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "Error connecting to database");
             }
         }
 

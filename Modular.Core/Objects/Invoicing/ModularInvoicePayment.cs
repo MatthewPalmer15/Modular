@@ -44,6 +44,10 @@
 
         private decimal _Amount;
 
+        private bool _IsSuccessful;
+
+        private string _Notes = string.Empty;
+
         #endregion
 
         #region "  Properties  "
@@ -128,6 +132,38 @@
             }
         }
 
+        public bool IsSuccessful
+        {
+            get
+            {
+                return _IsSuccessful;
+            }
+            set
+            {
+                if (_IsSuccessful != value)
+                {
+                    _IsSuccessful = value;
+                    OnPropertyChanged("IsSuccessful");
+                }
+            }
+        }
+
+        public string Notes
+        {
+            get
+            {
+                return _Notes;
+            }
+            set
+            {
+                if (_Notes != value)
+                {
+                    _Notes = value;
+                    OnPropertyChanged("Notes");
+                }
+            }
+        }
+
         #endregion
 
         #region "  Static Methods  "
@@ -151,7 +187,7 @@
 
         #region "  Data Methods  "
 
-        public static new List<InvoicePayment> LoadInstances()
+        public static new List<InvoicePayment> LoadAll()
         {
             // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<InvoicePayment>();

@@ -86,7 +86,7 @@ namespace Modular.Core
             return obj;
         }
 
-        public static new List<SystemConfig> LoadInstances()
+        public static new List<SystemConfig> LoadAll()
         {
             return new List<SystemConfig> { new SystemConfig() };
         }

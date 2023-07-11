@@ -115,7 +115,7 @@
 
         #region "  Data Methods  "
 
-        public static List<Notification> LoadAll()
+        public static new List<Notification> LoadAll()
         {
             // TODO: Load all notifications from the database
             List<Notification> list = new List<Notification>();

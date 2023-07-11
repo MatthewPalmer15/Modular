@@ -27,8 +27,13 @@
 
         private Guid _ObjectID;
 
+        private string _Name = string.Empty;
+
+        private string _Description = string.Empty;
 
         private decimal _UnitPrice;
+
+        private decimal _UnitPriceVAT;
 
         private decimal _Quantity;
 
@@ -92,6 +97,38 @@
             }
         }
 
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                    OnPropertyChanged("Name");
+                }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return _Description;
+            }
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                    OnPropertyChanged("Description");
+                }
+            }
+        }
+
         public decimal UnitPrice
         {
             get
@@ -104,6 +141,22 @@
                 {
                     _UnitPrice = value;
                     OnPropertyChanged("UnitPrice");
+                }
+            }
+        }
+
+        public decimal UnitPriceVAT
+        {
+            get
+            {
+                return _UnitPriceVAT;
+            }
+            set
+            {
+                if (_UnitPriceVAT != value)
+                {
+                    _UnitPriceVAT = value;
+                    OnPropertyChanged("UnitPriceVAT");
                 }
             }
         }
@@ -153,9 +206,34 @@
 
         #endregion
 
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public void SetInvoice(Guid InvoiceID)
+        {
+            this.InvoiceID = InvoiceID;
+        }
+
+        public void SetInvoice(Invoice Invoice)
+        {
+            this.InvoiceID = Invoice.ID;
+        }
+
+        //  TODO: Add support for this.
+        // public void SetInvoice(string InvoiceNumber)
+        // {
+        //     this.InvoiceID = Invoice.Load(InvoiceNumber).ID;
+        // }
+
+        #endregion
+
         #region "  Data Methods  "
 
-        public static new List<InvoiceItem> LoadInstances()
+        public static new List<InvoiceItem> LoadAll()
         {
             // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<InvoiceItem>();

@@ -83,7 +83,7 @@ namespace Modular.Core
             obj.SetDefaultValues();
             return obj;
         }
-        public static new List<RolePermission> LoadInstances()
+        public static new List<RolePermission> LoadAll()
         {
             return FetchAll();
         }

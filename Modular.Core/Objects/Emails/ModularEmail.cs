@@ -23,6 +23,11 @@ namespace Modular.Core
 
                 SMTPClient.Send(Email);
 
+                if (Audit)
+                {
+                    //  TODO: Create Audit Log.
+                }
+
             }
             catch
             {

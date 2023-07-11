@@ -60,7 +60,7 @@ namespace Modular.Core
             return obj;
         }
 
-        public static new List<Department> LoadInstances()
+        public static new List<Department> LoadAll()
         {
             return FetchAll();
         }

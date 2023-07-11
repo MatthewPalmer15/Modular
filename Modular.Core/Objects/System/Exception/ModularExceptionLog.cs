@@ -127,7 +127,7 @@
             return objExceptionLog;
         }
 
-        public static new List<ExceptionLog> LoadInstances()
+        public static new List<ExceptionLog> LoadAll()
         {
             return FetchAll();
         }

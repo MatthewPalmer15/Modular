@@ -326,7 +326,7 @@ namespace Modular.Core
 
         #region "  Static Methods  "
 
-        public static new List<Country> LoadInstances()
+        public static new List<Country> LoadAll()
         {
             return FetchAll();
         }

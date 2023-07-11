@@ -1,6 +1,6 @@
 ﻿namespace Modular.Core
 {
-    [Serializable]
+
     public class Invoice : ModularBase
     {
 
@@ -18,6 +18,20 @@
 
         #endregion
 
+        #region "  Enums  "
+
+        public enum InvoiceStatusType
+        {
+            Unknown = 0,
+            Open = 1,
+            Closed = 2,
+            Completed = 3,
+            Cancelled = 4,
+            Deleted = 5
+        }
+
+        #endregion
+
         #region "  Variables  "
 
         private Guid _ContactID;
@@ -26,13 +40,27 @@
 
         private Guid _ObjectID;
 
+        private InvoiceStatusType _InvoiceStatus;
+
         private string _InvoiceNumber = string.Empty;
 
         private DateTime _InvoiceDate;
 
+        private List<InvoiceItem> _InvoiceItems = new List<InvoiceItem>();
+
+        private List<InvoicePayment> _InvoicePayments = new List<InvoicePayment>();
+
         private bool _IsPaid;
 
         private DateTime _PaidDate;
+
+        private bool _IsPrinted;
+
+        private DateTime _PrintedDate;
+
+        private string _PONumber = string.Empty;
+
+        private string _Notes = string.Empty;
 
         #endregion
 
@@ -86,6 +114,22 @@
             }
         }
 
+        public InvoiceStatusType InvoiceStatus
+        {
+            get
+            {
+                return _InvoiceStatus;
+            }
+            set
+            {
+                if (_InvoiceStatus != value)
+                {
+                    _InvoiceStatus = value;
+                    OnPropertyChanged("InvoiceStatus");
+                }
+            }
+        }
+
         public string InvoiceNumber
         {
             get
@@ -114,6 +158,38 @@
                 {
                     _InvoiceDate = value;
                     OnPropertyChanged("InvoiceDate");
+                }
+            }
+        }
+
+        public List<InvoiceItem> InvoiceItems
+        {
+            get
+            {
+                return _InvoiceItems;
+            }
+            set
+            {
+                if (_InvoiceItems != value)
+                {
+                    _InvoiceItems = value;
+                    OnPropertyChanged("InvoiceItems");
+                }
+            }
+        }
+
+        public List<InvoicePayment> InvoicePayments
+        {
+            get
+            {
+                return _InvoicePayments;
+            }
+            set
+            {
+                if (_InvoicePayments != value)
+                {
+                    _InvoicePayments = value;
+                    OnPropertyChanged("InvoicePayments");
                 }
             }
         }
@@ -150,6 +226,70 @@
             }
         }
 
+        public bool IsPrinted
+        {
+            get
+            {
+                return _IsPrinted;
+            }
+            set
+            {
+                if (_IsPrinted != value)
+                {
+                    _IsPrinted = value;
+                    OnPropertyChanged("IsPrinted");
+                }
+            }
+        }
+
+        public DateTime PrintedDate
+        {
+            get
+            {
+                return _PrintedDate;
+            }
+            set
+            {
+                if (_PrintedDate != value)
+                {
+                    _PrintedDate = value;
+                    OnPropertyChanged("PrintedDate");
+                }
+            }
+        }
+
+        public string PONumber
+        {
+            get
+            {
+                return _PONumber;
+            }
+            set
+            {
+                if (_PONumber != value)
+                {
+                    _PONumber = value;
+                    OnPropertyChanged("PONumber");
+                }
+            }
+        }
+
+        public string Notes
+        {
+            get
+            {
+                return _Notes;
+            }
+            set
+            {
+                if (_Notes != value)
+                {
+                    _Notes = value;
+                    OnPropertyChanged("Notes");
+                }
+            }
+        }
+
         public decimal TotalPrice
         {
             get
@@ -182,6 +322,15 @@
             return obj;
         }
 
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return $"Invoice #{_InvoiceNumber}";
+        }
+
         public InvoiceItem CreateInvoiceItem()
         {
             InvoiceItem obj = InvoiceItem.Create(ID);
@@ -196,21 +345,23 @@
 
         public List<InvoiceItem> GetInvoiceItems()
         {
-            return InvoiceItem.LoadInstances().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
+            return InvoiceItem.LoadAll().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
         }
 
         public List<InvoicePayment> GetInvoicePayments()
         {
-            return InvoicePayment.LoadInstances().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
+            return InvoicePayment.LoadAll().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
         }
 
-        #endregion
 
-        #region "  Instance Methods  "
-
-        public override string ToString()
+        public void LoadInvoiceItems()
         {
-            return $"Invoice #{_InvoiceNumber}";
+            _InvoiceItems = GetInvoiceItems();
+        }
+
+        public void LoadInvoicePayments()
+        {
+            _InvoicePayments = GetInvoicePayments();
         }
 
         #endregion
