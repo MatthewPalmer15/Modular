@@ -1,7 +1,6 @@
 ﻿namespace Modular.Core
 {
 
-    [Serializable]
     public class InvoiceItem : ModularBase
     {
 
@@ -212,22 +211,6 @@
         {
             return Name;
         }
-
-        public void SetInvoice(Guid InvoiceID)
-        {
-            this.InvoiceID = InvoiceID;
-        }
-
-        public void SetInvoice(Invoice Invoice)
-        {
-            this.InvoiceID = Invoice.ID;
-        }
-
-        //  TODO: Add support for this.
-        // public void SetInvoice(string InvoiceNumber)
-        // {
-        //     this.InvoiceID = Invoice.Load(InvoiceNumber).ID;
-        // }
 
         #endregion
 

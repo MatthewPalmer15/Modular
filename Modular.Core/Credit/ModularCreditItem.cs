@@ -1,7 +1,5 @@
 ﻿namespace Modular.Core
 {
-
-    [Serializable]
     public class CreditItem : ModularBase
     {
 
@@ -39,7 +37,13 @@
 
         private Guid _ObjectID;
 
+        private string _Name = string.Empty;
+
+        private string _Description = string.Empty;
+
         private decimal _UnitPrice;
+
+        private decimal _UnitPriceVAT;
 
         private decimal _Quantity;
 
@@ -95,6 +99,38 @@
             }
         }
 
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                    OnPropertyChanged("Name");
+                }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return _Description;
+            }
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                    OnPropertyChanged("Description");
+                }
+            }
+        }
+
         public decimal UnitPrice
         {
             get
@@ -107,6 +143,22 @@
                 {
                     _UnitPrice = value;
                     OnPropertyChanged("UnitPrice");
+                }
+            }
+        }
+
+        public decimal UnitPriceVAT
+        {
+            get
+            {
+                return _UnitPriceVAT;
+            }
+            set
+            {
+                if (_UnitPriceVAT != value)
+                {
+                    _UnitPriceVAT = value;
+                    OnPropertyChanged("UnitPriceVAT");
                 }
             }
         }
@@ -127,6 +179,14 @@
             }
         }
 
+        public decimal TotalPrice
+        {
+            get
+            {
+                return UnitPrice * Quantity;
+            }
+        }
+
         #endregion
 
         #region "  Static Methods  "
@@ -144,6 +204,25 @@
             CreditItem obj = new CreditItem();
             obj.Fetch(ID);
             return obj;
+        }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion
+
+        #region "  Data Methods  "
+
+        public static new List<CreditItem> LoadAll()
+        {
+            // TODO:  Add ModularInvoiceItem.LoadInstances implementation
+            return new List<CreditItem>();
         }
 
         #endregion
