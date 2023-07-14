@@ -1,4 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -119,7 +123,15 @@ namespace Modular.Core
                                 Command.CommandType = CommandType.Text;
                                 Command.CommandText = File.ReadAllText(Item.Name);
 
-                                SqlDataReader sqlDataReader = Command.ExecuteReader();
+                                SqlDataReader DataReader = Command.ExecuteReader();
+                                if (Item.Format.Equals(DataExporterItem.ExportType.XLSX))
+                                {
+                                    ExportToExcel(Item, DataReader);
+                                }
+                                else
+                                {
+                                    throw new ModularException(ExceptionType.ArgumentError, "Export format is not supported.");
+                                }
                             }
 
                             Connection.Close();
@@ -139,34 +151,34 @@ namespace Modular.Core
 
         #endregion
 
-        //public static void ExportToExcel(string fileName, string sheetName, string[] headers, string[,] data)
-        //{
-        //    var excel = new Microsoft.Office.Interop.Excel.Application();
-        //    excel.Visible = false;
-        //    excel.DisplayAlerts = false;
-        //    var workbook = excel.Workbooks.Add(Type.Missing);
-        //    var sheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.ActiveSheet;
-        //    sheet.Name = sheetName;
-        //    for (int i = 0; i < headers.Length; i++)
-        //    {
-        //        sheet.Cells[1, i + 1] = headers[i];
-        //    }
-        //    for (int i = 0; i < data.GetLength(0); i++)
-        //    {
-        //        var row = new string[data.GetLength(1)];
-        //        for (int j = 0; j < data.GetLength(1); j++)
-        //        {
-        //            row[j] = data[i, j];
-        //        }
-        //        for (int j = 0; j < row.Length; j++)
-        //        {
-        //            sheet.Cells[i + 2, j + 1] = row[j];
-        //        }
-        //    }
-        //    workbook.SaveAs(fileName);
-        //    workbook.Close();
-        //    excel.Quit();
-        //}
+        private static void ExportToExcel(DataExporterItem Script, SqlDataReader DataReader)
+        {
+            using (SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(_ExportPath, SpreadsheetDocumentType.Workbook))
+            {
+                // Create the workbook part
+                WorkbookPart ExcelDocumentPart = ExcelDocument.AddWorkbookPart();
+                ExcelDocumentPart.Workbook = new Workbook();
+
+                // Create the worksheet part
+                WorksheetPart ExcelWorksheetPart = ExcelDocumentPart.AddNewPart<WorksheetPart>();
+                ExcelWorksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                // Create the sheets
+                Sheets ExcelSheets = ExcelDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+
+                // Create a new sheet and associate it with the worksheet part
+                Sheet ExcelSheet = new Sheet()
+                {
+                    Id = ExcelDocument.WorkbookPart.GetIdOfPart(ExcelWorksheetPart),
+                    SheetId = 1,
+                    Name = Script.Name
+                };
+
+                ExcelSheets.Append(ExcelSheet);
+
+                ExcelDocument.Save();
+            }
+        }
 
     }
 }
