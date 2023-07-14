@@ -26,6 +26,8 @@ namespace Modular.Core
 
         private string _Name = string.Empty;
 
+        private List<RolePermission> _Permissions = new List<RolePermission>();
+
         #endregion
 
         #region "  Properties  "
@@ -50,14 +52,19 @@ namespace Modular.Core
         {
             get
             {
-                // TODO: Return the list of permissions for this role
-                return new List<RolePermission>();
+                LoadPermissions();
+                return _Permissions;
             }
         }
 
         #endregion
 
         #region "  Static Methods  "
+
+        private void LoadPermissions()
+        {
+            _Permissions = RolePermission.LoadAll().Where(Permission => Permission.RoleID == ID).ToList();
+        }
 
         public static new Role Create()
         {

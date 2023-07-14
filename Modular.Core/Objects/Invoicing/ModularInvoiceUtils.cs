@@ -9,7 +9,7 @@ namespace Modular.Core
     public static class InvoiceUtils
     {
 
-        public static void ProcessManualPayment(Guid InvoiceID, decimal Amount, InvoicePayment.PaymentMethodType PaymentMethod, string Reference = "")
+        public static void ProcessPayment(Guid InvoiceID, decimal Amount, InvoicePayment.PaymentMethodType PaymentMethod, string Reference = "")
         {
             InvoicePayment NewInvoicePayment = InvoicePayment.Create(InvoiceID);
             NewInvoicePayment.Amount = Amount;

@@ -30,11 +30,23 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="Objects\Export\DataExporter.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
 	  <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.8" />
 	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Objects\Payment\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Objects\Export\DataExporter.cs" />
 	</ItemGroup>
 
 </Project>

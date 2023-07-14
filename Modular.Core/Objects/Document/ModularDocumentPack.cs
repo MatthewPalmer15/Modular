@@ -19,11 +19,31 @@
 
         #region "  Variables  "
 
+        private Guid _ContactID;
+
         private string _Name = string.Empty;
+
+        private List<Document> _Documents = new List<Document>();
 
         #endregion
 
         #region "  Properties  "
+
+        public Guid ContactID
+        {
+            get
+            {
+                return _ContactID;
+            }
+            set
+            {
+                if (_ContactID != value)
+                {
+                    _ContactID = value;
+                    OnPropertyChanged("ContactID");
+                }
+            }
+        }
 
         public string Name
         {
@@ -45,7 +65,8 @@
         {
             get
             {
-                return Document.LoadAll().Where(RolePermission => RolePermission.DocumentPackID == ID).ToList();
+                LoadDocuments();
+                return _Documents;
             }
         }
 
@@ -75,6 +96,11 @@
         #endregion
 
         #region "  Instance Methods  "
+
+        public void LoadDocuments()
+        {
+            _Documents = Document.LoadAll().Where(Document => Document.DocumentPackID == ID).ToList();
+        }
 
         public override string ToString()
         {

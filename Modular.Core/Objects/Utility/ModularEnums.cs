@@ -1,6 +1,6 @@
 ﻿namespace Modular.Core
 {
-    public static class Enums
+    public static class EnumUtils
     {
 
         public enum YesNoOption

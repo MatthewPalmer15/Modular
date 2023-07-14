@@ -1,4 +1,9 @@
-﻿namespace Modular.Core
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
+using System.Data;
+using System.Reflection;
+
+namespace Modular.Core
 {
     public class Document : ModularBase
     {
@@ -184,6 +189,11 @@
             return new List<Document>();
         }
 
+        public static List<Document> LoadAll(string DocumentName)
+        {
+            return FetchAll(DocumentName);
+        }
+
         public static new Document Create()
         {
             Document obj = new Document();
@@ -205,6 +215,221 @@
         public override string ToString()
         {
             return FullFilename;
+        }
+
+        #endregion
+
+
+        #region "  Data Methods  "
+
+        /// <summary>
+        /// Fetches all the contacts from the database
+        /// </summary>
+        /// <returns></returns>
+        protected static List<Document> FetchAll()
+        {
+            List<Document> AllObjects = new List<Document>();
+
+            if (Database.CheckDatabaseConnection())
+            {
+                Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
+                PropertyInfo[] AllProperties = GetProperties();
+                if (AllProperties != null)
+                {
+                    switch (DatabaseConnectionMode)
+                    {
+
+                        case Database.DatabaseConnectivityMode.Remote:
+                            using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                            {
+                                Connection.Open();
+
+                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                                {
+                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                                }
+
+                                using (SqlCommand Command = new SqlCommand())
+                                {
+                                    Command.Connection = Connection;
+                                    Command.CommandType = CommandType.Text;
+                                    Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                    using (SqlDataReader DataReader = Command.ExecuteReader())
+                                    {
+                                        Document obj = GetOrdinals(DataReader);
+
+                                        while (DataReader.Read())
+                                        {
+                                            AllObjects.Add(obj);
+                                        }
+                                    }
+                                }
+
+                                Connection.Close();
+                            }
+                            break;
+
+                        case Database.DatabaseConnectivityMode.Local:
+                            using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                            {
+                                Connection.Open();
+
+                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                                {
+                                    using (SqliteCommand Command = new SqliteCommand())
+                                    {
+
+                                        Command.Connection = Connection;
+                                        Command.CommandType = CommandType.Text;
+                                        Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                        using (SqliteDataReader DataReader = Command.ExecuteReader())
+                                        {
+                                            Document obj = GetOrdinals(DataReader);
+
+                                            while (DataReader.Read())
+                                            {
+                                                AllObjects.Add(obj);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                                }
+                                Connection.Close();
+                            }
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
+            }
+
+            return AllObjects;
+        }
+
+        /// <summary>
+        /// Fetches all the contacts from the database
+        /// </summary>
+        /// <returns></returns>
+        protected static List<Document> FetchAll(string DocumentName)
+        {
+            List<Document> AllObjects = new List<Document>();
+
+            if (Database.CheckDatabaseConnection())
+            {
+                Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
+                PropertyInfo[] AllProperties = GetProperties();
+                if (AllProperties != null)
+                {
+                    switch (DatabaseConnectionMode)
+                    {
+
+                        case Database.DatabaseConnectivityMode.Remote:
+                            using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                            {
+                                Connection.Open();
+
+                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                                {
+                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                                }
+
+                                using (SqlCommand Command = new SqlCommand())
+                                {
+                                    Command.Connection = Connection;
+                                    Command.CommandType = CommandType.Text;
+                                    Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+                                    Command.Parameters.AddWithValue("@DocumentName", DocumentName);
+
+                                    using (SqlDataReader DataReader = Command.ExecuteReader())
+                                    {
+                                        Document obj = GetOrdinals(DataReader);
+
+                                        while (DataReader.Read())
+                                        {
+                                            AllObjects.Add(obj);
+                                        }
+                                    }
+                                }
+
+                                Connection.Close();
+                            }
+                            break;
+
+                        case Database.DatabaseConnectivityMode.Local:
+                            using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                            {
+                                Connection.Open();
+
+                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                                {
+                                    using (SqliteCommand Command = new SqliteCommand())
+                                    {
+
+                                        Command.Connection = Connection;
+                                        Command.CommandType = CommandType.Text;
+                                        Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+                                        Command.Parameters.AddWithValue("@DocumentName", DocumentName);
+
+                                        using (SqliteDataReader DataReader = Command.ExecuteReader())
+                                        {
+                                            Document obj = GetOrdinals(DataReader);
+
+                                            while (DataReader.Read())
+                                            {
+                                                AllObjects.Add(obj);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                                }
+                                Connection.Close();
+                            }
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
+            }
+
+            return AllObjects;
+        }
+
+        protected static Document GetOrdinals(SqlDataReader DataReader)
+        {
+            Document obj = new Document();
+
+            PropertyInfo[] AllProperties = GetProperties();
+            if (AllProperties != null)
+            {
+                obj.SetPropertyValues(AllProperties, DataReader);
+            }
+
+            return obj;
+        }
+
+        protected static Document GetOrdinals(SqliteDataReader DataReader)
+        {
+            Document obj = new Document();
+
+            PropertyInfo[] AllProperties = GetProperties();
+            if (AllProperties != null)
+            {
+                obj.SetPropertyValues(AllProperties, DataReader);
+            }
+
+            return obj;
         }
 
         #endregion

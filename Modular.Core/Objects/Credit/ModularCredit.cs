@@ -1,12 +1,12 @@
 ﻿namespace Modular.Core
 {
-
-    public class Invoice : ModularBase
+    [Serializable]
+    public class Credit : ModularBase
     {
 
         #region "  Constructors  "
 
-        public Invoice()
+        public Credit()
         {
         }
 
@@ -14,13 +14,13 @@
 
         #region "  Constants  "
 
-        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Invoice";
+        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Credit";
 
         #endregion
 
         #region "  Enums  "
 
-        public enum InvoiceStatusType
+        public enum CreditStatusType
         {
             Unknown = 0,
             Open = 1,
@@ -40,15 +40,15 @@
 
         private Guid _ObjectID;
 
-        private InvoiceStatusType _InvoiceStatus;
+        private CreditStatusType _CreditStatus;
 
-        private string _InvoiceNumber = string.Empty;
+        private string _CreditNumber = string.Empty;
 
-        private DateTime _InvoiceDate;
+        private DateTime _CreditDate;
 
-        private List<InvoiceItem> _InvoiceItems = new List<InvoiceItem>();
+        private List<CreditItem> _CreditItems = new List<CreditItem>();
 
-        private List<InvoicePayment> _InvoicePayments = new List<InvoicePayment>();
+        private List<CreditPayment> _CreditPayments = new List<CreditPayment>();
 
         private bool _IsPaid;
 
@@ -79,6 +79,14 @@
                     _ContactID = value;
                     OnPropertyChanged("ContactID");
                 }
+            }
+        }
+
+        public Contact Contact
+        {
+            get
+            {
+                return Contact.Load(_ContactID);
             }
         }
 
@@ -114,69 +122,69 @@
             }
         }
 
-        public InvoiceStatusType InvoiceStatus
+        public CreditStatusType CreditStatus
         {
             get
             {
-                return _InvoiceStatus;
+                return _CreditStatus;
             }
             set
             {
-                if (_InvoiceStatus != value)
+                if (_CreditStatus != value)
                 {
-                    _InvoiceStatus = value;
-                    OnPropertyChanged("InvoiceStatus");
+                    _CreditStatus = value;
+                    OnPropertyChanged("CreditStatus");
                 }
             }
         }
 
-        public string InvoiceNumber
+        public string CreditNumber
         {
             get
             {
-                return _InvoiceNumber;
+                return _CreditNumber;
             }
             set
             {
-                if (_InvoiceNumber != value)
+                if (_CreditNumber != value)
                 {
-                    _InvoiceNumber = value;
-                    OnPropertyChanged("InvoiceNumber");
+                    _CreditNumber = value;
+                    OnPropertyChanged("CreditNumber");
                 }
             }
         }
 
-        public DateTime InvoiceDate
+        public DateTime CreditDate
         {
             get
             {
-                return _InvoiceDate;
+                return _CreditDate;
             }
             set
             {
-                if (_InvoiceDate != value)
+                if (_CreditDate != value)
                 {
-                    _InvoiceDate = value;
-                    OnPropertyChanged("InvoiceDate");
+                    _CreditDate = value;
+                    OnPropertyChanged("CreditDate");
                 }
             }
         }
 
-        public List<InvoiceItem> InvoiceItems
+        public List<CreditItem> CreditItems
         {
             get
             {
-                LoadInvoiceItems();
-                return _InvoiceItems;
+                LoadCreditItems();
+                return _CreditItems;
             }
         }
 
-        public List<InvoicePayment> InvoicePayments
+        public List<CreditPayment> CreditPayments
         {
             get
             {
-                LoadInvoicePayments();
-                return _InvoicePayments;
+                LoadCreditPayments();
+                return _CreditPayments;
             }
         }
 
@@ -281,7 +289,7 @@
             get
             {
                 decimal Total = 0;
-                foreach (InvoiceItem Item in InvoiceItems)
+                foreach (CreditItem Item in CreditItems)
                 {
                     Total += Item.TotalPrice;
                 }
@@ -294,7 +302,7 @@
             get
             {
                 decimal Total = 0;
-                foreach (InvoicePayment Item in InvoicePayments)
+                foreach (CreditPayment Item in CreditPayments)
                 {
                     Total += Item.Amount;
                 }
@@ -302,20 +310,22 @@
             }
         }
 
+
+
         #endregion
 
         #region "  Static Methods  "
 
-        public static new Invoice Create()
+        public static new Credit Create()
         {
-            Invoice obj = new Invoice();
+            Credit obj = new Credit();
             obj.SetDefaultValues();
             return obj;
         }
 
-        public static new Invoice Load(Guid ID)
+        public static new Credit Load(Guid ID)
         {
-            Invoice obj = new Invoice();
+            Credit obj = new Credit();
             obj.Fetch(ID);
             return obj;
         }
@@ -324,19 +334,19 @@
 
         #region "  Instance Methods  "
 
-        private void LoadInvoiceItems()
+        private void LoadCreditItems()
         {
-            _InvoiceItems = InvoiceItem.LoadAll().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
+            _CreditItems = CreditItem.LoadAll().Where(CreditItem => CreditItem.CreditID == ID).ToList();
         }
 
-        private void LoadInvoicePayments()
+        private void LoadCreditPayments()
         {
-            _InvoicePayments = InvoicePayment.LoadAll().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
+            _CreditPayments = CreditPayment.LoadAll().Where(CreditPayment => CreditPayment.CreditID == ID).ToList();
         }
 
         public override string ToString()
         {
-            return $"Invoice #{_InvoiceNumber}";
+            return $"Credit #{CreditNumber}";
         }
 
         #endregion
