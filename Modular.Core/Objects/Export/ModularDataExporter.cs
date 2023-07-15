@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Modular.Core
 {
 
-    public static class DataExporter
+    public static partial class DataExporter
     {
 
         #region "  Variables  "
@@ -51,66 +51,13 @@ namespace Modular.Core
 
         #endregion
 
-        #region "  Methods  "
+        #region "  Public Methods  "
 
-        public static List<DataExporterItem> GetScripts()
-        {
-           if (ScriptFolder.Exists)
-            {
-                List<DataExporterItem> AllDataExportScripts = new List<DataExporterItem>();
-
-                foreach (var ScriptFile in ScriptFolder.GetFiles("*.sql"))
-                {
-                    using (StreamReader StreamReader = new StreamReader(ScriptFile.FullName))
-                    {
-                        DataExporterItem DataExportScript = new DataExporterItem();
-                        DataExportScript.Name = ScriptFile.Name;
-                        do
-                        {
-                            string ScriptLine = StreamReader.ReadLine();
-                            if (ScriptLine.StartsWith("-- "))
-                            {
-                                string[] SplitScriptLine = ScriptLine.Split(new string[] { "-- " }, StringSplitOptions.None);
-                                if (SplitScriptLine.Length > 1)
-                                {
-                                    string[] SplitScriptLine2 = SplitScriptLine[1].Split(new string[] { ": " }, StringSplitOptions.None);
-                                    if (SplitScriptLine2.Length > 1)
-                                    {
-                                        switch (SplitScriptLine2[0].ToUpper())
-                                        {
-                                            case "DESCRIPTION":
-                                                DataExportScript.Description = SplitScriptLine2[1];
-                                                break;
-
-                                            case "CATEGORY":
-                                                DataExportScript.Category = SplitScriptLine2[1];
-                                                break;
-
-                                            case "FORMAT":
-                                                DataExportScript.Format = (DataExporterItem.ExportType)Enum.Parse(typeof(DataExporterItem.ExportType), SplitScriptLine2[1]);
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        } while (!StreamReader.EndOfStream);
-                        AllDataExportScripts.Add(DataExportScript);
-                    }
-                }
-                return AllDataExportScripts;
-            }
-           else
-            {
-                ScriptFolder.Create();
-                return new List<DataExporterItem>();
-            }
-        }
-
-        public static void ExportScript(DataExporterItem Item)
+        public static void ExcecuteScript(DataExporterItem Item)
         {
             if (Database.CheckDatabaseConnection())
             {
-                switch(Database.ConnectionMode)
+                switch (Database.ConnectionMode)
                 {
                     case Database.DatabaseConnectivityMode.Remote:
                         using (SqlConnection Connection = new SqlConnection())
@@ -124,19 +71,12 @@ namespace Modular.Core
                                 Command.CommandText = File.ReadAllText(Item.Name);
 
                                 SqlDataReader DataReader = Command.ExecuteReader();
-                                if (Item.Format.Equals(DataExporterItem.ExportType.XLSX))
-                                {
-                                    ExportToExcel(Item, DataReader);
-                                }
-                                else
-                                {
-                                    throw new ModularException(ExceptionType.ArgumentError, "Export format is not supported.");
-                                }
+                                ExportToExcel(Item, DataReader);
                             }
 
                             Connection.Close();
                         }
-                        
+
                         break;
 
                     case Database.DatabaseConnectivityMode.Local:
@@ -149,36 +89,26 @@ namespace Modular.Core
             }
         }
 
-        #endregion
-
-        private static void ExportToExcel(DataExporterItem Script, SqlDataReader DataReader)
+        public static List<DataExporterItem> GetAllScripts()
         {
-            using (SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(_ExportPath, SpreadsheetDocumentType.Workbook))
+           if (ScriptFolder.Exists)
             {
-                // Create the workbook part
-                WorkbookPart ExcelDocumentPart = ExcelDocument.AddWorkbookPart();
-                ExcelDocumentPart.Workbook = new Workbook();
+                List<DataExporterItem> AllDataExportScripts = new List<DataExporterItem>();
 
-                // Create the worksheet part
-                WorksheetPart ExcelWorksheetPart = ExcelDocumentPart.AddNewPart<WorksheetPart>();
-                ExcelWorksheetPart.Worksheet = new Worksheet(new SheetData());
-
-                // Create the sheets
-                Sheets ExcelSheets = ExcelDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
-
-                // Create a new sheet and associate it with the worksheet part
-                Sheet ExcelSheet = new Sheet()
+                foreach (FileInfo ScriptFile in ScriptFolder.GetFiles("*.sql"))
                 {
-                    Id = ExcelDocument.WorkbookPart.GetIdOfPart(ExcelWorksheetPart),
-                    SheetId = 1,
-                    Name = Script.Name
-                };
-
-                ExcelSheets.Append(ExcelSheet);
-
-                ExcelDocument.Save();
+                    AllDataExportScripts.Add(new DataExporterItem(ScriptFile));
+                }
+                return AllDataExportScripts;
+            }
+           else
+            {
+                ScriptFolder.Create();
+                return new List<DataExporterItem>();
             }
         }
+
+        #endregion
 
     }
 }
