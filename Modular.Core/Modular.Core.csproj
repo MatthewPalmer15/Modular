@@ -30,16 +30,20 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="Objects\Payment\**" />
+	  <EmbeddedResource Remove="Objects\Payment\**" />
+	  <MauiCss Remove="Objects\Payment\**" />
+	  <MauiXaml Remove="Objects\Payment\**" />
+	  <None Remove="Objects\Payment\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
 	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
 	  <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.8" />
 	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Objects\Payment\" />
 	</ItemGroup>
 
 </Project>
