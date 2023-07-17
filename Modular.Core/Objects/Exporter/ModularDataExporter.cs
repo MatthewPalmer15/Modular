@@ -1,19 +1,17 @@
-﻿using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using Syncfusion.XlsIO;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Modular.Core
 {
 
-    public static partial class DataExporter
+    public static class DataExporter
     {
 
         #region "  Variables  "
@@ -114,89 +112,41 @@ namespace Modular.Core
 
         private static void ExportToFile(DataExporterItem Script, SqlDataReader DataReader)
         {
-            using (SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(_ExportPath, SpreadsheetDocumentType.Workbook))
+            using (ExcelEngine ExcelEngine = new ExcelEngine())
             {
-                // Create the workbook part
-                WorkbookPart ExcelDocumentPart = ExcelDocument.AddWorkbookPart();
-                ExcelDocumentPart.Workbook = new Workbook();
+                Syncfusion.XlsIO.IApplication ExcelApplication = ExcelEngine.Excel;
+                ExcelApplication.DefaultVersion = ExcelVersion.Xlsx;
 
-                // Create the worksheet part
-                WorksheetPart ExcelWorksheetPart = ExcelDocumentPart.AddNewPart<WorksheetPart>();
-                ExcelWorksheetPart.Worksheet = new Worksheet(new SheetData());
 
-                // Create the sheets
-                Sheets ExcelSheets = ExcelDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+                // Create a new workbook
+                IWorkbook ExcelWorkbook = ExcelApplication.Workbooks.Create();
 
-                // Create a new sheet and associate it with the worksheet part
-                Sheet ExcelSheet = new Sheet()
+                // Access first worksheet from the workbook instance.
+                IWorksheet ExcelWorksheet = ExcelWorkbook.Worksheets[0];
+
+                int RowIndex = 1;
+
+                // Set the column headers
+                for (int ColumnIndex = 0; ColumnIndex < DataReader.FieldCount; ColumnIndex++)
                 {
-                    Id = ExcelDocument.WorkbookPart.GetIdOfPart(ExcelWorksheetPart),
-                    SheetId = 1,
-                    Name = Script.Name
-                };
-
-                ExcelSheets.Append(ExcelSheet);
-
-
-                // Get the sheet data
-                SheetData sheetData = ExcelWorksheetPart.Worksheet.GetFirstChild<SheetData>();
-
-                // Add headers to the first row
-                Row headerRow = new Row();
-                int columnIndex = 1;
-                for (int i = 0; i < DataReader.FieldCount; i++)
-                {
-                    DocumentFormat.OpenXml.Spreadsheet.Cell cell = CreateTextCell(GetColumnName(columnIndex), DataReader.GetName(i));
-                    headerRow.AppendChild(cell);
-                    columnIndex++;
+                    ExcelWorksheet[RowIndex, ColumnIndex + 1].Text = DataReader.GetName(ColumnIndex);
                 }
-                sheetData.AppendChild(headerRow);
 
-                // Add data rows
+                // Set the data
                 while (DataReader.Read())
                 {
-                    Row dataRow = new Row();
-                    columnIndex = 1;
-                    for (int i = 0; i < DataReader.FieldCount; i++)
+                    RowIndex++;
+                    for (int ColumnIndex = 0; ColumnIndex < DataReader.FieldCount; ColumnIndex++)
                     {
-                        DocumentFormat.OpenXml.Spreadsheet.Cell cell = CreateTextCell(GetColumnName(columnIndex), DataReader.GetValue(i).ToString());
-                        dataRow.AppendChild(cell);
-                        columnIndex++;
+                        ExcelWorksheet[RowIndex, ColumnIndex + 1].Text = DataReader.GetValue(ColumnIndex).ToString();
                     }
-                    sheetData.AppendChild(dataRow);
                 }
 
-                ExcelDocument.Save();
+                // Save the workbook to disk in xlsx format
+                ExcelWorkbook.SaveAs(ModularUtils.ConvertFileToStream($"{ExportFolder.FullName}\\{DateTime.Now:yyyy-MM-dd HH:mm} {Script.Name}.xlsx"));
+                ExcelWorkbook.Close();
             }
         }
-
-        private static DocumentFormat.OpenXml.Spreadsheet.Cell CreateTextCell(string columnName, string cellValue)
-        {
-            DocumentFormat.OpenXml.Spreadsheet.Cell cell = new DocumentFormat.OpenXml.Spreadsheet.Cell()
-            {
-                DataType = CellValues.String,
-                CellReference = columnName,
-                CellValue = new CellValue(cellValue)
-            };
-            return cell;
-        }
-
-        private static string GetColumnName(int columnIndex)
-        {
-            int dividend = columnIndex;
-            string columnName = String.Empty;
-            int modulo;
-
-            while (dividend > 0)
-            {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (dividend - modulo) / 26;
-            }
-
-            return columnName;
-        }
-
 
         #endregion
     }

@@ -17,10 +17,6 @@
 
         #endregion
 
-        #region "  Enums  "
-
-        #endregion
-
         #region "  Variables  "
 
         private ExceptionType _ExceptionType;

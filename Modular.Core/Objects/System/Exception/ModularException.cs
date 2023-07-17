@@ -1,5 +1,9 @@
-﻿namespace Modular.Core
+﻿using System.Runtime.Serialization;
+
+namespace Modular.Core
 {
+
+    [Serializable]
     public class ModularException : Exception
     {
 
@@ -22,6 +26,15 @@
             objExceptionLog.Save();
 
             throw new ModularException($"{Type}: {Message}");
+        }
+
+        protected ModularException(SerializationInfo info, StreamingContext context): base(info, context)
+        {
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
         }
     }
 }

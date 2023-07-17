@@ -3,17 +3,7 @@
     public static class DocumentUtils
     {
 
-        #region "  CREATE Methods  "
-
-        public static Document CreateDocument(string Template)
-        {
-            // return a new document based on the template
-            return new Document();
-        }
-
-        #endregion
-
-        #region "  GET Methods  "
+        #region "  Methods  "
 
         public static Document GetLatestDocument(string DocumentName)
         {
