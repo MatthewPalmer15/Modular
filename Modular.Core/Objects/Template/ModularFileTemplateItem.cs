@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Core.Objects.Template
+namespace Modular.Core
 {
     public struct FileTemplateItem
     {
