@@ -46,6 +46,8 @@
 
         private DateTime _InvoiceDate;
 
+        private DateTime _DueDate;
+
         private List<InvoiceItem> _InvoiceItems = new List<InvoiceItem>();
 
         private List<InvoicePayment> _InvoicePayments = new List<InvoicePayment>();
@@ -79,6 +81,14 @@
                     _ContactID = value;
                     OnPropertyChanged("ContactID");
                 }
+            }
+        }
+
+        public Contact Contact
+        {
+            get
+            {
+                return Contact.Load(ContactID);
             }
         }
 
@@ -158,6 +168,22 @@
                 {
                     _InvoiceDate = value;
                     OnPropertyChanged("InvoiceDate");
+                }
+            }
+        }
+
+        public DateTime DueDate
+        {
+            get
+            {
+                return _DueDate;
+            }
+            set
+            {
+                if (_DueDate != value)
+                {
+                    _DueDate = value;
+                    OnPropertyChanged("DueDate");
                 }
             }
         }
@@ -276,7 +302,7 @@
             }
         }
 
-        public decimal TotalPrice
+        public decimal InvoiceTotal
         {
             get
             {

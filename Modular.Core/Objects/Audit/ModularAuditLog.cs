@@ -6,7 +6,7 @@ namespace Modular.Core
     {
         #region "  Constructor  "
 
-        public AuditLog()
+        private AuditLog()
         {
         }
 
@@ -48,7 +48,7 @@ namespace Modular.Core
         }
 
         [Required]
-        public Guid OwnerObjectID
+        public Guid ObjectID
         {
             get
             {
@@ -87,15 +87,26 @@ namespace Modular.Core
 
         #region "  Static Methods  "
 
+        public static void Create(string Message)
+        {
+            Create(ObjectType.Unknown, Guid.Empty, Message);
+        }
+
         /// <summary>
         /// Creates a new instance with default values
         /// </summary>
         /// <returns>A new instance</returns>
-        public static new AuditLog Create()
+        public static void Create(ObjectType ObjectType, Guid ObjectID, string Message)
         {
-            AuditLog obj = new AuditLog();
-            obj.SetDefaultValues();
-            return obj;
+            AuditLog obj = new AuditLog()
+            {
+                ObjectType = ObjectType,
+                ObjectID = ObjectID,
+                Message = Message
+
+            };
+            obj.SetDefaultValues(); // Prevent any null values.
+            obj.Save();
         }
 
         public static new AuditLog Load(Guid ID)

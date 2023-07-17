@@ -47,5 +47,18 @@ namespace Modular.Core
             return Property.GetCustomAttributes(AttributeType, false).Length > 0;
         }
 
+        public static Stream ConvertFileToStream(string FilePath)
+        {
+            return new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+        }
+
+        public static void ConvertStreamToFile(Stream FileStream, string OutputPath)
+        {
+            using (FileStream NewFileStream = new FileStream(OutputPath, FileMode.Create, FileAccess.Write))
+            {
+                FileStream.CopyTo(NewFileStream);
+            }
+        }
+
     }
 }
