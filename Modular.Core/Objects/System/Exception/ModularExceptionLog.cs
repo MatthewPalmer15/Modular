@@ -140,6 +140,7 @@
         public static List<ExceptionLog> FetchAll()
         {
             List<ExceptionLog> objExceptionLogs = new List<ExceptionLog>();
+
             return objExceptionLogs;
         }
     }
