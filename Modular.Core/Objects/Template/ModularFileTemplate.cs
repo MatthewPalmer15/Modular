@@ -44,5 +44,27 @@ namespace Modular.Core
 
         #endregion
 
+        #region "  Public Methods  "
+
+        public static List<FileTemplateItem> GetFileTemplates()
+        {
+            if (TemplateFolder.Exists)
+            {
+                List<FileTemplateItem> FileTemplates = new List<FileTemplateItem>();
+                foreach (FileInfo File in TemplateFolder.GetFiles())
+                {
+                    FileTemplates.Add(new FileTemplateItem(File));
+                }
+                return FileTemplates;
+            }
+            else
+            {
+                TemplateFolder.Create();
+                return new List<FileTemplateItem>();
+            }
+        }
+
+        #endregion
+
     }
 }
