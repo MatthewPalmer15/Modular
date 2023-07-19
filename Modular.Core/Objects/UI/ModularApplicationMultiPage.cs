@@ -1,4 +1,6 @@
-﻿namespace Modular.Core.UI
+﻿using Modular.Core.Interfaces;
+
+namespace Modular.Core.UI
 {
     public class ApplicationMultiPage : IModularApplicationMultiPage
     {

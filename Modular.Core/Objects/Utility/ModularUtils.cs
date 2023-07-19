@@ -129,10 +129,10 @@ namespace Modular.Core.Utility
 
         public static string GetDeviceSummary()
         {
-            IDeviceInfo UserCurrentDevice = DeviceInfo.Current;
-            return $"Device Name: {UserCurrentDevice.Name}" +
-                    $"Device Type: {UserCurrentDevice.Manufacturer} {UserCurrentDevice.Model}" +
-                    $"Device OS: {UserCurrentDevice.Platform} v{UserCurrentDevice.VersionString}";
+            IDeviceInfo CurrentIdentityDevice = DeviceInfo.Current;
+            return  $"Device Name: {CurrentIdentityDevice.Name}" + Environment.NewLine +
+                    $"Device Type: {CurrentIdentityDevice.Manufacturer} {CurrentIdentityDevice.Model}" + Environment.NewLine +
+                    $"Device OS: {CurrentIdentityDevice.Platform} v{CurrentIdentityDevice.VersionString}";
         }
     }
 }
