@@ -70,7 +70,7 @@ namespace Modular.Core.Sequences
             {
                 return _Count;
             }
-            set
+            private set
             {
                 if (value != _Count)
                 {
@@ -103,6 +103,16 @@ namespace Modular.Core.Sequences
             Sequence obj = new Sequence();
             obj.Fetch(GetProperty(Name), Name);
             return obj;
+        }
+
+        public static int GetNextNumber(string Name)
+        {
+            Sequence obj = new Sequence();
+            obj.Fetch(GetProperty(Name), Name);
+            obj.Count++;
+            obj.Save();
+
+            return obj.Count;
         }
 
         #endregion

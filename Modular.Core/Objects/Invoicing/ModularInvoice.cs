@@ -44,7 +44,7 @@ namespace Modular.Core.Invoicing
 
         private InvoiceStatusType _InvoiceStatus;
 
-        private string _InvoiceNumber = string.Empty;
+        private int _InvoiceNumber;
 
         private DateTime _InvoiceDate;
 
@@ -142,7 +142,7 @@ namespace Modular.Core.Invoicing
             }
         }
 
-        public string InvoiceNumber
+        public int InvoiceNumber
         {
             get
             {

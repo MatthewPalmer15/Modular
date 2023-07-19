@@ -21,13 +21,9 @@ namespace Modular.Core.Invoicing
             NewInvoicePayment.Save();
         }
 
-        public static string GenerateInvoiceNumber()
+        public static int GenerateInvoiceNumber()
         {
-            Sequence InvoiceNumberSequence = Sequence.Load("InvoiceNumber");
-            InvoiceNumberSequence.Count++;
-            InvoiceNumberSequence.Save();
-
-            return (InvoiceNumberSequence.Count).ToString();
+            return Sequence.GetNextNumber("InvoiceNumber");
         }
 
         // TODO: Add support for this.
