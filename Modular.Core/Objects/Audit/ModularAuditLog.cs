@@ -26,6 +26,8 @@ namespace Modular.Core
 
         private string _Message = string.Empty;
 
+        private string _DeviceInformation = string.Empty;
+
         #endregion
 
         #region "  Properties  "
@@ -37,12 +39,11 @@ namespace Modular.Core
             {
                 return _ObjectType;
             }
-            set
+            private set
             {
                 if (_ObjectType != value)
                 {
                     _ObjectType = value;
-                    OnPropertyChanged("ObjectType");
                 }
             }
         }
@@ -54,12 +55,11 @@ namespace Modular.Core
             {
                 return _ObjectID;
             }
-            set
+            private set
             {
                 if (_ObjectID != value)
                 {
                     _ObjectID = value;
-                    OnPropertyChanged("ObjectID");
                 }
             }
         }
@@ -73,12 +73,26 @@ namespace Modular.Core
             {
                 return _Message;
             }
-            set
+            private set
             {
                 if (_Message != value)
                 {
                     _Message = value;
-                    OnPropertyChanged("Message");
+                }
+            }
+        }
+
+        public string DeviceInformation
+        {
+            get
+            {
+                return _DeviceInformation;
+            }
+            private set
+            {
+                if (_DeviceInformation != value)
+                {
+                    _DeviceInformation = value;
                 }
             }
         }
@@ -102,7 +116,8 @@ namespace Modular.Core
             {
                 ObjectType = ObjectType,
                 ObjectID = ObjectID,
-                Message = Message
+                Message = Message,
+                DeviceInformation = ModularUtils.GetDeviceSummary()
 
             };
             obj.SetDefaultValues(); // Prevent any null values.

@@ -30,7 +30,7 @@ namespace Modular.Core
 
         private string _FileExtension = string.Empty;
 
-        private byte[] _FileData = Array.Empty<byte>();
+        private byte[] _FileData;
 
         private int _Version;
 

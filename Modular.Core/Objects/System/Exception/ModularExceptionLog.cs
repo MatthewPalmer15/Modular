@@ -29,6 +29,8 @@
 
         private string _Target = string.Empty;
 
+        private string _DeviceInformation = string.Empty;
+
         #endregion
 
         #region "  Properties  "
@@ -91,7 +93,6 @@
                 if (_Source != value)
                 {
                     _Source = value;
-                    OnPropertyChanged("Source");
                 }
 
             }
@@ -108,6 +109,21 @@
                 if (_Target != value)
                 {
                     _Target = value;
+                }
+            }
+        }
+
+        public string DeviceInformation
+        {
+            get
+            {
+                return _DeviceInformation;
+            }
+            set
+            {
+                if (_DeviceInformation != value)
+                {
+                    _DeviceInformation = value;
                 }
             }
         }

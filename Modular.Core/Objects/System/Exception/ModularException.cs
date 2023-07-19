@@ -23,6 +23,7 @@ namespace Modular.Core
             objExceptionLog.StackTrace = !string.IsNullOrEmpty(StackTrace) ? StackTrace : "Unknown";
             objExceptionLog.Source = !string.IsNullOrEmpty(Source) ? Source : "Unknown";
             objExceptionLog.Target = TargetSite != null && !string.IsNullOrEmpty(TargetSite.Name) ? TargetSite.Name : "Unknown";
+            objExceptionLog.DeviceInformation = ModularUtils.GetDeviceSummary();
             objExceptionLog.Save();
 
             throw new ModularException($"{Type}: {Message}");

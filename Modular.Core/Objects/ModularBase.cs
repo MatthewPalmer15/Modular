@@ -52,6 +52,8 @@ namespace Modular.Core
 
         private bool _IsFlagged;
 
+        private string _ChangeLog = string.Empty;
+
         #endregion
 
         #region "  Properties  "
@@ -182,7 +184,7 @@ namespace Modular.Core
             {
                 return _IsFlagged;
             }
-            private set
+            protected set
             {
                 if (_IsFlagged != value)
                 {
@@ -329,6 +331,8 @@ namespace Modular.Core
             if (IsModified && IsValid)
             {
                 Guid CurrentUserID = ModularSystem.Context.Identity.ID;
+
+                OnSave();
 
                 if (IsNew)
                 {
@@ -477,7 +481,7 @@ namespace Modular.Core
                 PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
                 // Gets the property which has the Identifier attribute.
-                PropertyInfo Property = AllProperties.FirstOrDefault(Property => Property.GetCustomAttributes(typeof(IdentifierAttribute), false).Length > 0);
+                PropertyInfo Property = AllProperties.First(Property => Property.GetCustomAttributes(typeof(IdentifierAttribute), false).Length > 0);
                 if (Property == null)
                 {
                     return;
@@ -1434,12 +1438,28 @@ namespace Modular.Core
 
         #region "  System Methods  "
 
-         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string Property)
+        protected void OnPropertyChanged(string PropertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+
+            PropertyInfo Property = this.GetType().GetProperty(PropertyName);
+            if (Property != null)
+            {
+                _ChangeLog += $"{Property.Name} value changed to {Property.GetValue(this)}.{Environment.NewLine}";
+            }
+            else
+            {
+                _ChangeLog += $"{PropertyName} value changed. Could not retrieve new value.{Environment.NewLine}";
+            }
             IsModified = true;
+        }
+
+        protected void OnSave()
+        {
+            AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
+            _ChangeLog = string.Empty;
         }
 
         #endregion
