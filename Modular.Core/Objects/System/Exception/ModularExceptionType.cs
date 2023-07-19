@@ -6,6 +6,7 @@
 
         // Base Class
         BaseClassAccess = 000001,
+        OrphanRecord = 000002,
 
         // Database
         DatabaseConnectionError = 000010,

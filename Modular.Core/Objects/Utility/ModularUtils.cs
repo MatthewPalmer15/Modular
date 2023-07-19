@@ -125,5 +125,14 @@ namespace Modular.Core
         {
             return Property.GetCustomAttributes(AttributeType, false).Length > 0;
         }
+
+
+        public static string GetDeviceSummary()
+        {
+            IDeviceInfo UserCurrentDevice = DeviceInfo.Current;
+            return $"Device Name: {UserCurrentDevice.Name}" +
+                    $"Device Type: {UserCurrentDevice.Manufacturer} {UserCurrentDevice.Model}" +
+                    $"Device OS: {UserCurrentDevice.Platform} v{UserCurrentDevice.VersionString}";
+        }
     }
 }
