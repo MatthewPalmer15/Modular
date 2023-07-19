@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Reflection;
 
-namespace Modular.Core
+namespace Modular.Core.Databases
 {
 
     public static class DatabaseUtils

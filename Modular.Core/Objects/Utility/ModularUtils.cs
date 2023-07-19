@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Modular.Core
+namespace Modular.Core.Utility
 {
     public static class ModularUtils
     {

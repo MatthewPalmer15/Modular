@@ -1,6 +1,8 @@
-﻿namespace Modular.Core
-{
+﻿using Modular.Core.Utility;
 
+namespace Modular.Core.Invoicing
+{
+    [Serializable]
     public class Invoice : ModularBase
     {
 
@@ -84,11 +86,11 @@
             }
         }
 
-        public Contact Contact
+        public Entity.Contact Contact
         {
             get
             {
-                return Contact.Load(ContactID);
+                return Entity.Contact.Load(ContactID);
             }
         }
 

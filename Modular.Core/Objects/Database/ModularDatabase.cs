@@ -1,8 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using System.Configuration;
+using Modular.Core.Configuration;
 
-namespace Modular.Core
+namespace Modular.Core.Databases
 {
     public static class Database
     {

@@ -7,9 +7,12 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
+using Modular.Core.Databases;
+using Modular.Core.System.Attributes;
 
-namespace Modular.Core
+namespace Modular.Core.Entity
 {
+    [Serializable]
     public class Account : ModularBase, IIdentity
     {
 

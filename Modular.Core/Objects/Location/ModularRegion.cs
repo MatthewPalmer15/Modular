@@ -2,9 +2,11 @@
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Reflection;
+using Modular.Core.Databases;
 
-namespace Modular.Core
+namespace Modular.Core.Geo
 {
+    [Serializable]
     public class Region : ModularBase
     {
 

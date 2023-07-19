@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
+using Modular.Core.Configuration;
 
-namespace Modular.Core
+namespace Modular.Core.Mail
 {
     public static class MailClient
     {

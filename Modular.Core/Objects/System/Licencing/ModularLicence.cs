@@ -1,4 +1,6 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.Configuration;
+
+namespace Modular.Core.System.Licencing
 {
     public static class Licence
     {

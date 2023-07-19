@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using Modular.Core.System;
+using System.Linq;
 
-namespace Modular.Core
+namespace Modular.Core.Security
 {
     public static class Security
     {

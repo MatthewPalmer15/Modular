@@ -3,8 +3,10 @@ using Microsoft.Data.Sqlite;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
+using Modular.Core.Databases;
+using Modular.Core.System.Attributes;
 
-namespace Modular.Core
+namespace Modular.Core.Configuration
 {
     public class SystemConfig : ModularBase
     {

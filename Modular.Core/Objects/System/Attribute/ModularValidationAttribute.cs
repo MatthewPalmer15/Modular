@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Modular.Core
+namespace Modular.Core.System.Attributes
 {
 
     /// <summary>

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Modular.Core.Sequences;
 
-namespace Modular.Core
+namespace Modular.Core.Invoicing
 { 
     public static class InvoiceUtils
     {

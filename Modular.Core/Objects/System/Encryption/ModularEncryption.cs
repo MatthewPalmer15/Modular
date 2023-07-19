@@ -1,7 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Modular.Core.Configuration;
 
-namespace Modular.Core
+namespace Modular.Core.System.Security
 {
     public static class Encryption
     {

@@ -1,4 +1,6 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.System.Attributes;
+
+namespace Modular.Core.Sequences
 {
     public class Sequence : ModularBase
     {

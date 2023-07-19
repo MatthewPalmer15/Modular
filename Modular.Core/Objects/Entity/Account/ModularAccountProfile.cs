@@ -1,5 +1,6 @@
-﻿namespace Modular.Core
+﻿namespace Modular.Core.Entity
 {
+    [Serializable]
     public class Profile : ModularBase
     {
 

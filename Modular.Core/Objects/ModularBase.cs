@@ -7,6 +7,11 @@ using System.Data.SqlTypes;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using Modular.Core.Audit;
+using Modular.Core.System.Attributes;
+using Modular.Core.Databases;
+using Modular.Core.System;
+using Modular.Core.Utility;
 
 namespace Modular.Core
 {

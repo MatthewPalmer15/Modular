@@ -1,6 +1,6 @@
-﻿namespace Modular.Core
+﻿namespace Modular.Core.Invoicing
 {
-
+    [Serializable]
     public class InvoiceItem : ModularBase
     {
 
@@ -21,10 +21,6 @@
         #region "  Variables  "
 
         private Guid _InvoiceID;
-
-        private ObjectType _ObjectType;
-
-        private Guid _ObjectID;
 
         private string _Name = string.Empty;
 
@@ -61,38 +57,6 @@
             get
             {
                 return Invoice.Load(InvoiceID);
-            }
-        }
-
-        public ObjectType ObjectType
-        {
-            get
-            {
-                return _ObjectType;
-            }
-            set
-            {
-                if (_ObjectType != value)
-                {
-                    _ObjectType = value;
-                    OnPropertyChanged("ObjectType");
-                }
-            }
-        }
-
-        public Guid ObjectID
-        {
-            get
-            {
-                return _ObjectID;
-            }
-            set
-            {
-                if (_ObjectID != value)
-                {
-                    _ObjectID = value;
-                    OnPropertyChanged("ObjectID");
-                }
             }
         }
 
