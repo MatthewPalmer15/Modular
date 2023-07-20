@@ -4,7 +4,7 @@ using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
 
-namespace Modular.Core.Entity
+namespace Modular.Core.Security
 {
     [Serializable]
     public class Role : ModularBase

@@ -2,7 +2,7 @@
 //using System.IO;
 //using System.Xml.Serialization;
 //
-//namespace Modular.Base
+//namespace Modular.Base.Security
 //{
 //
 //    public class Permission : ModularBase

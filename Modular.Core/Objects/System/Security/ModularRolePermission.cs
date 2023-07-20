@@ -4,9 +4,9 @@ using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
 
-namespace Modular.Core.Entity
+namespace Modular.Core.Security
 {
-
+    [Serializable]
     public class RolePermission : ModularBase
     {
         #region "  Constructors  "
@@ -126,7 +126,7 @@ namespace Modular.Core.Entity
             {
                 Connection = cn,
                 CommandType = CommandType.StoredProcedure,
-                CommandText = $"_Fetch" // TODO: add stored procedure name
+                CommandText = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch"
             };
 
             cm.Parameters.AddWithValue("@ContactID", AccountID);
@@ -173,7 +173,7 @@ namespace Modular.Core.Entity
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
+                                    string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchAll";
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -278,7 +278,7 @@ namespace Modular.Core.Entity
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
+                                    string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchAll";
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {

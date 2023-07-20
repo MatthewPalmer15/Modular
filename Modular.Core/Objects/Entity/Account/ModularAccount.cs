@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Modular.Core.Databases;
 using Modular.Core.System.Attributes;
+using Modular.Core.Security;
 
 namespace Modular.Core.Entity
 {
@@ -438,8 +439,7 @@ namespace Modular.Core.Entity
 
         public bool IsInRole(string RoleName)
         {
-            Role UserRole = Role.Load(RoleID);
-            return UserRole != null && UserRole.Name.Trim().ToUpper() == RoleName.ToUpper();
+            return Role != null && Role.Name.Trim().ToUpper() == RoleName.ToUpper();
         }
 
         #endregion
