@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
+using Modular.Core.Databases;
+using Modular.Core.Geo;
 
-namespace Modular.Core
+namespace Modular.Core.Entity
 {
     public class Contact : ModularBase
     {

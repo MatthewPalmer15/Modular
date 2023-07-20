@@ -1,4 +1,7 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.Entity;
+using Modular.Core.Utility;
+
+namespace Modular.Core.Credits
 {
     [Serializable]
     public class Credit : ModularBase
@@ -82,11 +85,11 @@
             }
         }
 
-        public Contact Contact
+        public Entity.Contact Contact
         {
             get
             {
-                return Contact.Load(_ContactID);
+                return Entity.Contact.Load(_ContactID);
             }
         }
 

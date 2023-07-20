@@ -1,4 +1,6 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.Entity;
+
+namespace Modular.Core.System
 {
     public partial class ModularSystem
     {

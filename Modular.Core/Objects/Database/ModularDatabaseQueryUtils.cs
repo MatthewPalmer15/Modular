@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
+using Modular.Core.System.Attributes;
 
-namespace Modular.Core
+namespace Modular.Core.Databases
 {
     /// <summary>
     /// Dynamic Database Functionality

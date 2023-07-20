@@ -1,6 +1,8 @@
-﻿namespace Modular.Core
-{
+﻿using Modular.Core.Utility;
 
+namespace Modular.Core.Invoicing
+{
+    [Serializable]
     public class Invoice : ModularBase
     {
 
@@ -42,7 +44,7 @@
 
         private InvoiceStatusType _InvoiceStatus;
 
-        private string _InvoiceNumber = string.Empty;
+        private int _InvoiceNumber;
 
         private DateTime _InvoiceDate;
 
@@ -84,11 +86,11 @@
             }
         }
 
-        public Contact Contact
+        public Entity.Contact Contact
         {
             get
             {
-                return Contact.Load(ContactID);
+                return Entity.Contact.Load(ContactID);
             }
         }
 
@@ -140,7 +142,7 @@
             }
         }
 
-        public string InvoiceNumber
+        public int InvoiceNumber
         {
             get
             {

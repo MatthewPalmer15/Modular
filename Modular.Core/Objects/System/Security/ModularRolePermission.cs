@@ -2,10 +2,11 @@
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Reflection;
+using Modular.Core.Databases;
 
-namespace Modular.Core
+namespace Modular.Core.Security
 {
-
+    [Serializable]
     public class RolePermission : ModularBase
     {
         #region "  Constructors  "
@@ -125,7 +126,7 @@ namespace Modular.Core
             {
                 Connection = cn,
                 CommandType = CommandType.StoredProcedure,
-                CommandText = $"_Fetch" // TODO: add stored procedure name
+                CommandText = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch"
             };
 
             cm.Parameters.AddWithValue("@ContactID", AccountID);
@@ -172,7 +173,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
+                                    string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchAll";
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
@@ -277,7 +278,7 @@ namespace Modular.Core
                             {
                                 using (SqlCommand Command = new SqlCommand())
                                 {
-                                    string StoredProcedureName = $"_FetchAll"; // TODO: add stored procedure name
+                                    string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchAll";
 
                                     if (Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {

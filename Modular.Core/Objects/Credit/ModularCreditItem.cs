@@ -1,5 +1,8 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.Utility;
+
+namespace Modular.Core.Credits
 {
+    [Serializable]
     public class CreditItem : ModularBase
     {
 

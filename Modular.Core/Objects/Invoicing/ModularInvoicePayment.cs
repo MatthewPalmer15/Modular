@@ -1,5 +1,6 @@
-﻿namespace Modular.Core
+﻿namespace Modular.Core.Invoicing
 {
+    [Serializable]
     public class InvoicePayment : ModularBase
     {
 

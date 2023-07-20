@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Modular.Core
+namespace Modular.Core.Configuration
 {
     public static class AppConfig
     {

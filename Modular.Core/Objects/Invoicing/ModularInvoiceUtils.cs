@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Modular.Core.Sequences;
 
-namespace Modular.Core
+namespace Modular.Core.Invoicing
 { 
     public static class InvoiceUtils
     {
@@ -20,13 +21,9 @@ namespace Modular.Core
             NewInvoicePayment.Save();
         }
 
-        public static string GenerateInvoiceNumber()
+        public static int GenerateInvoiceNumber()
         {
-            Sequence InvoiceNumberSequence = Sequence.Load("InvoiceNumber");
-            InvoiceNumberSequence.Count++;
-            InvoiceNumberSequence.Save();
-
-            return (InvoiceNumberSequence.Count).ToString();
+            return Sequence.GetNextNumber("InvoiceNumber");
         }
 
         // TODO: Add support for this.

@@ -1,4 +1,4 @@
-﻿namespace Modular.Core
+﻿namespace Modular.Core.Interfaces
 {
     public interface IModularApplicationMultiPage : IModularApplicationPage
     {

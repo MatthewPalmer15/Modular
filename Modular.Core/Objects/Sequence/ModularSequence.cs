@@ -1,4 +1,6 @@
-﻿namespace Modular.Core
+﻿using Modular.Core.System.Attributes;
+
+namespace Modular.Core.Sequences
 {
     public class Sequence : ModularBase
     {
@@ -68,7 +70,7 @@
             {
                 return _Count;
             }
-            set
+            private set
             {
                 if (value != _Count)
                 {
@@ -101,6 +103,16 @@
             Sequence obj = new Sequence();
             obj.Fetch(GetProperty(Name), Name);
             return obj;
+        }
+
+        public static int GetNextNumber(string Name)
+        {
+            Sequence obj = new Sequence();
+            obj.Fetch(GetProperty(Name), Name);
+            obj.Count++;
+            obj.Save();
+
+            return obj.Count;
         }
 
         #endregion

@@ -1,6 +1,5 @@
-﻿namespace Modular.Core
-{
-
+﻿namespace Modular.Core.Structures
+{ 
     public struct MenuItem
     {
         #region "  Constuctors  "

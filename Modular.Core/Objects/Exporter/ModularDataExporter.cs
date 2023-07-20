@@ -7,8 +7,11 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using Modular.Core.Databases;
+using Modular.Core.Configuration;
+using Modular.Core.Utility;
 
-namespace Modular.Core
+namespace Modular.Core.Exporter
 {
 
     public static class DataExporter

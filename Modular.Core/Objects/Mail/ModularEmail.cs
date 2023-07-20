@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 
-namespace Modular.Core
+namespace Modular.Core.Mail
 {
     public static class Email
     {

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Modular.Core.Utility;
 
 namespace Modular.Core
 {

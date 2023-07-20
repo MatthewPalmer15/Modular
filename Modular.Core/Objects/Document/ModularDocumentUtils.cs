@@ -1,4 +1,4 @@
-﻿namespace Modular.Core
+﻿namespace Modular.Core.Documents
 {
     public static class DocumentUtils
     {

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Modular.Core.Utility;
 
-namespace Modular.Core
+namespace Modular.Core.Audit
 {
+    [Serializable]
     public class AuditLog : ModularBase
     {
         #region "  Constructor  "
