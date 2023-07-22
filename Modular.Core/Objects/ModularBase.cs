@@ -335,7 +335,7 @@ namespace Modular.Core
         {
             if (IsModified && IsValid)
             {
-                Guid CurrentUserID = ModularSystem.Context.Identity.ID;
+                Guid CurrentUserID = SystemCore.Context.Identity.ID;
 
                 OnSave();
 
