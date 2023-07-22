@@ -96,16 +96,6 @@ namespace Modular.Core.Security
             return obj;
         }
 
-        public static RolePermission Load(Guid AccountID, Enum Permission)
-        {
-            RolePermission obj = new RolePermission();
-            obj.Fetch(AccountID, Permission);
-            return obj;
-        }
-
-
-
-
         #endregion
 
         #region "  Instance Methods  "
@@ -118,33 +108,6 @@ namespace Modular.Core.Security
         #endregion
 
         #region "  Data Methods  "
-
-        protected void Fetch(Guid AccountID, Enum Permission)
-        {
-            SqlConnection cn = new SqlConnection(Database.ConnectionString);
-            SqlCommand cm = new SqlCommand
-            {
-                Connection = cn,
-                CommandType = CommandType.StoredProcedure,
-                CommandText = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch"
-            };
-
-            cm.Parameters.AddWithValue("@ContactID", AccountID);
-            cm.Parameters.AddWithValue("@Permission", Permission);
-
-            SqlDataReader dr = cm.ExecuteReader();
-
-            dr.Read();
-
-            ID = dr.GetGuid(dr.GetOrdinal("ID"));
-            CreatedDate = dr.GetDateTime(dr.GetOrdinal("CreatedDate"));
-            CreatedBy = dr.GetGuid(dr.GetOrdinal("CreatedBy"));
-            ModifiedDate = dr.GetDateTime(dr.GetOrdinal("ModifiedDate"));
-            ModifiedBy = dr.GetGuid(dr.GetOrdinal("ModifiedBy"));
-
-            this.RoleID = dr.GetGuid(dr.GetOrdinal("RoleID"));
-        }
-
 
         /// <summary>
         /// Fetches all the contacts from the database

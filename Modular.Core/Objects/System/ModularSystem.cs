@@ -2,12 +2,12 @@
 
 namespace Modular.Core.System
 {
-    public partial class ModularSystem
+    public partial class SystemCore
     {
 
         #region "  Constructors  "
 
-        private ModularSystem()
+        private SystemCore()
         {
         }
 
@@ -15,7 +15,7 @@ namespace Modular.Core.System
 
         #region "  Variables  "
 
-        private static readonly ModularSystem _Context = new ModularSystem();
+        private static readonly SystemCore _Context = new SystemCore();
 
         private Account _Identity;
 
@@ -23,7 +23,7 @@ namespace Modular.Core.System
 
         #region "  Properties  "
 
-        public static ModularSystem Context
+        public static SystemCore Context
         {
             get
             {
