@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+	
+	<PropertyGroup>
+		<NoWarn>IDE0090,IDE0063,IDE0066</NoWarn>
+	</PropertyGroup>
+	
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>

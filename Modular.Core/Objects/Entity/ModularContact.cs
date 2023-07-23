@@ -79,7 +79,9 @@ namespace Modular.Core.Entity
 
         private string _SecondaryEmail = string.Empty;
 
-        private string _PhoneNumber = string.Empty;
+        private string _Phone = string.Empty;
+
+        private string _Mobile = string.Empty;
 
         private Guid _OccupationID;
 
@@ -432,18 +434,38 @@ namespace Modular.Core.Entity
         [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
         [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
         [Display(Name = "Phone Number", ShortName = "Phone")]
-        public string PhoneNumber
+        public string Phone
         {
             get
             {
-                return _PhoneNumber;
+                return _Phone;
             }
             set
             {
-                if (_PhoneNumber != value)
+                if (_Phone != value)
                 {
-                    _PhoneNumber = value;
-                    OnPropertyChanged("PhoneNumber");
+                    _Phone = value;
+                    OnPropertyChanged("Phone");
+                }
+            }
+        }
+
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Your Phone Number is incorrect, please try again.")]
+        [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
+        [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
+        [Display(Name = "Phone Number", ShortName = "Phone")]
+        public string Mobile
+        {
+            get
+            {
+                return _Mobile;
+            }
+            set
+            {
+                if (_Mobile != value)
+                {
+                    _Mobile = value;
+                    OnPropertyChanged("Mobile");
                 }
             }
         }

@@ -4,9 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Blogs.Objects
+namespace Modular.Blogs
 {
-    internal class ModularArticleUtils
+    public static class ArticleUtils
     {
+
+        // TODO: Complete
+        public static List<Article> GetArticlesByCategory()
+        {
+            return new List<Article>();
+        }
+
     }
 }

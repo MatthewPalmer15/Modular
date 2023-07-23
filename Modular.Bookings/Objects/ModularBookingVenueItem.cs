@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Blogs
+namespace Modular.Bookings
 {
     [Serializable]
-    public class ArticleCategory : ModularBase
+    public class VenueItem : ModularBase
     {
 
         #region "  Constructors  "
 
-        public ArticleCategory()
+        public VenueItem()
         {
         }
 
@@ -21,15 +21,21 @@ namespace Modular.Blogs
 
         #region "  Constants  "
 
-        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Article_Category";
+        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Booking_VenueItem";
 
         #endregion
 
         #region "  Variables  "
 
+        //private byte[] _Image;
+
         private string _Name = string.Empty;
 
         private string _Description = string.Empty;
+
+        private decimal _Cost;
+
+        private decimal _CostVAT;
 
         #endregion
 
@@ -41,7 +47,7 @@ namespace Modular.Blogs
             {
                 return _Name;
             }
-            private set
+            set
             {
                 if (_Name != value)
                 {
@@ -57,7 +63,7 @@ namespace Modular.Blogs
             {
                 return _Description;
             }
-            private set
+            set
             {
                 if (_Description != value)
                 {
@@ -66,21 +72,53 @@ namespace Modular.Blogs
                 }
             }
         }
+        
+        public decimal Cost
+        {
+            get
+            {
+                return _Cost;
+            }
+            set
+            {
+                if (_Cost != value)
+                {
+                    _Cost = value;
+                    OnPropertyChanged("Cost");
+                }
+            }
+        }
+
+        public decimal CostVAT
+        {
+            get
+            {
+                return _CostVAT;
+            }
+            set
+            {
+                if (_CostVAT != value)
+                {
+                    _CostVAT = value;
+                    OnPropertyChanged("CostVAT");
+                }
+            }
+        }
 
         #endregion
 
         #region "  Static Methods  "
 
-        public static new ArticleCategory Create()
+        public static new Venue Create()
         {
-            ArticleCategory obj = new ArticleCategory();
+            Venue obj = new Venue();
             obj.SetDefaultValues();
             return obj;
         }
 
-        public static new ArticleCategory Load(Guid ID)
+        public static new Venue Load(Guid ID)
         {
-            ArticleCategory obj = new ArticleCategory();
+            Venue obj = new Venue();
             obj.Fetch(ID);
             return obj;
         }
