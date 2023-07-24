@@ -40,6 +40,14 @@ namespace Modular.Core.Entity
 
         private string _Website = string.Empty;
 
+        private string _FacebookLink = string.Empty;
+
+        private string _InstagramLink = string.Empty;
+
+        private string _TwitterLink = string.Empty;
+
+        private string _LinkedInLink = string.Empty;
+
         private string _AddressLine1 = string.Empty;
 
         private string _AddressLine2 = string.Empty;
@@ -53,7 +61,6 @@ namespace Modular.Core.Entity
         private Guid _AddressCountryID;
 
         private string _AddressPostcode = string.Empty;
-
 
         #endregion
 
@@ -177,6 +184,70 @@ namespace Modular.Core.Entity
                 {
                     _Website = value;
                     OnPropertyChanged("Website");
+                }
+            }
+        }
+
+        public string FacebookLink
+        {
+            get
+            {
+                return _FacebookLink;
+            }
+            set
+            {
+                if (_FacebookLink != value)
+                {
+                    _FacebookLink = value;
+                    OnPropertyChanged("FacebookLink");
+                }
+            }
+        }
+
+        public string InstagramLink
+        {
+            get
+            {
+                return _InstagramLink;
+            }
+            set
+            {
+                if (_InstagramLink != value)
+                {
+                    _InstagramLink = value;
+                    OnPropertyChanged("InstagramLink");
+                }
+            }
+        }
+
+        public string TwitterLink
+        {
+            get
+            {
+                return _TwitterLink;
+            }
+            set
+            {
+                if (_TwitterLink != value)
+                {
+                    _TwitterLink = value;
+                    OnPropertyChanged("TwitterLink");
+                }
+            }
+        }
+
+        public string LinkedInLink
+        {
+            get
+            {
+                return _LinkedInLink;
+            }
+            set
+            {
+                if (_LinkedInLink != value)
+                {
+                    _LinkedInLink = value;
+                    OnPropertyChanged("LinkedInLink");
                 }
             }
         }

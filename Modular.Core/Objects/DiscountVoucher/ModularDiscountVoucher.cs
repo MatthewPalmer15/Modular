@@ -40,6 +40,12 @@
 
         #endregion
 
+        #region "  Constants  "
+
+        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Discount";
+        #endregion
+
+
         #region "  Variables  "
 
         private string _Name = string.Empty;

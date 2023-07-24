@@ -79,7 +79,19 @@ namespace Modular.Core.Entity
 
         private string _SecondaryEmail = string.Empty;
 
-        private string _PhoneNumber = string.Empty;
+        private string _Phone = string.Empty;
+
+        private string _Mobile = string.Empty;
+
+        private string _FacebookLink = string.Empty;
+
+        private string _InstagramLink = string.Empty;
+
+        private string _TwitterLink = string.Empty;
+
+        private string _LinkedInLink = string.Empty;
+
+        private string _WebsiteLink = string.Empty;
 
         private Guid _OccupationID;
 
@@ -432,18 +444,118 @@ namespace Modular.Core.Entity
         [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
         [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
         [Display(Name = "Phone Number", ShortName = "Phone")]
-        public string PhoneNumber
+        public string Phone
         {
             get
             {
-                return _PhoneNumber;
+                return _Phone;
             }
             set
             {
-                if (_PhoneNumber != value)
+                if (_Phone != value)
                 {
-                    _PhoneNumber = value;
-                    OnPropertyChanged("PhoneNumber");
+                    _Phone = value;
+                    OnPropertyChanged("Phone");
+                }
+            }
+        }
+
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Your Phone Number is incorrect, please try again.")]
+        [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
+        [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
+        [Display(Name = "Phone Number", ShortName = "Phone")]
+        public string Mobile
+        {
+            get
+            {
+                return _Mobile;
+            }
+            set
+            {
+                if (_Mobile != value)
+                {
+                    _Mobile = value;
+                    OnPropertyChanged("Mobile");
+                }
+            }
+        }
+
+        public string FacebookLink
+        {
+            get
+            {
+                return _FacebookLink;
+            }
+            set
+            {
+                if (_FacebookLink != value)
+                {
+                    _FacebookLink = value;
+                    OnPropertyChanged("FacebookLink");
+                }
+            }
+        }
+
+        public string InstagramLink
+        {
+            get
+            {
+                return _InstagramLink;
+            }
+            set
+            {
+                if (_InstagramLink != value)
+                {
+                    _InstagramLink = value;
+                    OnPropertyChanged("InstagramLink");
+                }
+            }
+        }
+
+        public string TwitterLink
+        {
+            get
+            {
+                return _TwitterLink;
+            }
+            set
+            {
+                if (_TwitterLink != value)
+                {
+                    _TwitterLink = value;
+                    OnPropertyChanged("TwitterLink");
+                }
+            }
+        }
+
+        public string LinkedInLink
+        {
+            get
+            {
+                return _LinkedInLink;
+            }
+            set
+            {
+                if (_LinkedInLink != value)
+                {
+                    _LinkedInLink = value;
+                    OnPropertyChanged("LinkedInLink");
+                }
+            }
+        }
+
+        public string WebsiteLink
+        {
+            get
+            {
+                return _WebsiteLink;
+            }
+            set
+            {
+                if (_WebsiteLink != value)
+                {
+                    _WebsiteLink = value;
+                    OnPropertyChanged("WebsiteLink");
                 }
             }
         }

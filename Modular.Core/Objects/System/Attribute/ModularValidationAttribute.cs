@@ -95,17 +95,17 @@ namespace Modular.Core.System.Attributes
     {
         private readonly string DependentProperty;
         private readonly object Value;
-      
+
         public CustomRequiredIfAttribute(string DependentProperty, object Value)
         {
             this.DependentProperty = DependentProperty;
             this.Value = Value;
         }
-      
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var DependentPropertyValue = validationContext.ObjectType.GetProperty(DependentProperty)?.GetValue(validationContext.ObjectInstance);
-      
+
             if (DependentPropertyValue != null && DependentPropertyValue.Equals(Value))
             {
                 if (value == null || string.IsNullOrEmpty(value.ToString()))
@@ -117,16 +117,39 @@ namespace Modular.Core.System.Attributes
                     return ValidationResult.Success;
                 }
             }
-      
+
             return ValidationResult.Success;
         }
     }
-    
+
     //  IMPLEMENTATION
     //  public bool IsTermsAndConditionsAccepted { get; set; }
     //
     //  [CustomRequiredIf("IsTermsAndConditionsAccepted", true, ErrorMessage = "Please provide your username.")]
     //  public string Username { get; set; }
+
+
+   //[AttributeUsage(AttributeTargets.Property)]
+   //public class UniqueWithIdentifierAttribute : ValidationAttribute
+   //{
+   //
+   //    private readonly string Identifier;
+   //    private readonly string Value;
+   //
+   //    public UniqueWithIdentifierAttribute(string Identifier, string Value)
+   //    {
+   //        this.Identifier = Identifier;
+   //        this.Value = Value;
+   //    }
+   //
+   //    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+   //    {
+   //        PropertyInfo IdentifierProperty = validationContext.ObjectType.GetProperty(Identifier);
+   //        
+   //
+   //    }
+   //
+   //}
 
 
 }
