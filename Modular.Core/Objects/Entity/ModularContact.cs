@@ -83,6 +83,16 @@ namespace Modular.Core.Entity
 
         private string _Mobile = string.Empty;
 
+        private string _FacebookLink = string.Empty;
+
+        private string _InstagramLink = string.Empty;
+
+        private string _TwitterLink = string.Empty;
+
+        private string _LinkedInLink = string.Empty;
+
+        private string _WebsiteLink = string.Empty;
+
         private Guid _OccupationID;
 
         private Guid _DepartmentID;
@@ -466,6 +476,86 @@ namespace Modular.Core.Entity
                 {
                     _Mobile = value;
                     OnPropertyChanged("Mobile");
+                }
+            }
+        }
+
+        public string FacebookLink
+        {
+            get
+            {
+                return _FacebookLink;
+            }
+            set
+            {
+                if (_FacebookLink != value)
+                {
+                    _FacebookLink = value;
+                    OnPropertyChanged("FacebookLink");
+                }
+            }
+        }
+
+        public string InstagramLink
+        {
+            get
+            {
+                return _InstagramLink;
+            }
+            set
+            {
+                if (_InstagramLink != value)
+                {
+                    _InstagramLink = value;
+                    OnPropertyChanged("InstagramLink");
+                }
+            }
+        }
+
+        public string TwitterLink
+        {
+            get
+            {
+                return _TwitterLink;
+            }
+            set
+            {
+                if (_TwitterLink != value)
+                {
+                    _TwitterLink = value;
+                    OnPropertyChanged("TwitterLink");
+                }
+            }
+        }
+
+        public string LinkedInLink
+        {
+            get
+            {
+                return _LinkedInLink;
+            }
+            set
+            {
+                if (_LinkedInLink != value)
+                {
+                    _LinkedInLink = value;
+                    OnPropertyChanged("LinkedInLink");
+                }
+            }
+        }
+
+        public string WebsiteLink
+        {
+            get
+            {
+                return _WebsiteLink;
+            }
+            set
+            {
+                if (_WebsiteLink != value)
+                {
+                    _WebsiteLink = value;
+                    OnPropertyChanged("WebsiteLink");
                 }
             }
         }

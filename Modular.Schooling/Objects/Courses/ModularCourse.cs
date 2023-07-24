@@ -47,7 +47,9 @@ namespace Modular.Schooling
 
         private DateTime _EndDate;
 
-        private Guid _OwnerID;
+        private Guid _TrainingCentreID;
+
+        private Guid _VenueID;
 
         private CourseType _CourseType;
 
@@ -163,18 +165,18 @@ namespace Modular.Schooling
             }
         }
 
-        public Guid OwnerID
+        public Guid TrainingCentreID
         {
             get
             {
-                return _OwnerID;
+                return _TrainingCentreID;
             }
             private set
             {
-                if (_OwnerID != value)
+                if (_TrainingCentreID != value)
                 {
-                    _OwnerID = value;
-                    OnPropertyChanged("OwnerID");
+                    _TrainingCentreID = value;
+                    OnPropertyChanged("TrainingCentreID");
                 }
             }
         }
@@ -183,7 +185,31 @@ namespace Modular.Schooling
         {
             get
             {
-                return TrainingCentre.Load(OwnerID);
+                return TrainingCentre.Load(TrainingCentreID);
+            }
+        }
+
+        public Guid VenueID
+        {
+            get
+            {
+                return _VenueID;
+            }
+            set
+            {
+                if (_VenueID != value)
+                {
+                    _VenueID = value;
+                    OnPropertyChanged("VenueID");
+                }
+            }
+        }
+
+        public Venue Venue
+        {
+            get
+            {
+                return Venue.Load(VenueID);
             }
         }
 
