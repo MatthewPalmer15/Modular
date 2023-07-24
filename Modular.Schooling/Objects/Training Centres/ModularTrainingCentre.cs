@@ -1,6 +1,6 @@
 ﻿using Modular.Core;
 
-namespace Modular.Accreditation
+namespace Modular.Schooling
 {
     public class TrainingCentre : ModularBase
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Accreditation.Objects.Training_Centres
+namespace Modular.Schooling
 {
     internal class Tutor : ModularBase
     {

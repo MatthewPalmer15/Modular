@@ -1,22 +1,37 @@
-﻿using Modular.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Modular.Core;
 
 namespace Modular.Bookings
 {
     [Serializable]
-    public class BookingItem : ModularBase
+    public class Note : ModularBase
     {
 
         #region "  Constructors  "
 
-        public BookingItem()
+        public Note()
         {
+        }
+
+        #endregion
+
+        #region "  Enums  "
+
+        public enum NoteType
+        {
+            Internal = 0,
+            External = 1
         }
 
         #endregion
 
         #region "  Constants  "
 
-        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Booking_Item";
+        protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Booking_InternalNote";
 
         #endregion
 
@@ -24,11 +39,9 @@ namespace Modular.Bookings
 
         private Guid _BookingID;
 
-        private Guid _InvoiceID;
+        private NoteType _NoteType;
 
-        private Guid _VenueItemID;
-
-        private int _Quantity;
+        private string _Message = string.Empty;
 
         #endregion
 
@@ -50,50 +63,34 @@ namespace Modular.Bookings
             }
         }
 
-        public Guid ItemID
+        public NoteType Type
         {
             get
             {
-                return _VenueItemID;
+                return _NoteType;
             }
             set
             {
-                if (_VenueItemID != value)
+                if (_NoteType != value)
                 {
-                    _VenueItemID = value;
-                    OnPropertyChanged("VenueItemID");
+                    _NoteType = value;
+                    OnPropertyChanged("Type");
                 }
             }
         }
 
-        public Guid InvoiceID
+        public string Message
         {
             get
             {
-                return _InvoiceID;
+                return _Message;
             }
             set
             {
-                if (_InvoiceID != value)
+                if (_Message != value)
                 {
-                    _InvoiceID = value;
-                    OnPropertyChanged("InvoiceID");
-                }
-            }
-        }
-
-        public int Quantity
-        {
-            get
-            {
-                return _Quantity;
-            }
-            set
-            {
-                if (_Quantity != value)
-                {
-                    _Quantity = value;
-                    OnPropertyChanged("Quantity");
+                    _Message = value;
+                    OnPropertyChanged("Message");
                 }
             }
         }
@@ -102,16 +99,16 @@ namespace Modular.Bookings
 
         #region "  Static Methods  "
 
-        public static new BookingItem Create()
+        public static new Note Create()
         {
-            BookingItem obj = new BookingItem();
+            Note obj = new Note();
             obj.SetDefaultValues();
             return obj;
         }
 
-        public static new BookingItem Load(Guid ID)
+        public static new Note Load(Guid ID)
         {
-            BookingItem obj = new BookingItem();
+            Note obj = new Note();
             obj.Fetch(ID);
             return obj;
         }
@@ -122,7 +119,7 @@ namespace Modular.Bookings
 
         public override string ToString()
         {
-            return ID.ToString();
+            return $"{Enum.GetName(typeof(NoteType), Type)} - {Message}";
         }
 
         #endregion
