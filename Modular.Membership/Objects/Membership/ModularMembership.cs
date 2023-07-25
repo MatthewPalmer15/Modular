@@ -12,7 +12,7 @@ namespace Modular.Membership
 
         #region "  Constructors  "
 
-        public ModularMembership() 
+        public Membership() 
         { 
         }
 
@@ -105,11 +105,6 @@ namespace Modular.Membership
             Membership obj = new Membership();
             obj.SetDefaultValues();
             return obj;
-        }
-
-        public static new List<Membership> LoadAll()
-        {
-            return Membership();
         }
 
         public static new Membership Load(Guid ID)
