@@ -1,4 +1,5 @@
 ﻿using Modular.Core;
+using Modular.Core.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +25,28 @@ namespace Modular.Membership
 
         #endregion
 
+        #region "  Enums  "
+
+        public enum StatusType
+        {
+            Unknown = 0,
+            Active = 1,
+            Inactive = 2,
+            Cancelled = 3,
+            Deleted = 4
+        }
+
+        #endregion
+
         #region "  Variables  "
 
         private string _PolicyNumber = string.Empty;
 
-        private Guid _MemberID;
+        private Guid _ContactID;
 
-        private List<Revision> _Revision;
+        private List<PolicyRevision> _Revision;
+
+        private StatusType _Status;
 
         #endregion
 
@@ -52,36 +68,55 @@ namespace Modular.Membership
             }
         }
 
-        public Guid MemberID
+        public Guid ContactID
         {
             get
             {
-                return _MemberID;
+                return _ContactID;
             }
             set
             {
-                if (_MemberID != value)
+                if (_ContactID != value)
                 {
-                    _MemberID = value;
-                    OnPropertyChanged("MemberID");
+                    _ContactID = value;
+                    OnPropertyChanged("ContactID");
                 }
             }
         }
 
-        public List<Revision> Revisions
+        public List<PolicyRevision> Revisions
         {
             get
             {
-                LoadMembershipRevisions();
+                if (_Revision is null || SystemConfig.GetValue("Modular:ConstantLoadSideObjects").ToUpper() == "TRUE")
+                {
+                    LoadMembershipRevisions();
+                }
                 return _Revision;
             }
         }
 
-        public Revision ActiveRevision
+        public PolicyRevision ActiveRevision
         {
             get
             {
                 return Revisions.First(Revision => Revision.Status == Core.Utility.StatusType.Verified);
+            }
+        }
+
+        public StatusType Status
+        {
+            get
+            {
+                return _Status;
+            }
+            set
+            {
+                if (_Status != value)
+                {
+                    _Status = value;
+                    OnPropertyChanged("Status");
+                }
             }
         }
 
@@ -113,7 +148,7 @@ namespace Modular.Membership
 
         private void LoadMembershipRevisions()
         {
-            _Revision = new List<Revision>().OrderByDescending(Revision => Revision.RevisionNumber).ToList();
+            _Revision = new List<PolicyRevision>().OrderByDescending(Revision => Revision.RevisionNumber).ToList();
         }
 
         public override string ToString()

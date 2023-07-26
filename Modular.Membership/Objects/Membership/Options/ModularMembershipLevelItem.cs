@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Modular.Membership.Objects
 {
-    internal class ModularMembershipItems
+    internal class ModularMembershipLevelItem
     {
     }
 }

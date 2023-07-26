@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Modular.Membership
 {
-    public class Revision : ModularBase
+    public class PolicyRevision : ModularBase
     {
 
         #region "  Constructors  "
 
-        public Revision() 
+        public PolicyRevision() 
         { 
         }
 
@@ -27,8 +27,6 @@ namespace Modular.Membership
 
         #region "  Variables  "
 
-        private int _RevisionNumber;
-
         private Guid _PolicyID;
 
         private Guid _MembershipID;
@@ -38,6 +36,10 @@ namespace Modular.Membership
         private Guid _CreditID;
 
         private StatusType _Status;
+
+        private DateTime _ProccessedDate;
+
+        private Guid _ProcessedBy;
 
         #endregion
 
