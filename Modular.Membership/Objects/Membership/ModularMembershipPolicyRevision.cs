@@ -41,6 +41,8 @@ namespace Modular.Membership
 
         private Guid _ProcessedBy;
 
+        private int _RevisionNumber;
+
         #endregion
 
         #region "  Properties  "
