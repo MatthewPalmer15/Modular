@@ -560,17 +560,17 @@ namespace Modular.Core.Entity
             }
         }
 
-        public Guid OccupationID
+        public Occupation Occupation
         {
             get
             {
-                return _OccupationID;
+                return Occupation.Load(_OccupationID);
             }
             set
             {
-                if (_OccupationID != value)
+                if (_OccupationID != value.ID)
                 {
-                    _OccupationID = value;
+                    _OccupationID = value.ID;
                     OnPropertyChanged("OccupationID");
                 }
             }

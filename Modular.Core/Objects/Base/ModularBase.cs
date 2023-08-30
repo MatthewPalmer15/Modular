@@ -106,17 +106,17 @@ namespace Modular.Core
 
         [Required(ErrorMessage = "Created By is required.")]
         [Display(Name = "Created By")]
-        public Guid CreatedBy
+        public Entity.Contact CreatedBy
         {
             get
             {
-                return _CreatedBy;
+                return Entity.Contact.Load(_CreatedBy);
             }
             set
             {
-                if (_CreatedBy != value)
+                if (_CreatedBy != value.ID)
                 {
-                    _CreatedBy = value;
+                    _CreatedBy = value.ID;
                     OnPropertyChanged("CreatedBy");
                 }
             }
@@ -145,17 +145,17 @@ namespace Modular.Core
 
         [Required(ErrorMessage = "Modified By is required.")]
         [Display(Name = "Modified By")]
-        public Guid ModifiedBy
+        public Entity.Contact ModifiedBy
         {
             get
             {
-                return _ModifiedBy;
+                return Entity.Contact.Load(_ModifiedBy);
             }
             set
             {
-                if (_ModifiedBy != value)
+                if (_ModifiedBy != value.ID)
                 {
-                    _ModifiedBy = value;
+                    _ModifiedBy = value.ID;
                     OnPropertyChanged("ModifedBy");
                 }
             }
@@ -169,7 +169,7 @@ namespace Modular.Core
             {
                 return _IsDeleted;
             }
-           set
+            private set
             {
                 if (_IsDeleted != value)
                 {
@@ -189,12 +189,11 @@ namespace Modular.Core
             {
                 return _IsFlagged;
             }
-            protected set
+            private set
             {
-                if (_IsFlagged != value)
+                if (!_IsFlagged != value)
                 {
                     _IsFlagged = value;
-                    OnPropertyChanged("IsFlagged");
                 }
             }
         }
@@ -344,25 +343,24 @@ namespace Modular.Core
         {
             if ((IsModified && IsValid) || OverrideValidation)
             {
-                Guid CurrentUserID = SystemCore.Context.Identity.ID;
                 OnSave();
 
                 if (IsNew)
                 {
                     CreatedDate = DateTime.Now;
-                    CreatedBy = CurrentUserID;
+                    CreatedBy = SystemCore.Context.Identity.Contact;
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = CurrentUserID;
+                    ModifiedBy = SystemCore.Context.Identity.Contact;
 
                     Insert();
-                    
+
                     IsModified = false;
                     IsNew = false;
                 }
                 else
                 {
                     ModifiedDate = DateTime.Now;
-                    ModifiedBy = CurrentUserID;
+                    ModifiedBy = SystemCore.Context.Identity.Contact;
 
                     Update();
 
@@ -394,12 +392,12 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance);
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
                 {
-                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
                 }
 
                 switch (Database.ConnectionMode)
@@ -415,7 +413,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -425,7 +423,7 @@ namespace Modular.Core
 
                                 // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                 Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID")));
 
                                 Command.Parameters.Add(new SqlParameter($"@ID", ID));
 
@@ -435,7 +433,7 @@ namespace Modular.Core
                                 if (DataReader.HasRows)
                                 {
                                     DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
+                                    SetFieldValues(AllFields, DataReader);
                                 }
                             }
 
@@ -455,7 +453,7 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
@@ -465,7 +463,7 @@ namespace Modular.Core
                                 if (DataReader.HasRows)
                                 {
                                     DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
+                                    SetFieldValues(AllFields, DataReader);
                                 }
                             }
 
@@ -561,7 +559,7 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
@@ -927,7 +925,7 @@ namespace Modular.Core
                                     // If stored procedures are enabled, and the stored procedure does not exist, create it.
                                     if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
-                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
+                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID")));
                                     }
 
                                     using (SqlCommand Command = new SqlCommand())
@@ -936,7 +934,7 @@ namespace Modular.Core
 
                                         // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                         Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -959,7 +957,7 @@ namespace Modular.Core
 
                                         // Stored procedures are not supported in SQLite, so use a query.
                                         Command.CommandType = CommandType.Text;
-                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -1142,6 +1140,311 @@ namespace Modular.Core
                     }
                 }
 
+            }
+        }
+
+        protected void SetFieldValues(FieldInfo[] AllFields, SqlDataReader DataReader)
+        {
+            foreach (FieldInfo Field in AllFields)
+            {
+                string FieldName = Field.Name.Replace("_", "");
+                int FieldOrdinal = DataReader.GetOrdinal(FieldName);
+
+                if (!DataReader.IsDBNull(FieldOrdinal))
+                {
+                    // DataType: Enums
+                    if (Field.FieldType.IsEnum)
+                    {
+                        Type EnumType = Field.FieldType;
+                        Field.SetValue(this, Enum.ToObject(EnumType, DataReader.GetInt32(FieldOrdinal)));
+                    }
+
+                    // DataType: XML Document
+                    else if (Field.FieldType == typeof(XmlDocument))
+                    {
+                        SqlXml SQLXML = DataReader.GetSqlXml(FieldOrdinal);
+                        XmlDocument XMLDocument = new XmlDocument();
+                        XMLDocument.Load(SQLXML.CreateReader());
+                        Field.SetValue(this, XMLDocument);
+                    }
+
+                    // DataType: XML
+                    else if (Field.FieldType == typeof(SqlXml))
+                    {
+                        Field.SetValue(this, DataReader.GetSqlXml(FieldOrdinal));
+                    }
+
+                    // DataType: String
+                    else if (Field.FieldType == typeof(string))
+                    {
+                        Field.SetValue(this, DataReader.GetString(FieldOrdinal));
+                    }
+                    // DataType: Character
+                    else if (Field.FieldType == typeof(char))
+                    {
+                        Field.SetValue(this, DataReader.GetChar(FieldOrdinal));
+                    }
+
+                    // DataType: Long (Int64) Signed
+                    else if (Field.FieldType == typeof(long))
+                    {
+                        Field.SetValue(this, DataReader.GetInt64(FieldOrdinal));
+                    }
+
+                    // DataType: Long (Int64) Unsigned
+                    else if (Field.FieldType == typeof(ulong))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<ulong>(FieldOrdinal));
+                    }
+
+                    // DataType: Integer (Int32) Signed
+                    else if (Field.FieldType == typeof(int))
+                    {
+                        Field.SetValue(this, DataReader.GetInt32(FieldOrdinal));
+                    }
+
+                    // DataType: Integer (Int32) Unsigned
+                    else if (Field.FieldType == typeof(uint))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<uint>(FieldOrdinal));
+                    }
+
+                    // DataType: Short (Int16) Signed
+                    else if (Field.FieldType == typeof(short))
+                    {
+                        Field.SetValue(this, DataReader.GetInt16(FieldOrdinal));
+                    }
+
+                    // DataType: Short (Int16) Unsigned
+                    else if (Field.FieldType == typeof(ushort))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<ushort>(FieldOrdinal));
+                    }
+
+                    // DataType: Byte (Int8) Signed
+                    else if (Field.FieldType == typeof(byte))
+                    {
+                        Field.SetValue(this, DataReader.GetByte(FieldOrdinal));
+                    }
+
+                    // DataType: Byte (Int8) Unsigned
+                    else if (Field.FieldType == typeof(sbyte))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<sbyte>(FieldOrdinal));
+                    }
+
+                    // DataType: Float (32-bit)
+                    else if (Field.FieldType == typeof(float))
+                    {
+                        Field.SetValue(this, DataReader.GetFloat(FieldOrdinal));
+                    }
+
+                    // DataType: Double (64-bit)
+                    else if (Field.FieldType == typeof(double))
+                    {
+                        Field.SetValue(this, DataReader.GetDouble(FieldOrdinal));
+                    }
+
+                    // DataType: Decimal (128-bit)
+                    else if (Field.FieldType == typeof(decimal))
+                    {
+                        Field.SetValue(this, DataReader.GetDecimal(FieldOrdinal));
+                    }
+
+                    // DataType: Guid
+                    else if (Field.FieldType == typeof(Guid))
+                    {
+                        Field.SetValue(this, DataReader.GetGuid(FieldOrdinal));
+                    }
+
+                    // DataType: DateTime
+                    else if (Field.FieldType == typeof(DateTime))
+                    {
+                        Field.SetValue(this, DataReader.GetDateTime(FieldOrdinal));
+                    }
+
+                    // DataType: DateOnly
+                    else if (Field.FieldType == typeof(DateOnly))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<DateOnly>(FieldOrdinal));
+                    }
+
+                    // DataType: TimeOnly
+                    else if (Field.FieldType == typeof(TimeOnly))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<TimeOnly>(FieldOrdinal));
+                    }
+
+                    // DataType: TimeSpan
+                    else if (Field.FieldType == typeof(TimeSpan))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<TimeSpan>(FieldOrdinal));
+                    }
+
+                    // DataType: Boolean
+                    else if (Field.FieldType == typeof(bool))
+                    {
+                        Field.SetValue(this, DataReader.GetBoolean(FieldOrdinal));
+                    }
+
+                    else
+                    {
+                        Field.SetValue(this, DataReader.GetValue(FieldOrdinal));
+                    }
+                }
+            }
+        }
+
+        protected void SetFieldValues(FieldInfo[] AllFields, SqliteDataReader DataReader)
+        {
+            foreach (FieldInfo Field in AllFields)
+            {
+                string FieldName = Field.Name.Replace("_", "");
+                int FieldOrdinal = DataReader.GetOrdinal(FieldName);
+
+                if (!DataReader.IsDBNull(FieldOrdinal))
+                {
+                    // DataType: Enums
+                    if (Field.FieldType.IsEnum)
+                    {
+                        Type EnumType = Field.FieldType;
+                        Field.SetValue(this, Enum.ToObject(EnumType, DataReader.GetInt32(FieldOrdinal)));
+                    }
+
+                    // DataType: XML Document
+                    else if (Field.FieldType == typeof(XmlDocument))
+                    {
+                        SqlXml SQLXML = new SqlXml(new XmlTextReader(DataReader.GetString(DataReader.GetOrdinal(FieldName)), XmlNodeType.Document, null));
+                        XmlDocument XMLDocument = new XmlDocument();
+                        XMLDocument.Load(SQLXML.CreateReader());
+                        Field.SetValue(this, XMLDocument);
+                    }
+
+                    // DataType: XML
+                    else if (Field.FieldType == typeof(SqlXml))
+                    {
+                        Field.SetValue(this, new SqlXml(new XmlTextReader(DataReader.GetString(DataReader.GetOrdinal(FieldName)), XmlNodeType.Document, null)));
+                    }
+
+                    // DataType: String
+                    else if (Field.FieldType == typeof(string))
+                    {
+                        Field.SetValue(this, DataReader.GetString(FieldOrdinal));
+                    }
+
+                    // DataType: Character
+                    else if (Field.FieldType == typeof(char))
+                    {
+                        Field.SetValue(this, DataReader.GetChar(FieldOrdinal));
+                    }
+
+                    // DataType: Long (Int64) Signed
+                    else if (Field.FieldType == typeof(long))
+                    {
+                        Field.SetValue(this, DataReader.GetInt64(FieldOrdinal));
+                    }
+
+                    // DataType: Long (Int64) Unsigned
+                    else if (Field.FieldType == typeof(ulong))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<ulong>(FieldOrdinal));
+                    }
+
+                    // DataType: Integer (Int32) Signed
+                    else if (Field.FieldType == typeof(int))
+                    {
+                        Field.SetValue(this, DataReader.GetInt32(FieldOrdinal));
+                    }
+
+                    // DataType: Integer (Int32) Unsigned
+                    else if (Field.FieldType == typeof(uint))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<uint>(FieldOrdinal));
+                    }
+
+                    // DataType: Short (Int16) Signed
+                    else if (Field.FieldType == typeof(short))
+                    {
+                        Field.SetValue(this, DataReader.GetInt16(FieldOrdinal));
+                    }
+
+                    // DataType: Short (Int16) Unsigned
+                    else if (Field.FieldType == typeof(ushort))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<ushort>(FieldOrdinal));
+                    }
+
+                    // DataType: Byte (Int8) Signed
+                    else if (Field.FieldType == typeof(byte))
+                    {
+                        Field.SetValue(this, DataReader.GetByte(FieldOrdinal));
+                    }
+
+                    // DataType: Byte (Int8) Unsigned
+                    else if (Field.FieldType == typeof(sbyte))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<sbyte>(FieldOrdinal));
+                    }
+
+                    // DataType: Float (32-bit)
+                    else if (Field.FieldType == typeof(float))
+                    {
+                        Field.SetValue(this, DataReader.GetFloat(FieldOrdinal));
+                    }
+
+                    // DataType: Double (64-bit)
+                    else if (Field.FieldType == typeof(double))
+                    {
+                        Field.SetValue(this, DataReader.GetDouble(FieldOrdinal));
+                    }
+
+                    // DataType: Decimal (128-bit)
+                    else if (Field.FieldType == typeof(decimal))
+                    {
+                        Field.SetValue(this, DataReader.GetDecimal(FieldOrdinal));
+                    }
+
+                    // DataType: Guid
+                    else if (Field.FieldType == typeof(Guid))
+                    {
+                        Field.SetValue(this, DataReader.GetGuid(FieldOrdinal));
+                    }
+
+                    // DataType: DateTime
+                    else if (Field.FieldType == typeof(DateTime))
+                    {
+                        Field.SetValue(this, DataReader.GetDateTime(FieldOrdinal));
+                    }
+
+                    // DataType: DateOnly
+                    else if (Field.FieldType == typeof(DateOnly))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<DateOnly>(FieldOrdinal));
+                    }
+
+                    // DataType: TimeOnly
+                    else if (Field.FieldType == typeof(TimeOnly))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<TimeOnly>(FieldOrdinal));
+                    }
+
+                    // DataType: TimeSpan
+                    else if (Field.FieldType == typeof(TimeSpan))
+                    {
+                        Field.SetValue(this, DataReader.GetFieldValue<TimeSpan>(FieldOrdinal));
+                    }
+
+                    // DataType: Boolean
+                    else if (Field.FieldType == typeof(bool))
+                    {
+                        Field.SetValue(this, DataReader.GetBoolean(FieldOrdinal));
+                    }
+
+                    else
+                    {
+                        Field.SetValue(this, DataReader.GetValue(FieldOrdinal));
+                    }
+                }
             }
         }
 
@@ -1475,46 +1778,6 @@ namespace Modular.Core
         {
             AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
             _ChangeLog = string.Empty;
-        }
-
-        #endregion
-
-        #region "  Other Methods  "
-
-        public static Type GetClassType()
-        {
-            return MethodBase.GetCurrentMethod()?.DeclaringType;
-        }
-
-        public static PropertyInfo GetProperty(string Name)
-        {
-            Type ClassType = GetClassType();
-            if (ClassType != null)
-            {
-                PropertyInfo[] AllProperties = ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                foreach (PropertyInfo Property in AllProperties)
-                {
-                    if (Property.Name.ToUpper() == Name.Trim().ToUpper())
-                    {
-                        return Property;
-                    }
-                }
-            }
-
-            throw new ModularException(ExceptionType.NullObjectReturned, "Property returned is null");
-        }
-
-        public static PropertyInfo[] GetProperties()
-        {
-            Type ClassType = GetClassType();
-            if (ClassType != null)
-            {
-                return ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            }
-            else
-            {
-                return Array.Empty<PropertyInfo>();
-            }
         }
 
         #endregion
