@@ -12,6 +12,7 @@ using Modular.Core.System.Attributes;
 using Modular.Core.Databases;
 using Modular.Core.System;
 using Modular.Core.Utility;
+using Modular.Core.Interfaces;
 
 namespace Modular.Core
 {
@@ -169,7 +170,7 @@ namespace Modular.Core
             {
                 return _IsDeleted;
             }
-           private set
+            private set
             {
                 if (_IsDeleted != value)
                 {
@@ -354,7 +355,7 @@ namespace Modular.Core
                     ModifiedBy = CurrentUser;
 
                     Insert();
-                    
+
                     IsModified = false;
                     IsNew = false;
                 }
@@ -393,7 +394,7 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance);
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -434,7 +435,7 @@ namespace Modular.Core
                                 if (DataReader.HasRows)
                                 {
                                     DataReader.Read();
-                                    SetPropertyValues(AllFields, DataReader);
+                                    SetFieldValues(AllFields, DataReader);
                                 }
                             }
 
@@ -454,7 +455,7 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
@@ -464,7 +465,7 @@ namespace Modular.Core
                                 if (DataReader.HasRows)
                                 {
                                     DataReader.Read();
-                                    SetPropertyValues(AllFields, DataReader);
+                                    SetFieldValues(AllFields, DataReader);
                                 }
                             }
 
@@ -560,7 +561,7 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
@@ -926,7 +927,7 @@ namespace Modular.Core
                                     // If stored procedures are enabled, and the stored procedure does not exist, create it.
                                     if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
-                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID")));
+                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID")));
                                     }
 
                                     using (SqlCommand Command = new SqlCommand())
@@ -935,7 +936,7 @@ namespace Modular.Core
 
                                         // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                         Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -958,7 +959,7 @@ namespace Modular.Core
 
                                         // Stored procedures are not supported in SQLite, so use a query.
                                         Command.CommandType = CommandType.Text;
-                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, GetProperty("ID"));
+                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -1144,7 +1145,7 @@ namespace Modular.Core
             }
         }
 
-        protected void SetPropertyValues(FieldInfo[] AllFields, SqlDataReader DataReader)
+        protected void SetFieldValues(FieldInfo[] AllFields, SqlDataReader DataReader)
         {
             foreach (FieldInfo Field in AllFields)
             {
@@ -1296,7 +1297,7 @@ namespace Modular.Core
             }
         }
 
-        protected void SetPropertyValues(FieldInfo[] AllFields, SqliteDataReader DataReader)
+        protected void SetFieldValues(FieldInfo[] AllFields, SqliteDataReader DataReader)
         {
             foreach (FieldInfo Field in AllFields)
             {
@@ -1448,7 +1449,7 @@ namespace Modular.Core
                 }
             }
         }
-        
+
         protected void SetPropertyValues(PropertyInfo[] AllProperties, SqlDataReader DataReader)
         {
             foreach (PropertyInfo Property in AllProperties)
@@ -1779,70 +1780,6 @@ namespace Modular.Core
         {
             AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
             _ChangeLog = string.Empty;
-        }
-
-        #endregion
-
-        #region "  Other Methods  "
-
-        public static Type GetClassType()
-        {
-            return MethodBase.GetCurrentMethod()?.DeclaringType;
-        }
-
-        public static PropertyInfo GetProperty(string Name)
-        {
-            Type ClassType = GetClassType();
-            if (ClassType != null)
-            {
-                PropertyInfo[] AllProperties = ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                foreach (PropertyInfo Property in AllProperties)
-                {
-                    if (Property.Name.ToUpper() == Name.Trim().ToUpper())
-                    {
-                        return Property;
-                    }
-                }
-            }
-
-            throw new ModularException(ExceptionType.NullObjectReturned, "Property returned is null");
-        }
-
-        public static FieldInfo GetField(string Name)
-        {
-            if (!Name.StartsWith('_'))
-            {
-                Name = '_' + Name;
-            }
-
-
-            Type ClassType = GetClassType();
-            if (ClassType != null)
-            {
-                FieldInfo[] AllFields = ClassType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-                foreach (FieldInfo Field in AllFields)
-                {
-                    if (Field.Name.ToUpper() == Name.Trim().ToUpper())
-                    {
-                        return Field;
-                    }
-                }
-            }
-
-            throw new ModularException(ExceptionType.NullObjectReturned, "Field returned is null");
-        }
-
-        public static PropertyInfo[] GetProperties()
-        {
-            Type ClassType = GetClassType();
-            if (ClassType != null)
-            {
-                return ClassType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            }
-            else
-            {
-                return Array.Empty<PropertyInfo>();
-            }
         }
 
         #endregion
