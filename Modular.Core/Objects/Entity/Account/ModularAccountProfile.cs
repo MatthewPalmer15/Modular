@@ -1,14 +1,28 @@
-﻿namespace Modular.Core.Entity
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
+using Modular.Core.Databases;
+using System.Data;
+using System.Reflection;
+
+namespace Modular.Core.Entity
 {
     [Serializable]
-    public class Profile : ModularBase
+    public class AccountProfile : ModularBase
     {
 
         #region "  Constructors  "
 
-        public Profile()
+        public AccountProfile()
         {
         }
+
+        #endregion
+
+        #region "  Constants  "
+
+        protected static readonly new string MODULAR_DATABASE_TABLE = "tbl_Modular_AccountProfile";
+        protected static new readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_AccountProfile";
+        protected static new readonly Type MODULAR_OBJECTTYPE = typeof(AccountProfile);
 
         #endregion
 
@@ -30,17 +44,17 @@
 
         #region "  Properties  "
 
-        public Guid AccountID
+        public Account Account
         {
             get
             {
-                return _AccountID;
+                return Account.Load(_AccountID);
             }
             set
             {
-                if (_AccountID != value)
+                if (_AccountID != value.ID)
                 {
-                    _AccountID = value;
+                    _AccountID = value.ID;
                     OnPropertyChanged("AccountID");
                 }
             }
@@ -130,18 +144,122 @@
 
         #region "  Static Methods  "
 
-        public static new Profile Create()
+        /// <summary>
+        /// Create a new instance.
+        /// </summary>
+        /// <returns></returns>
+        public static new AccountProfile Create()
         {
-            Profile obj = new Profile();
+            AccountProfile obj = new AccountProfile();
             obj.SetDefaultValues();
             return obj;
         }
 
-        public static new Profile Load(Guid ID)
+
+        /// <summary>
+        /// Load an existing instance from the database.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public static new AccountProfile Load(Guid ID)
         {
-            Profile obj = new Profile();
+            AccountProfile obj = new AccountProfile();
             obj.Fetch(ID);
             return obj;
+        }
+
+
+        /// <summary>
+        /// Loads all instances from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        public static new List<AccountProfile> LoadList()
+        {
+            List<AccountProfile> AllAccountProfiles = new List<AccountProfile>();
+
+            // Check if the database can be connected to.
+            if (Database.CheckDatabaseConnection())
+            {
+                FieldInfo[] AllFields = CurrentClass.GetFields();
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
+                }
+
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                            {
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                            }
+
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+                                Command.Connection = Connection;
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    AccountProfile obj = GetOrdinals(DataReader);
+                                    while (DataReader.Read())
+                                    {
+                                        AllAccountProfiles.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
+                            {
+                                Command.Connection = Connection;
+
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    AccountProfile obj = GetOrdinals(DataReader);
+
+                                    while (DataReader.Read())
+                                    {
+                                        AllAccountProfiles.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
+            }
+
+            return AllAccountProfiles;
         }
 
         #endregion
@@ -151,6 +269,29 @@
         public override string ToString()
         {
             return Name;
+        }
+
+        public override AccountProfile Clone()
+        {
+            return AccountProfile.Load(ID);
+        }
+
+        #endregion
+
+        #region "  Data Methods  "
+
+        protected static AccountProfile GetOrdinals(SqlDataReader DataReader)
+        {
+            AccountProfile obj = new AccountProfile();
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            return obj;
+        }
+
+        protected static AccountProfile GetOrdinals(SqliteDataReader DataReader)
+        {
+            AccountProfile obj = new AccountProfile();
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            return obj;
         }
 
         #endregion
