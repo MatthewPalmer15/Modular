@@ -206,6 +206,10 @@ namespace Modular.Core
         [DefaultValue(false)]
         public bool IsModified { get; private set; }
 
+        [Ignore]
+        [DefaultValue (false)]
+        public bool IsLocked { get; private set; }
+
         // This gets all the properties, and checks if the data annotation restrictions are met.
         public bool IsValid
         {
@@ -286,7 +290,7 @@ namespace Modular.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ModularException"></exception>
-        protected static List<ModularBase> LoadAll()
+        protected static List<ModularBase> LoadList()
         {
             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
         }
@@ -312,6 +316,9 @@ namespace Modular.Core
             return obj != null;
         }
 
+        #endregion
+
+        #region "  Instance Methods  "
 
         public virtual ModularBase Clone()
         {
@@ -322,10 +329,6 @@ namespace Modular.Core
         {
             return Clone();
         }
-
-        #endregion
-
-        #region "  Instance Methods  "
 
         /// <summary>
         /// Saves the current instance. It will either insert, or update it into the database.
@@ -343,7 +346,8 @@ namespace Modular.Core
         {
             if ((IsModified && IsValid) || OverrideValidation)
             {
-                OnSave();
+                AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
+                _ChangeLog = string.Empty;
 
                 if (IsNew)
                 {
@@ -694,7 +698,7 @@ namespace Modular.Core
         /// Function which inserts a record into the database, using the object.
         /// </summary>
         /// <exception cref="ModularException"></exception>
-        protected virtual void Insert()
+        protected void Insert()
         {
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
@@ -895,7 +899,7 @@ namespace Modular.Core
         /// Function which updates a record in the database, using the object.
         /// </summary>
         /// <exception cref="ModularException"></exception>
-        public virtual void Delete(bool HardDelete = false)
+        public void Delete(bool HardDelete = false)
         {
             // Check if the instance is not new. If it is new, it means it has not been saved to the database yet.
             if (!IsNew)
@@ -990,30 +994,41 @@ namespace Modular.Core
 
         #endregion
 
-        #region "  Object Methods  "
+        #region "  System Methods  "
 
-        /// <summary>
-        /// Sets all properties within the class to the default values
-        /// </summary>
-        public virtual void SetDefaultValues()
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string PropertyName)
         {
-            SetDefaultValues(false);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+
+            PropertyInfo Property = this.GetType().GetProperty(PropertyName);
+            if (Property != null)
+            {
+                _ChangeLog += $"{Property.Name} value changed to {Property.GetValue(this)}.{Environment.NewLine}";
+            }
+            else
+            {
+                _ChangeLog += $"{PropertyName} value changed. Could not retrieve new value.{Environment.NewLine}";
+            }
+            IsModified = true;
         }
 
+
         /// <summary>
         /// Sets all properties within the class to the default values
         /// </summary>
-        /// <param name="Override">
+        /// <param name="OverrideCurrentValues">
         /// Overrides any current data within the object.
         /// </param>
-        public virtual void SetDefaultValues(bool Override)
+        public void SetDefaultValues(bool OverrideCurrentValues = false)
         {
             // Get all Properties within the class that are instance-based and public
             PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo Property in AllProperties)
             {
                 // If the current field is null, or properties are allowed to be override, we set a default value
-                if ((Equals(Property.GetValue(this), null) || Override) && Property.CanWrite)
+                if ((Equals(Property.GetValue(this), null) || OverrideCurrentValues) && Property.CanWrite)
                 {
                     // DataType: Enums
                     if (Property.PropertyType.IsEnum)
@@ -1750,34 +1765,6 @@ namespace Modular.Core
                     }
                 }
             }
-        }
-
-        #endregion
-
-        #region "  System Methods  "
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string PropertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
-
-            PropertyInfo Property = this.GetType().GetProperty(PropertyName);
-            if (Property != null)
-            {
-                _ChangeLog += $"{Property.Name} value changed to {Property.GetValue(this)}.{Environment.NewLine}";
-            }
-            else
-            {
-                _ChangeLog += $"{PropertyName} value changed. Could not retrieve new value.{Environment.NewLine}";
-            }
-            IsModified = true;
-        }
-
-        protected void OnSave()
-        {
-            AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
-            _ChangeLog = string.Empty;
         }
 
         #endregion
