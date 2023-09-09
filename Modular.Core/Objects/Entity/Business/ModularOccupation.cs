@@ -62,7 +62,7 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        public static new List<Occupation> LoadAll()
+        public static new List<Occupation> LoadList()
         {
             return FetchAll();
         }

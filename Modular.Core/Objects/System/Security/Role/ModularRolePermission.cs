@@ -84,7 +84,7 @@ namespace Modular.Core.Security
             obj.SetDefaultValues();
             return obj;
         }
-        public static new List<RolePermission> LoadAll()
+        public static new List<RolePermission> LoadList()
         {
             return FetchAll();
         }

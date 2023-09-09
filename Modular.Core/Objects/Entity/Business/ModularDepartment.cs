@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
+using Modular.Core.Objects.Utility;
 
 namespace Modular.Core.Entity
 {
@@ -62,7 +63,7 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        public static new List<Department> LoadAll()
+        public static new List<Department> LoadList()
         {
             return FetchAll();
         }

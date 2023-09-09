@@ -185,7 +185,7 @@ namespace Modular.Core.Documents
 
         #region "  Static Methods  "
 
-        public static new List<Document> LoadAll()
+        public static new List<Document> LoadList()
         {
             return new List<Document>();
         }
@@ -219,7 +219,6 @@ namespace Modular.Core.Documents
         }
 
         #endregion
-
 
         #region "  Data Methods  "
 

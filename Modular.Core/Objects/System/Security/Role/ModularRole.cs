@@ -65,7 +65,7 @@ namespace Modular.Core.Security
 
         private void LoadPermissions()
         {
-            _Permissions = RolePermission.LoadAll().Where(Permission => Permission.RoleID == ID).ToList();
+            _Permissions = RolePermission.LoadList().Where(Permission => Permission.RoleID == ID).ToList();
         }
 
         public static new Role Create()
@@ -75,7 +75,7 @@ namespace Modular.Core.Security
             return obj;
         }
 
-        public static new List<Role> LoadAll()
+        public static new List<Role> LoadList()
         {
             return FetchAll();
         }

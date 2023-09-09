@@ -15,7 +15,7 @@ using Modular.Core.Utility;
 
 namespace Modular.Core
 {
-    public class ModularBaseOLD : ICloneable, INotifyPropertyChanged
+    public class ModularBaseOld : ICloneable, INotifyPropertyChanged
     {
 
         #region "  Constructors  "
@@ -24,7 +24,7 @@ namespace Modular.Core
         /// Creates a new instance.
         /// </summary>
         /// <exception cref="ModularException">You cannot create a new instance of the Base Class.</exception>
-        public ModularBase()
+        public ModularBaseOld()
         {
             if (this.GetType() == typeof(ModularBase))
             {
@@ -179,9 +179,6 @@ namespace Modular.Core
             }
         }
 
-        // TODO: Add support for database triggers to set this value.
-        // It should check if the record is orphaned, and if so, set this value to true.
-        // This should help identify orphaned records, and allow them to be cleaned up.
         [SystemManaged]
         public bool IsFlagged
         {
@@ -1473,7 +1470,7 @@ namespace Modular.Core
 
         protected void OnSave()
         {
-            AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
+            AuditLog.Create(ObjectTypes.ObjectType.Unknown, ID, _ChangeLog);
             _ChangeLog = string.Empty;
         }
 

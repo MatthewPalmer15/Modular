@@ -32,7 +32,7 @@ namespace Modular.Core.Geo
 
         #region "  Static Methods  "
 
-        public static new List<Region> LoadAll()
+        public static new List<Region> LoadList()
         {
             return FetchAll();
         }

@@ -152,9 +152,8 @@
 
         #region "  Data Methods  "
 
-        public static new List<CreditPayment> LoadAll()
+        public static new List<CreditPayment> LoadList()
         {
-            // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<CreditPayment>();
         }
 

@@ -51,6 +51,7 @@ namespace Modular.Core.Databases
             return StrBuilder.ToString();
         }
 
+
         /// <summary>
         /// Creates a query to create a new table in the database.
         /// </summary>
@@ -87,6 +88,46 @@ namespace Modular.Core.Databases
             StrBuilder.AppendLine(");");
             return StrBuilder.ToString();
         }
+
+
+        /// <summary>
+        /// Creates a query to alter an existing table in the database.
+        /// </summary>
+        /// <param name="DatabaseTableName"></param>
+        /// <param name="AllFields"></param>
+        /// <returns></returns>
+        public static string CreateAlterTableQuery(string DatabaseTableName, FieldInfo[] AllFields)
+        {
+            bool IsFirstIteration = true;
+
+            StringBuilder StrBuilder = new StringBuilder();
+            StrBuilder.Clear(); // Its a new instance, but to make sure its blank.
+
+            StrBuilder.AppendLine($"ALTER TABLE {DatabaseTableName} (");
+
+            foreach (FieldInfo Field in AllFields)
+            {
+                bool HasIgnoreAttribute = Field.GetCustomAttributes(typeof(IgnoreAttribute), false).Length > 0;
+
+                if (!HasIgnoreAttribute)
+                {
+                    string FieldName = Field.Name.Trim().Replace("_", "");
+                    if (IsFirstIteration)
+                    {
+                        StrBuilder.AppendLine($"{FieldName} {GetDatabaseAttributes(Field)}");
+                        IsFirstIteration = false;
+                    }
+                    else
+                    {
+                        StrBuilder.AppendLine($", {FieldName} {GetDatabaseAttributes(Field)}");
+                    }
+                }
+            }
+
+            StrBuilder.AppendLine(");");
+            return StrBuilder.ToString();
+        }
+
 
         /// <summary>
         /// Creates a query to alter an existing table in the database.
@@ -175,7 +216,7 @@ namespace Modular.Core.Databases
             StrBuilder.AppendLine($"SELECT * FROM {DatabaseTableName}");
             StrBuilder.AppendLine("WHERE");
 
-            foreach (string FieldName in AllFields.Select(Property => Property.Name))
+            foreach (string FieldName in AllFields.Select(Field => Field.Name))
             {
                 string FieldNameWithoutUnderscore = FieldName.Replace("_", "");
 
@@ -225,6 +266,50 @@ namespace Modular.Core.Databases
 
         #region "  Methods (Insert)  "
 
+        public static string CreateInsertQuery(string DatabaseTableName, FieldInfo[] AllFields)
+        {
+            bool IsFirstIteration = true;
+
+            StringBuilder StrBuilder = new StringBuilder();
+            StrBuilder.Clear(); // Its a new instance, but to make sure its blank.
+
+            StrBuilder.AppendLine($"INSERT INTO {DatabaseTableName} (");
+            foreach (string FieldName in AllFields.Select(Field => Field.Name))
+            {
+                string FieldNameWithoutUnderscore = FieldName.Replace("_", "");
+                if (IsFirstIteration)
+                {
+                    StrBuilder.AppendLine($"{FieldNameWithoutUnderscore}");
+                    IsFirstIteration = false;
+                }
+                else
+                {
+                    StrBuilder.AppendLine($", {FieldNameWithoutUnderscore}");
+                }
+            }
+
+            StrBuilder.AppendLine(") VALUES (");
+            IsFirstIteration = true;
+
+            foreach (string FieldName in AllFields.Select(Field => Field.Name))
+            {
+                string FieldNameWithoutUnderscore = FieldName.Replace("_", "");
+                if (IsFirstIteration)
+                {
+                    StrBuilder.AppendLine($"@{FieldNameWithoutUnderscore}");
+                    IsFirstIteration = false;
+                }
+                else
+                {
+                    StrBuilder.AppendLine($", @{FieldNameWithoutUnderscore}");
+                }
+            }
+
+            StrBuilder.AppendLine(")");
+
+            return StrBuilder.ToString();
+        }
+
         public static string CreateInsertQuery(string DatabaseTableName, PropertyInfo[] AllProperties)
         {
             bool IsFirstIteration = true;
@@ -271,6 +356,34 @@ namespace Modular.Core.Databases
 
         #region "  Methods (Update)  "
 
+        public static string CreateUpdateQuery(string DatabaseTableName, FieldInfo[] AllFields)
+        {
+            bool IsFirstIteration = true;
+
+            StringBuilder StrBuilder = new StringBuilder();
+            StrBuilder.Clear(); // Its a new instance, but to make sure its blank.
+
+            StrBuilder.AppendLine($"UPDATE {DatabaseTableName} SET");
+
+            foreach (string FieldName in AllFields.Select(FIELD => FIELD.Name))
+            {
+                string FieldNameWithoutUnderscore = FieldName.Replace("_", "");
+                if (IsFirstIteration)
+                {
+                    StrBuilder.AppendLine($"{FieldNameWithoutUnderscore} = @{FieldNameWithoutUnderscore}");
+                    IsFirstIteration = false;
+                }
+                else
+                {
+                    StrBuilder.AppendLine($", {FieldNameWithoutUnderscore} = @{FieldNameWithoutUnderscore}");
+                }
+            }
+
+            StrBuilder.AppendLine("WHERE ID = @ID");
+
+            return StrBuilder.ToString();
+        }
+
         public static string CreateUpdateQuery(string DatabaseTableName, PropertyInfo[] AllProperties)
         {
             bool IsFirstIteration = true;
@@ -302,13 +415,22 @@ namespace Modular.Core.Databases
 
         #region "  Methods (Delete)  "
 
+        public static string CreateDeleteQuery(string DatabaseTableName, FieldInfo Field)
+        {
+            StringBuilder StrBuilder = new StringBuilder();
+            StrBuilder.Clear(); // Its a new instance, but to make sure its blank.s
+
+            string FieldNameWithoutUnderscore = Field.Name.Replace("_", "");
+            StrBuilder.Append($"DELETE FROM {DatabaseTableName} WHERE {FieldNameWithoutUnderscore} = @{FieldNameWithoutUnderscore}");
+
+            return StrBuilder.ToString();
+        }
+
         public static string CreateDeleteQuery(string DatabaseTableName, PropertyInfo Property)
         {
             StringBuilder StrBuilder = new StringBuilder();
             StrBuilder.Clear(); // Its a new instance, but to make sure its blank.s
             StrBuilder.Append($"DELETE FROM {DatabaseTableName} WHERE {Property.Name} = @{Property.Name}");
-
-
             return StrBuilder.ToString();
         }
 

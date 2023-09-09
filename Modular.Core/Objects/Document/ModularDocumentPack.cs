@@ -74,7 +74,7 @@
 
         #region "  Static Methods  "
 
-        public static new List<DocumentPack> LoadAll()
+        public static new List<DocumentPack> LoadList()
         {
             return new List<DocumentPack>();
         }
@@ -99,7 +99,7 @@
 
         public void LoadDocuments()
         {
-            _Documents = Document.LoadAll().Where(Document => Document.DocumentPackID == ID).ToList();
+            _Documents = Document.LoadList().Where(Document => Document.DocumentPackID == ID).ToList();
         }
 
         public override string ToString()

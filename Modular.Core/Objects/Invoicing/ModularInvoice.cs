@@ -38,7 +38,7 @@ namespace Modular.Core.Invoicing
 
         private Guid _ContactID;
 
-        private ObjectType _ObjectType;
+        private ObjectTypes.ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -94,7 +94,7 @@ namespace Modular.Core.Invoicing
             }
         }
 
-        public ObjectType ObjectType
+        public ObjectTypes.ObjectType ObjectType
         {
             get
             {
@@ -354,12 +354,12 @@ namespace Modular.Core.Invoicing
 
         private void LoadInvoiceItems()
         {
-            _InvoiceItems = InvoiceItem.LoadAll().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
+            _InvoiceItems = InvoiceItem.LoadList().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
         }
 
         private void LoadInvoicePayments()
         {
-            _InvoicePayments = InvoicePayment.LoadAll().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
+            _InvoicePayments = InvoicePayment.LoadList().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
         }
 
         public override string ToString()

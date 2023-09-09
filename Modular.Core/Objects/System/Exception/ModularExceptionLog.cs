@@ -139,7 +139,7 @@
             return objExceptionLog;
         }
 
-        public static new List<ExceptionLog> LoadAll()
+        public static new List<ExceptionLog> LoadList()
         {
             return FetchAll();
         }

@@ -77,7 +77,7 @@ namespace Modular.Core.Configuration
         public static string GetValue(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(GetProperty("Key"), Key);
+            obj.Fetch(GetField("Key"), Key);
             return obj.Value;
         }
 
@@ -88,7 +88,7 @@ namespace Modular.Core.Configuration
             return obj;
         }
 
-        public static new List<SystemConfig> LoadAll()
+        public static new List<SystemConfig> LoadList()
         {
             return new List<SystemConfig> { new SystemConfig() };
         }
@@ -103,7 +103,7 @@ namespace Modular.Core.Configuration
         public static SystemConfig Load(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(GetProperty("Key"), Key);
+            obj.Fetch(GetField("Key"), Key);
             return obj;
         }
 

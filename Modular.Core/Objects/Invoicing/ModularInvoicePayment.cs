@@ -188,9 +188,8 @@
 
         #region "  Data Methods  "
 
-        public static new List<InvoicePayment> LoadAll()
+        public static new List<InvoicePayment> LoadList()
         {
-            // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<InvoicePayment>();
         }
 

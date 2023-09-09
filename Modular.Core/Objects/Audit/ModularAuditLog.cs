@@ -22,7 +22,7 @@ namespace Modular.Core.Audit
 
         #region "  Variables  "
 
-        private ObjectType _ObjectType;
+        private ObjectTypes.ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -35,7 +35,7 @@ namespace Modular.Core.Audit
         #region "  Properties  "
 
         [Required]
-        public ObjectType ObjectType
+        public ObjectTypes.ObjectType ObjectType
         {
             get
             {
@@ -103,26 +103,20 @@ namespace Modular.Core.Audit
 
         #region "  Static Methods  "
 
-        public static void Create(string Message)
-        {
-            Create(ObjectType.Unknown, Guid.Empty, Message);
-        }
-
         /// <summary>
         /// Creates a new instance with default values
         /// </summary>
         /// <returns>A new instance</returns>
-        public static void Create(ObjectType ObjectType, Guid ObjectID, string Message)
+        public static void Create(ObjectTypes.ObjectType ObjectType, Guid ObjectID, string Message)
         {
-            AuditLog obj = new AuditLog()
-            {
-                ObjectType = ObjectType,
-                ObjectID = ObjectID,
-                Message = Message,
-                DeviceInformation = ModularUtils.GetDeviceSummary()
-
-            };
+            AuditLog obj = new AuditLog();
             obj.SetDefaultValues(); // Prevent any null values.
+
+            obj.ObjectType = ObjectType;
+            obj.ObjectID = ObjectID;
+            obj.Message = Message;
+            obj.DeviceInformation = ModularUtils.GetDeviceSummary();
+
             obj.Save();
         }
 

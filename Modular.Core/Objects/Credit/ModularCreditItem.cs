@@ -36,7 +36,7 @@ namespace Modular.Core.Credits
 
         private Guid _CreditID;
 
-        private ObjectType _ObjectType;
+        private ObjectTypes.ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -70,7 +70,7 @@ namespace Modular.Core.Credits
             }
         }
 
-        public ObjectType ObjectType
+        public ObjectTypes.ObjectType ObjectType
         {
             get
             {
@@ -222,9 +222,8 @@ namespace Modular.Core.Credits
 
         #region "  Data Methods  "
 
-        public static new List<CreditItem> LoadAll()
+        public static new List<CreditItem> LoadList()
         {
-            // TODO:  Add ModularInvoiceItem.LoadInstances implementation
             return new List<CreditItem>();
         }
 

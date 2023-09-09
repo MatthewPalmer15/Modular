@@ -59,7 +59,7 @@ namespace Modular.Core.Entity
             return objIndustry;
         }
 
-        public static new List<Industry> LoadAll()
+        public static new List<Industry> LoadList()
         {
             return FetchAll();
         }

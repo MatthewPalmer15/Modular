@@ -6,6 +6,7 @@ using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
 using Modular.Core.Geo;
+using Modular.Core.System.Attributes;
 
 namespace Modular.Core.Entity
 {
@@ -22,6 +23,8 @@ namespace Modular.Core.Entity
         #region "  Constants  "
 
         protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Contact";
+        protected static new readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_Contact";
+        protected static new readonly Type MODULAR_OBJECTTYPE = typeof(Contact);
 
         #endregion
 
@@ -136,9 +139,7 @@ namespace Modular.Core.Entity
 
 
         [Required(ErrorMessage = "Forename is required.")]
-        [MinLength(2, ErrorMessage = "Forename must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "Forename must be less than 100 characters.")]
-        [Display(Name = "Forename")] //DisplayFormat(NullDisplayText = "Please enter your first name")]
+        [Display(Name = "Forename")]
         public string Forename
         {
             get
@@ -157,8 +158,6 @@ namespace Modular.Core.Entity
 
 
         [Required(ErrorMessage = "Surname is required.")]
-        [MinLength(2, ErrorMessage = "Surname must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "Surname must be less than 100 characters.")]
         [Display(Name = "Surname")] // DisplayFormat(NullDisplayText = "Please enter your last name")]
         public string Surname
         {
@@ -250,8 +249,6 @@ namespace Modular.Core.Entity
         }
 
 
-        [MinLength(2, ErrorMessage = "Address Line must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "Address Line must be less than 100 characters.")]
         [Display(Name = "Address Line 1")]
         public string AddressLine1
         {
@@ -270,8 +267,6 @@ namespace Modular.Core.Entity
         }
 
 
-        [MinLength(2, ErrorMessage = "Address Line must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "Address Line must be less than 100 characters.")]
         [Display(Name = "Address Line 2")]
         public string AddressLine2
         {
@@ -290,8 +285,6 @@ namespace Modular.Core.Entity
         }
 
 
-        [MinLength(2, ErrorMessage = "Address Line must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "Address Line must be less than 100 characters.")]
         [Display(Name = "Address Line 3")]
         public string AddressLine3
         {
@@ -310,8 +303,6 @@ namespace Modular.Core.Entity
         }
 
 
-        [MinLength(2, ErrorMessage = "City must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "City must be less than 100 characters.")]
         [Display(Name = "City")]
         public string AddressCity
         {
@@ -330,8 +321,6 @@ namespace Modular.Core.Entity
         }
 
 
-        [MinLength(2, ErrorMessage = "County must be more than 2 characters.")]
-        [MaxLength(100, ErrorMessage = "County must be less than 100 characters.")]
         [Display(Name = "County")]
         public string AddressCounty
         {
@@ -350,23 +339,6 @@ namespace Modular.Core.Entity
         }
 
 
-        public Guid AddressCountryID
-        {
-            get
-            {
-                return _AddressCountryID;
-            }
-            set
-            {
-                if (_AddressCountryID != value)
-                {
-                    _AddressCountryID = value;
-                    OnPropertyChanged("AddressCountryID");
-                }
-            }
-        }
-
-
         [Display(Name = "Country")]
         public Country AddressCountry
         {
@@ -374,12 +346,17 @@ namespace Modular.Core.Entity
             {
                 return Country.Load(_AddressCountryID);
             }
+            set
+            {
+                if (_AddressCountryID != value.ID)
+                {
+                    _AddressCountryID = value.ID;
+                    OnPropertyChanged("AddressCountryID");
+                }
+            }
         }
 
-
         [DataType(DataType.PostalCode, ErrorMessage = "Your Postcode is incorrect, please try again.")]
-        [MinLength(2, ErrorMessage = "Postcode must be more than 2 characters.")]
-        [MaxLength(25, ErrorMessage = "Postcode must be less than 25 characters.")]
         [Display(Name = "Postcode")]
         public string AddressPostcode
         {
@@ -400,8 +377,6 @@ namespace Modular.Core.Entity
 
         [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress, ErrorMessage = "Your Email is incorrect, please try again.")]
-        [MinLength(5, ErrorMessage = "Email must be more than 5 characters.")]
-        [MaxLength(250, ErrorMessage = "Email must be less than 250 characters.")]
         [Display(Name = "Email Address", ShortName = "Email")]
         public string Email
         {
@@ -421,7 +396,6 @@ namespace Modular.Core.Entity
 
 
         [DataType(DataType.EmailAddress, ErrorMessage = "Your Email is incorrect, please try again.")]
-        [MaxLength(250, ErrorMessage = "Email must be less than 250 characters.")]
         [Display(Name = "Email Address", ShortName = "Email")]
         public string SecondaryEmail
         {
@@ -441,8 +415,6 @@ namespace Modular.Core.Entity
 
 
         [DataType(DataType.PhoneNumber, ErrorMessage = "Your Phone Number is incorrect, please try again.")]
-        [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
-        [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
         [Display(Name = "Phone Number", ShortName = "Phone")]
         public string Phone
         {
@@ -461,8 +433,6 @@ namespace Modular.Core.Entity
         }
 
         [DataType(DataType.PhoneNumber, ErrorMessage = "Your Phone Number is incorrect, please try again.")]
-        [MinLength(5, ErrorMessage = "Phone Number must be more than 5 characters.")]
-        [MaxLength(25, ErrorMessage = "Phone Number must be less than 25 characters.")]
         [Display(Name = "Phone Number", ShortName = "Phone")]
         public string Mobile
         {
@@ -480,6 +450,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "Facebook Link")]
         public string FacebookLink
         {
             get
@@ -496,6 +467,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "Instagram Link")]
         public string InstagramLink
         {
             get
@@ -512,6 +484,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "Twitter Link")]
         public string TwitterLink
         {
             get
@@ -528,6 +501,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "LinkedIn Link")]
         public string LinkedInLink
         {
             get
@@ -544,6 +518,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "Website Link")]
         public string WebsiteLink
         {
             get
@@ -560,6 +535,7 @@ namespace Modular.Core.Entity
             }
         }
 
+        [Display(Name = "Occupation")]
         public Occupation Occupation
         {
             get
@@ -576,35 +552,35 @@ namespace Modular.Core.Entity
             }
         }
 
-
-        public Guid DepartmentID
+        [Display(Name = "Department")]
+        public Department Department
         {
             get
             {
-                return _DepartmentID;
+                return Department.Load(_DepartmentID);
             }
             set
             {
-                if (_DepartmentID != value)
+                if (_DepartmentID != value.ID)
                 {
-                    _DepartmentID = value;
+                    _DepartmentID = value.ID;
                     OnPropertyChanged("DepartmentID");
                 }
             }
         }
 
-
-        public Guid OrganisationID
+        [Display(Name = "Organisation")]
+        public Organisation Organisation
         {
             get
             {
-                return _OrganisationID;
+                return Organisation.Load(_OrganisationID);
             }
             set
             {
-                if (_OrganisationID != value)
+                if (_OrganisationID != value.ID)
                 {
-                    _OrganisationID = value;
+                    _OrganisationID = value.ID;
                     OnPropertyChanged("OrganisationID");
                 }
             }
@@ -665,9 +641,10 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        public static new List<Contact> LoadAll()
+        public static new List<Contact> LoadList()
         {
-            return FetchAll();
+            List<Contact> obj = FetchAll();
+            return obj;
         }
 
         public static new Contact Load(Guid ID)
@@ -701,81 +678,81 @@ namespace Modular.Core.Entity
         /// <returns></returns>
         protected static List<Contact> FetchAll()
         {
-            List<Contact> AllObjects = new List<Contact>();
+            List<Contact> AllContacts = new List<Contact>();
 
+            // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
-                PropertyInfo[] AllProperties = GetProperties();
-                if (AllProperties != null)
+                FieldInfo[] AllFields = CurrentClass.GetFields();
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
                 {
-                    switch (DatabaseConnectionMode)
-                    {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
+                }
 
-                        case Database.DatabaseConnectivityMode.Remote:
-                            using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                Connection.Open();
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                            }
 
-                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+                                Command.Connection = Connection;
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
-                                }
-
-                                using (SqlCommand Command = new SqlCommand())
-                                {
-                                    Command.Connection = Connection;
-                                    Command.CommandType = CommandType.Text;
-                                    Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
-
-                                    using (SqlDataReader DataReader = Command.ExecuteReader())
+                                    Contact obj = GetOrdinals(DataReader);
+                                    while (DataReader.Read())
                                     {
-                                        Contact obj = GetOrdinals(DataReader);
-
-                                        while (DataReader.Read())
-                                        {
-                                            AllObjects.Add(obj);
-                                        }
+                                        AllContacts.Add(obj);
                                     }
                                 }
-
-                                Connection.Close();
                             }
-                            break;
 
-                        case Database.DatabaseConnectivityMode.Local:
-                            using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                            Connection.Close();
+                        }
+                        break;
+
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
                             {
-                                Connection.Open();
+                                Command.Connection = Connection;
 
-                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    using (SqliteCommand Command = new SqliteCommand())
+                                    Contact obj = GetOrdinals(DataReader);
+
+                                    while (DataReader.Read())
                                     {
-
-                                        Command.Connection = Connection;
-                                        Command.CommandType = CommandType.Text;
-                                        Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
-
-                                        using (SqliteDataReader DataReader = Command.ExecuteReader())
-                                        {
-                                            Contact obj = GetOrdinals(DataReader);
-
-                                            while (DataReader.Read())
-                                            {
-                                                AllObjects.Add(obj);
-                                            }
-                                        }
+                                        AllContacts.Add(obj);
                                     }
                                 }
-                                else
-                                {
-                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
-                                }
-                                Connection.Close();
                             }
-                            break;
-                    }
+
+                            Connection.Close();
+                        }
+                        break;
                 }
             }
             else
@@ -783,32 +760,20 @@ namespace Modular.Core.Entity
                 throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
             }
 
-            return AllObjects;
+            return AllContacts;
         }
 
         protected static Contact GetOrdinals(SqlDataReader DataReader)
         {
             Contact obj = new Contact();
-
-            PropertyInfo[] AllProperties = GetProperties();
-            if (AllProperties != null)
-            {
-                obj.SetPropertyValues(AllProperties, DataReader);
-            }
-
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }
 
         protected static Contact GetOrdinals(SqliteDataReader DataReader)
         {
             Contact obj = new Contact();
-
-            PropertyInfo[] AllProperties = GetProperties();
-            if (AllProperties != null)
-            {
-                obj.SetPropertyValues(AllProperties, DataReader);
-            }
-
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }
 

@@ -251,7 +251,7 @@ namespace Modular.Core.Entity
             }
         }
 
-        public static new List<Account> LoadAll()
+        public static new List<Account> LoadList()
         {
             return FetchAll();
         }
@@ -271,11 +271,11 @@ namespace Modular.Core.Entity
             {
 
                 case LoginMethodType.Email:
-                    obj.Fetch(GetProperty("Email"), Credentials);
+                    obj.Fetch(GetField("Email"), Credentials);
                     break;
 
                 case LoginMethodType.Username:
-                    obj.Fetch(GetProperty("Username"), Credentials);
+                    obj.Fetch(GetField("Username"), Credentials);
                     break;
             }
 
@@ -337,8 +337,7 @@ namespace Modular.Core.Entity
 
         public static string HashPassword(string password)
         {
-            SHA256 HashingAlgorithm = SHA256.Create();
-            byte[] hashedPassword = HashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
+            byte[] hashedPassword = SHA256.HashData(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(hashedPassword);
         }
 

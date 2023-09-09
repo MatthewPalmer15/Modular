@@ -38,11 +38,14 @@ namespace Modular.Core
 
         protected static readonly string MODULAR_DATABASE_TABLE = "";
         protected static readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "";
+        protected static readonly Type MODULAR_OBJECTTYPE = typeof(ModularBase);
+
 
         #endregion
 
         #region "  Variables  "
 
+        [Key]
         private Guid _ID;
 
         private DateTime _CreatedDate;
@@ -55,14 +58,19 @@ namespace Modular.Core
 
         private bool _IsDeleted;
 
+        [Ignore]
         private bool _IsFlagged;
 
+        [Ignore]
         private string _ChangeLog = string.Empty;
 
         #endregion
 
         #region "  Properties  "
 
+        /// <summary>
+        /// The Unique Identifier for the object.
+        /// </summary>
         [Key]
         [Unique(ErrorMessage = "ID must be unique.")]
         [Required(ErrorMessage = "ID cannot be null.")]
@@ -84,6 +92,9 @@ namespace Modular.Core
         }
 
 
+        /// <summary>
+        /// The date the object was created.
+        /// </summary>
         [Required(ErrorMessage = "Created Date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Date must be in format DD/MM/YYYY.")]
         [Display(Name = "Created Date"), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
@@ -104,6 +115,9 @@ namespace Modular.Core
         }
 
 
+        /// <summary>
+        /// The user who created the object.
+        /// </summary>
         [Required(ErrorMessage = "Created By is required.")]
         [Display(Name = "Created By")]
         public Entity.Contact CreatedBy
@@ -123,6 +137,9 @@ namespace Modular.Core
         }
 
 
+        /// <summary>
+        /// The date the object was last modified.
+        /// </summary>
         [Required(ErrorMessage = "Modified Date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Date must be in format DD/MM/YYYY.")]
         [Display(Name = "Updated Date"), DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
@@ -143,6 +160,9 @@ namespace Modular.Core
         }
 
 
+        /// <summary>
+        /// The user who last modified the object.
+        /// </summary>
         [Required(ErrorMessage = "Modified By is required.")]
         [Display(Name = "Modified By")]
         public Entity.Contact ModifiedBy
@@ -161,6 +181,10 @@ namespace Modular.Core
             }
         }
 
+
+        /// <summary>
+        /// Whether the object has been 'soft' deleted.
+        /// </summary>
         [Ignore]
         [DefaultValue(false)]
         public bool IsDeleted
@@ -179,9 +203,10 @@ namespace Modular.Core
             }
         }
 
-        // TODO: Add support for database triggers to set this value.
-        // It should check if the record is orphaned, and if so, set this value to true.
-        // This should help identify orphaned records, and allow them to be cleaned up.
+
+        /// <summary>
+        /// Whether the object has been flagged, potentially as an orphaned record.
+        /// </summary>
         [SystemManaged]
         public bool IsFlagged
         {
@@ -198,23 +223,38 @@ namespace Modular.Core
             }
         }
 
+        /// <summary>
+        /// Whether the object is new, and has not been saved to the database.
+        /// </summary>
         [Ignore]
         [DefaultValue(false)]
         public bool IsNew { get; private set; }
 
+
+        /// <summary>
+        /// Whether the object has been modified, and needs to be saved to the database.
+        /// </summary>
         [Ignore]
         [DefaultValue(false)]
         public bool IsModified { get; private set; }
 
+
+        /// <summary>
+        /// Whether the object is locked, and cannot be modified.
+        /// </summary>
         [Ignore]
         [DefaultValue (false)]
         public bool IsLocked { get; private set; }
 
-        // This gets all the properties, and checks if the data annotation restrictions are met.
+
+        /// <summary>
+        /// Whether the object is valid, and can be saved to the database.
+        /// </summary>
         public bool IsValid
         {
             get
             {
+                // This gets all the properties, and checks if the data annotation restrictions are met.
                 var AllProperties = GetType().GetProperties();
                 return AllProperties.All(Property =>
                 {
@@ -228,6 +268,9 @@ namespace Modular.Core
             }
         }
 
+        /// <summary>
+        /// The validation error message.
+        /// </summary>
         public string ValidationMessage
         {
             get
@@ -245,6 +288,9 @@ namespace Modular.Core
             }
         }
 
+        /// <summary>
+        /// The validation error messages.
+        /// </summary>
         private IEnumerable<string> ValidationErrors
         {
             get
@@ -280,30 +326,30 @@ namespace Modular.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ModularException"></exception>
-        protected static ModularBase Create()
-        {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-        }
-
-        /// <summary>
-        /// Loads all instances of the object.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ModularException"></exception>
-        protected static List<ModularBase> LoadList()
-        {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-        }
-
-        /// <summary>
-        /// Loads an instance of the object.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ModularException"></exception>
-        protected static ModularBase Load(Guid ID)
-        {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-        }
+         protected static ModularBase Create()
+         {
+             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+         }
+         
+         /// <summary>
+         /// Loads all instances of the object.
+         /// </summary>
+         /// <returns></returns>
+         /// <exception cref="ModularException"></exception>
+         protected static List<ModularBase> LoadList()
+         {
+             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+         }
+         
+         /// <summary>
+         /// Loads an instance of the object.
+         /// </summary>
+         /// <returns></returns>
+         /// <exception cref="ModularException"></exception>
+         protected static ModularBase Load(Guid ID)
+         {
+             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+         }
 
         /// <summary>
         /// Checks to see if instance already exists
@@ -346,7 +392,7 @@ namespace Modular.Core
         {
             if ((IsModified && IsValid) || OverrideValidation)
             {
-                AuditLog.Create(ObjectType.Unknown, ID, _ChangeLog);
+                AuditLog.Create(ObjectTypes.ConvertStringToObjectType(GetType().Name), ID, _ChangeLog);
                 _ChangeLog = string.Empty;
 
                 if (IsNew)
@@ -396,7 +442,7 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance);
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance).Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false)).ToArray();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -411,7 +457,6 @@ namespace Modular.Core
                         using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
                         {
                             Connection.Open();
-
                             string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
 
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
@@ -422,22 +467,22 @@ namespace Modular.Core
 
                             using (SqlCommand Command = new SqlCommand())
                             {
-
                                 Command.Connection = Connection;
 
-                                // If stored procedures are enabled, use the stored procedure, otherwise use a query.
+                                // If stored procedures are enabled, use the stored procedure, otherwise use a text query.
                                 Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
                                 Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID")));
 
                                 Command.Parameters.Add(new SqlParameter($"@ID", ID));
 
-                                SqlDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    DataReader.Read();
-                                    SetFieldValues(AllFields, DataReader);
+                                    // If data was returned, set the field values.
+                                    if (DataReader.HasRows)
+                                    {
+                                        DataReader.Read();
+                                        SetFieldValues(AllFields, DataReader);
+                                    }
                                 }
                             }
 
@@ -457,17 +502,18 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID")));
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
-                                SqliteDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    DataReader.Read();
-                                    SetFieldValues(AllFields, DataReader);
+                                    // If data was returned, set the field values.
+                                    if (DataReader.HasRows)
+                                    {
+                                        DataReader.Read();
+                                        SetFieldValues(AllFields, DataReader);
+                                    }
                                 }
                             }
 
@@ -490,24 +536,18 @@ namespace Modular.Core
         /// Function which fetches the data from the database, using the specified ID.
         /// </summary>
         /// <param name="Value"></param>
-        public void Fetch(string Value)
+        public void Fetch(FieldInfo Field, string Value)
         {
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-                // Gets the property which has the Identifier attribute.
-                PropertyInfo Property = AllProperties.First(Property => Property.GetCustomAttributes(typeof(IdentifierAttribute), false).Length > 0);
-                if (Property == null)
-                {
-                    return;
-                }
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance).Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false)).ToArray();
+                string FieldName = Field.Name.Trim().Replace("_", "");
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
                 {
-                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
                 }
 
                 switch (Database.ConnectionMode)
@@ -518,32 +558,32 @@ namespace Modular.Core
                         {
                             Connection.Open();
 
-                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchBy{Property.Name}";
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchBy{FieldName}";
 
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Field));
                             }
 
                             using (SqlCommand Command = new SqlCommand())
                             {
-
                                 Command.Connection = Connection;
 
                                 // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                 Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property);
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Field);
 
-                                Command.Parameters.Add(new SqlParameter($"@{Property.Name}", Value));
+                                Command.Parameters.Add(new SqlParameter($"@{FieldName}", Value));
 
-                                SqlDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
+                                    // If data was returned, set the field values.
+                                    if (DataReader.HasRows)
+                                    {
+                                        DataReader.Read();
+                                        SetFieldValues(AllFields, DataReader);
+                                    }
                                 }
                             }
 
@@ -563,17 +603,18 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Field);
 
                                 Command.Parameters.Add(new SqliteParameter($"@ID", ID));
 
-                                SqliteDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
+                                    // If data was returned, set the field values.
+                                    if (DataReader.HasRows)
+                                    {
+                                        DataReader.Read();
+                                        SetFieldValues(AllFields, DataReader);
+                                    }
                                 }
                             }
 
@@ -592,107 +633,6 @@ namespace Modular.Core
             }
         }
 
-        /// <summary>
-        /// Function which fetches the data from the database, using the specified property and value.
-        /// </summary>
-        /// <param name="Property"></param>
-        /// <param name="Value"></param>
-        /// <exception cref="ModularException"></exception>
-        public void Fetch(PropertyInfo Property, string Value)
-        {
-            // Check if the database can be connected to.
-            if (Database.CheckDatabaseConnection())
-            {
-                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-                // If table does not exist within the database, create it.
-                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
-                {
-                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
-                }
-
-                switch (Database.ConnectionMode)
-                {
-                    // If the database is a remote database, connect to it.
-                    case Database.DatabaseConnectivityMode.Remote:
-                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
-                        {
-                            Connection.Open();
-
-                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchBy{Property.Name}";
-
-                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
-                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
-                            {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property));
-                            }
-
-                            using (SqlCommand Command = new SqlCommand())
-                            {
-
-                                Command.Connection = Connection;
-
-                                // If stored procedures are enabled, use the stored procedure, otherwise use a query.
-                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property);
-
-                                Command.Parameters.Add(new SqlParameter($"@{Property.Name}", Value));
-
-                                SqlDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
-                                {
-                                    DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
-                                }
-                            }
-
-                            Connection.Close();
-                        }
-                        break;
-
-                    // If the database is a local database, connect to it.
-                    case Database.DatabaseConnectivityMode.Local:
-                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
-                        {
-                            Connection.Open();
-
-                            using (SqliteCommand Command = new SqliteCommand())
-                            {
-                                Command.Connection = Connection;
-
-                                // Stored procedures are not supported in SQLite, so use a query.
-                                Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Property);
-
-                                Command.Parameters.Add(new SqliteParameter($"@{Property.Name}", Value));
-
-                                SqliteDataReader DataReader = Command.ExecuteReader();
-
-                                // If data was returned, set the property values.
-                                if (DataReader.HasRows)
-                                {
-                                    DataReader.Read();
-                                    SetPropertyValues(AllProperties, DataReader);
-                                }
-                            }
-
-                            Connection.Close();
-                        }
-                        break;
-
-                    // If the database connection mode was not defined, throw an exception.
-                    default:
-                        throw new ModularException(ExceptionType.DatabaseConnectivityNotDefined, "Database Connection Mode was not defined.");
-                }
-            }
-            else
-            {
-                throw new ModularException(ExceptionType.DatabaseConnectionError, $"There was an issue trying to connect to the database.");
-            }
-
-        }
 
         /// <summary>
         /// Function which inserts a record into the database, using the object.
@@ -703,12 +643,12 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance).Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false)).ToArray();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseExists(MODULAR_DATABASE_TABLE))
                 {
-                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
                 }
 
                 switch (Database.ConnectionMode)
@@ -724,7 +664,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllProperties));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllFields));
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -733,16 +673,13 @@ namespace Modular.Core
 
                                 // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                 Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllFields);
 
                                 // Add all the properties as parameters.
-                                foreach (PropertyInfo Property in AllProperties)
+                                foreach (FieldInfo Field in AllFields)
                                 {
-                                    if (Property.CanWrite)
-                                    {
-                                        SqlParameter Parameter = new SqlParameter($"@{Property.Name}", Property.GetValue(this));
-                                        Command.Parameters.Add(Parameter);
-                                    }
+                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_","")}", Field.GetValue(this));
+                                    Command.Parameters.Add(Parameter);
                                 }
 
                                 Command.ExecuteNonQuery();
@@ -764,16 +701,13 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                Command.CommandText = DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllFields);
 
                                 // Add all the properties as parameters.
-                                foreach (PropertyInfo Property in AllProperties)
+                                foreach (FieldInfo Field in AllFields)
                                 {
-                                    if (Property.CanWrite)
-                                    {
-                                        SqlParameter Parameter = new SqlParameter($"@{Property.Name}", Property.GetValue(this));
-                                        Command.Parameters.Add(Parameter);
-                                    }
+                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_", "")}", Field.GetValue(this));
+                                    Command.Parameters.Add(Parameter);
                                 }
 
                                 Command.ExecuteNonQuery();
@@ -804,12 +738,12 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance).Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false)).ToArray();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
                 {
-                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
                 }
 
                 switch (Database.ConnectionMode)
@@ -825,7 +759,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllProperties));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllFields));
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -834,16 +768,13 @@ namespace Modular.Core
 
                                 // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                 Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllFields);
 
                                 // Add all the properties as parameters.
-                                foreach (PropertyInfo Property in AllProperties)
+                                foreach (FieldInfo Field in AllFields)
                                 {
-                                    if (Property.CanWrite)
-                                    {
-                                        SqlParameter Parameter = new SqlParameter($"@{Property.Name}", Property.GetValue(this));
-                                        Command.Parameters.Add(Parameter);
-                                    }
+                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_", "")}", Field.GetValue(this));
+                                    Command.Parameters.Add(Parameter);
                                 }
 
                                 Command.ExecuteNonQuery();
@@ -865,16 +796,13 @@ namespace Modular.Core
 
                                 // Stored procedures are not supported in SQLite, so use a query.
                                 Command.CommandType = CommandType.Text;
-                                Command.CommandText = DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllProperties);
+                                Command.CommandText = DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllFields);
 
                                 // Add all the properties as parameters.
-                                foreach (PropertyInfo Property in AllProperties)
+                                foreach (FieldInfo Field in AllFields)
                                 {
-                                    if (Property.CanWrite)
-                                    {
-                                        SqliteParameter Parameter = new SqliteParameter($"@{Property.Name}", Property.GetValue(this));
-                                        Command.Parameters.Add(Parameter);
-                                    }
+                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_", "")}", Field.GetValue(this));
+                                    Command.Parameters.Add(Parameter);
                                 }
 
                                 Command.ExecuteNonQuery();
@@ -908,12 +836,12 @@ namespace Modular.Core
                 {
                     if (Database.CheckDatabaseConnection())
                     {
-                        PropertyInfo[] AllProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                        FieldInfo[] AllFields = GetType().GetFields(BindingFlags.Instance).Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false)).ToArray();
 
                         // If table does not exist within the database, create it.
                         if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
                         {
-                            DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
+                            DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
                         }
 
                         switch (Database.ConnectionMode)
@@ -929,7 +857,7 @@ namespace Modular.Core
                                     // If stored procedures are enabled, and the stored procedure does not exist, create it.
                                     if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
-                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID")));
+                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
                                     }
 
                                     using (SqlCommand Command = new SqlCommand())
@@ -938,7 +866,7 @@ namespace Modular.Core
 
                                         // If stored procedures are enabled, use the stored procedure, otherwise use a query.
                                         Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
-                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
+                                        Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID")));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -961,7 +889,7 @@ namespace Modular.Core
 
                                         // Stored procedures are not supported in SQLite, so use a query.
                                         Command.CommandType = CommandType.Text;
-                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, this.GetType().GetProperty("ID"));
+                                        Command.CommandText = DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID")));
 
                                         Command.Parameters.AddWithValue("@ID", ID);
 
@@ -1767,6 +1695,42 @@ namespace Modular.Core
             }
         }
 
+        #endregion
+
+        #region "  Other Methods  "
+
+        public static class CurrentClass
+        {
+            public static FieldInfo? GetField(string Name)
+            {
+                string FieldName = Name.Trim().StartsWith('_') ? Name.Trim() : $"_{Name.Trim()}";
+                FieldInfo Field = MODULAR_OBJECTTYPE.GetField(FieldName, BindingFlags.Instance);
+                return Field ?? null;
+            }
+
+            public static PropertyInfo? GetProperty(string Name)
+            {
+                PropertyInfo Property = MODULAR_OBJECTTYPE.GetProperty(Name, BindingFlags.Instance);
+                return Property ?? null;
+            }
+
+            public static FieldInfo[] GetFields()
+            {
+                return MODULAR_OBJECTTYPE
+                    .GetFields(BindingFlags.Instance)
+                    .Where(Field => !Field.IsDefined(typeof(IgnoreAttribute), false))
+                    .ToArray();
+            }
+
+            public static PropertyInfo[] GetProperties()
+            {
+                return MODULAR_OBJECTTYPE
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(Property => !Property.IsDefined(typeof(IgnoreAttribute), false))
+                    .ToArray();
+            }
+
+        }
         #endregion
 
     }

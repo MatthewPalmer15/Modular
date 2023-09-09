@@ -39,7 +39,7 @@ namespace Modular.Core.Credits
 
         private Guid _ContactID;
 
-        private ObjectType _ObjectType;
+        private ObjectTypes.ObjectType _ObjectType;
 
         private Guid _ObjectID;
 
@@ -93,7 +93,7 @@ namespace Modular.Core.Credits
             }
         }
 
-        public ObjectType ObjectType
+        public ObjectTypes.ObjectType ObjectType
         {
             get
             {
@@ -339,12 +339,12 @@ namespace Modular.Core.Credits
 
         private void LoadCreditItems()
         {
-            _CreditItems = CreditItem.LoadAll().Where(CreditItem => CreditItem.CreditID == ID).ToList();
+            _CreditItems = CreditItem.LoadList().Where(CreditItem => CreditItem.CreditID == ID).ToList();
         }
 
         private void LoadCreditPayments()
         {
-            _CreditPayments = CreditPayment.LoadAll().Where(CreditPayment => CreditPayment.CreditID == ID).ToList();
+            _CreditPayments = CreditPayment.LoadList().Where(CreditPayment => CreditPayment.CreditID == ID).ToList();
         }
 
         public override string ToString()

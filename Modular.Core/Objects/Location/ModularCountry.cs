@@ -327,7 +327,7 @@ namespace Modular.Core.Geo
 
         #region "  Static Methods  "
 
-        public static new List<Country> LoadAll()
+        public static new List<Country> LoadList()
         {
             return FetchAll();
         }

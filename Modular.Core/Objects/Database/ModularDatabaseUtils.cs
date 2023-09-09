@@ -15,7 +15,7 @@ namespace Modular.Core.Databases
         /// Creates Database Table using Dynamic Database
         /// </summary>
         /// <param name="DatabaseTableName"></param>
-        /// <param name="AllProperties"></param>
+        /// <param name="AllFields"></param>
         public static void CreateDatabaseTable(string DatabaseTableName, FieldInfo[] AllFields)
         {
             RunQuery(DatabaseQueryUtils.CreateNewTableQuery(DatabaseTableName, AllFields));

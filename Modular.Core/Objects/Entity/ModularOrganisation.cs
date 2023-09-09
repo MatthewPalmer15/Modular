@@ -378,7 +378,7 @@ namespace Modular.Core.Entity
         {
             get
             {
-                return Contact.LoadAll().Count(Contact => Contact.OrganisationID == ID);
+                return Contact.LoadList().Count(Contact => Contact.OrganisationID == ID);
             }
         }
 
@@ -397,7 +397,7 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        public static new List<Organisation> LoadAll()
+        public static new List<Organisation> LoadList()
         {
             return FetchAll();
         }
