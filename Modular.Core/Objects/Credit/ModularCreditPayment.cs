@@ -272,7 +272,6 @@ namespace Modular.Core.Credits
             return AllCreditPayments;
         }
 
-
         #endregion
 
         #region "  Instance Methods  "

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Modular.Core.Sequences;
+﻿using Modular.Core.Sequences;
+using Modular.Core.Utility;
 
 namespace Modular.Core.Invoicing
 { 
     public static class InvoiceUtils
     {
 
-        public static void ProcessPayment(Guid InvoiceID, decimal Amount, InvoicePayment.PaymentMethodType PaymentMethod, string Reference = "")
+        public static void ProcessPayment(Guid InvoiceID, decimal Amount, EnumUtils.PaymentMethodType PaymentMethod, string Reference = "")
         {
             InvoicePayment NewInvoicePayment = InvoicePayment.Create(InvoiceID);
             NewInvoicePayment.Amount = Amount;
@@ -25,11 +21,6 @@ namespace Modular.Core.Invoicing
         {
             return Sequence.GetNextNumber("InvoiceNumber");
         }
-
-        // TODO: Add support for this.
-        // public static string GenerateInvoice(Membership Membership)
-        // { 
-        // }
 
     }
 }

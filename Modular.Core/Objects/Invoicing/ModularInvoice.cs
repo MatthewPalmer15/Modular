@@ -1,4 +1,11 @@
-﻿using Modular.Core.Utility;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
+using Modular.Core.Databases;
+using Modular.Core.System.Attributes;
+using Modular.Core.Utility;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Reflection;
 
 namespace Modular.Core.Invoicing
 {
@@ -17,6 +24,8 @@ namespace Modular.Core.Invoicing
         #region "  Constants  "
 
         protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Invoice";
+        protected static new readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_Invoice";
+        protected static new readonly Type MODULAR_OBJECTTYPE = typeof(Invoice);
 
         #endregion
 
@@ -50,13 +59,18 @@ namespace Modular.Core.Invoicing
 
         private DateTime _DueDate;
 
-        private List<InvoiceItem> _InvoiceItems = new List<InvoiceItem>();
+        [Ignore]
+        private List<InvoiceItem> _Items = new List<InvoiceItem>();
 
-        private List<InvoicePayment> _InvoicePayments = new List<InvoicePayment>();
 
-        private bool _IsPaid;
+        [Ignore]
+        private DateTime _LastRetrievedItems = DateTime.MinValue;
 
-        private DateTime _PaidDate;
+        [Ignore]
+        private List<InvoicePayment> _Payments = new List<InvoicePayment>();
+
+        [Ignore]
+        private DateTime _LastRetrievedPayments = DateTime.MinValue;
 
         private bool _IsPrinted;
 
@@ -70,30 +84,26 @@ namespace Modular.Core.Invoicing
 
         #region "  Properties  "
 
-        public Guid ContactID
+        [Required(ErrorMessage = "Contact is required.")]
+        [Display(Name = "Contact")]
+        public Entity.Contact Contact
         {
             get
             {
-                return _ContactID;
+                return Entity.Contact.Load(_ContactID);
             }
             set
             {
-                if (_ContactID != value)
+                if (_ContactID != value.ID)
                 {
-                    _ContactID = value;
+                    _ContactID = value.ID;
                     OnPropertyChanged("ContactID");
                 }
             }
         }
 
-        public Entity.Contact Contact
-        {
-            get
-            {
-                return Entity.Contact.Load(ContactID);
-            }
-        }
 
+        [Display(Name = "Type")]
         public ObjectTypes.ObjectType ObjectType
         {
             get
@@ -109,6 +119,7 @@ namespace Modular.Core.Invoicing
                 }
             }
         }
+
 
         public Guid ObjectID
         {
@@ -126,6 +137,9 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Required(ErrorMessage = "Status is required.")]
+        [Display(Name = "Status")]
         public InvoiceStatusType InvoiceStatus
         {
             get
@@ -142,6 +156,9 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Required(ErrorMessage = "Invoice Number is required.")]
+        [Display(Name = "Invoice Number", ShortName = "Invoice No.")]
         public int InvoiceNumber
         {
             get
@@ -158,6 +175,10 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Required(ErrorMessage = "Invoice Date is required.")]
+        [Display(Name = "Invoice Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime InvoiceDate
         {
             get
@@ -174,6 +195,10 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Required(ErrorMessage = "Due Date is required.")]
+        [Display(Name = "Due Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DueDate
         {
             get
@@ -190,56 +215,48 @@ namespace Modular.Core.Invoicing
             }
         }
 
-        public List<InvoiceItem> InvoiceItems
+
+        [Display(Name = "Items")]
+        public List<InvoiceItem> Items
         {
             get
             {
-                LoadInvoiceItems();
-                return _InvoiceItems;
+                if (_Items == null || _LastRetrievedItems.AddMinutes(5) > DateTime.Now)
+                {
+                    _Items = InvoiceItem.LoadList().Where(InvoiceItem => InvoiceItem.Invoice.ID == ID).ToList();
+                    _LastRetrievedItems = DateTime.Now;
+                }
+                return _Items;
             }
         }
 
-        public List<InvoicePayment> InvoicePayments
+
+        [Display(Name = "Payments")]
+        public List<InvoicePayment> Payments
         {
             get
             {
-                LoadInvoicePayments();
-                return _InvoicePayments;
+                if (_Payments == null || _LastRetrievedPayments.AddMinutes(5) > DateTime.Now)
+                {
+                    _Payments = InvoicePayment.LoadList().Where(InvoicePayment => InvoicePayment.Invoice.ID == ID).ToList();
+                    _LastRetrievedPayments = DateTime.Now;
+                }
+                return _Payments;
             }
         }
 
+
+        [Display(Name = "Paid")]
         public bool IsPaid
         {
             get
             {
-                return _IsPaid;
-            }
-            set
-            {
-                if (_IsPaid != value)
-                {
-                    _IsPaid = value;
-                    OnPropertyChanged("IsPaid");
-                }
+                return (TotalPriceIncVAT - TotalPaid) == 0;
             }
         }
 
-        public DateTime PaidDate
-        {
-            get
-            {
-                return _PaidDate;
-            }
-            set
-            {
-                if (_PaidDate != value)
-                {
-                    _PaidDate = value;
-                    OnPropertyChanged("PaidDate");
-                }
-            }
-        }
 
+        [Display(Name = "Printed")]
         public bool IsPrinted
         {
             get
@@ -256,6 +273,8 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Display(Name = "Printed Date")]
         public DateTime PrintedDate
         {
             get
@@ -272,6 +291,9 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Required(ErrorMessage = "PO Number is required.")]
+        [Display(Name = "PO Number")]
         public string PONumber
         {
             get
@@ -288,6 +310,8 @@ namespace Modular.Core.Invoicing
             }
         }
 
+
+        [Display(Name = "Notes")]
         public string Notes
         {
             get
@@ -304,31 +328,61 @@ namespace Modular.Core.Invoicing
             }
         }
 
-        public decimal InvoiceTotal
+
+        [Display(Name = "Total Price Exc VAT")]
+        public decimal TotalPriceExcVAT
         {
             get
             {
                 decimal Total = 0;
-                foreach (InvoiceItem Item in InvoiceItems)
+                foreach (InvoiceItem Item in Items)
                 {
-                    Total += Item.TotalPrice;
+                    Total += Item.UnitPriceExcVAT;
                 }
                 return Total;
             }
         }
 
+
+        [Display(Name = "Total Price VAT")]
+        public decimal TotalPriceVAT
+        {
+            get
+            {
+                decimal Total = 0;
+                foreach (InvoiceItem Item in Items)
+                {
+                    Total += Item.UnitPriceVAT;
+                }
+                return Total;
+            }
+        }
+
+
+        [Display(Name = "Total Price Inc VAT")]
+        public decimal TotalPriceIncVAT
+        {
+            get
+            {
+                return TotalPriceExcVAT + TotalPriceVAT;
+            }
+        }
+
+
+        [Display(Name = "Total Paid")]
         public decimal TotalPaid
         {
             get
             {
                 decimal Total = 0;
-                foreach (InvoicePayment Item in InvoicePayments)
+                foreach (InvoicePayment Payment in Payments)
                 {
-                    Total += Item.Amount;
+                    Total += Payment.Amount;
                 }
                 return Total;
             }
         }
+
 
         #endregion
 
@@ -348,23 +402,124 @@ namespace Modular.Core.Invoicing
             return obj;
         }
 
+        /// <summary>
+        /// Loads all instances from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        public static new List<Invoice> LoadList()
+        {
+            List<Invoice> AllInvoices = new List<Invoice>();
+
+            // Check if the database can be connected to.
+            if (Database.CheckDatabaseConnection())
+            {
+                FieldInfo[] AllFields = CurrentClass.GetFields();
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
+                }
+
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                            {
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                            }
+
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+                                Command.Connection = Connection;
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    Invoice obj = GetOrdinals(DataReader);
+                                    while (DataReader.Read())
+                                    {
+                                        AllInvoices.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
+                            {
+                                Command.Connection = Connection;
+
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    Invoice obj = GetOrdinals(DataReader);
+
+                                    while (DataReader.Read())
+                                    {
+                                        AllInvoices.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
+            }
+
+            return AllInvoices;
+        }
+
         #endregion
 
         #region "  Instance Methods  "
 
-        private void LoadInvoiceItems()
-        {
-            _InvoiceItems = InvoiceItem.LoadList().Where(InvoiceItem => InvoiceItem.InvoiceID == ID).ToList();
-        }
-
-        private void LoadInvoicePayments()
-        {
-            _InvoicePayments = InvoicePayment.LoadList().Where(InvoicePayment => InvoicePayment.InvoiceID == ID).ToList();
-        }
-
         public override string ToString()
         {
             return $"Invoice #{_InvoiceNumber}";
+        }
+
+        #endregion
+
+        #region "  Data Methods  "
+
+        protected static Invoice GetOrdinals(SqlDataReader DataReader)
+        {
+            Invoice obj = new Invoice();
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            return obj;
+        }
+
+        protected static Invoice GetOrdinals(SqliteDataReader DataReader)
+        {
+            Invoice obj = new Invoice();
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            return obj;
         }
 
         #endregion

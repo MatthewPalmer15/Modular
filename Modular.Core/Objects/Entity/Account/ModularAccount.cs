@@ -347,7 +347,7 @@ namespace Modular.Core.Entity
 
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = GetClassType()?.GetProperties(BindingFlags.Instance | BindingFlags.Public) ?? throw new ModularException(ExceptionType.NullObjectReturned, "Error getting properties");
+                PropertyInfo[] AllProperties = CurrentClass.GetProperties();
 
                 switch (Database.ConnectionMode)
                 {
@@ -456,7 +456,7 @@ namespace Modular.Core.Entity
             if (Database.CheckDatabaseConnection())
             {
                 Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
-                PropertyInfo[] AllProperties = GetProperties();
+                PropertyInfo[] AllProperties = CurrentClass.GetProperties();
                 if (AllProperties != null)
                 {
                     switch (DatabaseConnectionMode)
@@ -540,7 +540,7 @@ namespace Modular.Core.Entity
         {
             Account obj = new Account();
 
-            PropertyInfo[] AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = CurrentClass.GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);
@@ -553,7 +553,7 @@ namespace Modular.Core.Entity
         {
             Account obj = new Account();
 
-            PropertyInfo[] AllProperties = GetProperties();
+            PropertyInfo[] AllProperties = CurrentClass.GetProperties();
             if (AllProperties != null)
             {
                 obj.SetPropertyValues(AllProperties, DataReader);

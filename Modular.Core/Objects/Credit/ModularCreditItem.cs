@@ -44,10 +44,6 @@ namespace Modular.Core.Credits
 
         private Guid _CreditID;
 
-        private ObjectTypes.ObjectType _ObjectType;
-
-        private Guid _ObjectID;
-
         [MaxLength(255)]
         private string _Name = string.Empty;
 
@@ -77,41 +73,6 @@ namespace Modular.Core.Credits
                 {
                     _CreditID = value.ID;
                     OnPropertyChanged("CreditID");
-                }
-            }
-        }
-
-
-        [Display(Name = "Type")]
-        public ObjectTypes.ObjectType ObjectType
-        {
-            get
-            {
-                return _ObjectType;
-            }
-            set
-            {
-                if (_ObjectType != value)
-                {
-                    _ObjectType = value;
-                    OnPropertyChanged("ObjectType");
-                }
-            }
-        }
-
-
-        public Guid ObjectID
-        {
-            get
-            {
-                return _ObjectID;
-            }
-            set
-            {
-                if (_ObjectID != value)
-                {
-                    _ObjectID = value;
-                    OnPropertyChanged("ObjectID");
                 }
             }
         }

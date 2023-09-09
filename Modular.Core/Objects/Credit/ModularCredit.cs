@@ -54,21 +54,23 @@ namespace Modular.Core.Credits
 
         private CreditStatusType _CreditStatus;
 
-        private string _CreditNumber = string.Empty;
+        private int _CreditNumber;
 
         private DateTime _CreditDate;
 
-        [Ignore]
-        private List<CreditItem> _CreditItems = new List<CreditItem>();
+        private DateTime _PaidDate;
 
         [Ignore]
-        private DateTime _LastRetrievedCreditItems = DateTime.MinValue;
+        private List<CreditItem> _Items = new List<CreditItem>();
 
         [Ignore]
-        private List<CreditPayment> _CreditPayments = new List<CreditPayment>();
+        private DateTime _LastRetrievedItems = DateTime.MinValue;
 
         [Ignore]
-        private DateTime _LastRetrievedCreditPayments = DateTime.MinValue;
+        private List<CreditPayment> _Payments = new List<CreditPayment>();
+
+        [Ignore]
+        private DateTime _LastRetrievedPayments = DateTime.MinValue;
 
         private bool _IsPrinted;
 
@@ -157,7 +159,7 @@ namespace Modular.Core.Credits
 
         [Required(ErrorMessage = "Credit Number is required.")]
         [Display(Name = "Credit Number", ShortName = "Credit No.")]
-        public string CreditNumber
+        public int CreditNumber
         {
             get
             {
@@ -174,6 +176,7 @@ namespace Modular.Core.Credits
         }
 
 
+        [Required(ErrorMessage = "Credit Date is required.")]
         [Display(Name = "Credit Date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime CreditDate
@@ -193,30 +196,51 @@ namespace Modular.Core.Credits
         }
 
 
-        [Display(Name = "Items")]
-        public List<CreditItem> CreditItems
+        [Display(Name = "Paid Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime PaidDate
         {
             get
             {
-                if (_CreditItems == null || _LastRetrievedCreditItems.AddMinutes(5) > DateTime.Now)
+                return _PaidDate;
+            }
+            set
+            {
+                if (_PaidDate != value)
                 {
-                    _CreditItems = CreditItem.LoadList().Where(CreditItem => CreditItem.CreditID == ID).ToList();
+                    _PaidDate = value;
+                    OnPropertyChanged("PaidDate");
                 }
-                return _CreditItems;
+            }
+        }
+
+
+        [Display(Name = "Items")]
+        public List<CreditItem> Items
+        {
+            get
+            {
+                if (_Items == null || _LastRetrievedItems.AddMinutes(5) > DateTime.Now)
+                {
+                    _Items = CreditItem.LoadList().Where(CreditItem => CreditItem.Credit.ID == ID).ToList();
+                    _LastRetrievedItems = DateTime.Now;
+                }
+                return _Items;
             }
         }
 
 
         [Display(Name = "Payments")]
-        public List<CreditPayment> CreditPayments
+        public List<CreditPayment> Payments
         {
             get
             {
-                if (_CreditPayments == null || _LastRetrievedCreditPayments.AddMinutes(5) > DateTime.Now)
+                if (_Payments == null || _LastRetrievedPayments.AddMinutes(5) > DateTime.Now)
                 {
-                    _CreditPayments = CreditPayment.LoadList().Where(CreditPayment => CreditPayment.CreditID == ID).ToList();
+                    _Payments = CreditPayment.LoadList().Where(CreditPayment => CreditPayment.Credit.ID == ID).ToList();
+                    _LastRetrievedPayments = DateTime.Now;
                 }
-                return _CreditPayments;
+                return _Payments;
             }
         }
 
@@ -310,9 +334,9 @@ namespace Modular.Core.Credits
             get
             {
                 decimal Total = 0;
-                foreach (CreditItem Item in CreditItems)
+                foreach (CreditItem Item in Items)
                 {
-                    Total += Item.UnitPrice;
+                    Total += Item.UnitPriceExcVAT;
                 }
                 return Total;
             }
@@ -325,7 +349,7 @@ namespace Modular.Core.Credits
             get
             {
                 decimal Total = 0;
-                foreach (CreditItem Item in CreditItems)
+                foreach (CreditItem Item in Items)
                 {
                     Total += Item.UnitPriceVAT;
                 }
@@ -350,9 +374,9 @@ namespace Modular.Core.Credits
             get
             {
                 decimal Total = 0;
-                foreach (CreditPayment Item in CreditPayments)
+                foreach (CreditPayment Payment in Payments)
                 {
-                    Total += Item.Amount;
+                    Total += Payment.Amount;
                 }
                 return Total;
             }
