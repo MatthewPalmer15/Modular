@@ -15,7 +15,7 @@ using Modular.Core.Utility;
 
 namespace Modular.Core
 {
-    public class ModularBase : ICloneable, INotifyPropertyChanged
+    public class ModularBaseOLD : ICloneable, INotifyPropertyChanged
     {
 
         #region "  Constructors  "
@@ -333,10 +333,18 @@ namespace Modular.Core
         /// </summary>
         public void Save()
         {
-            if (IsModified && IsValid)
+            Save(false);
+        }
+
+        /// <summary>
+        /// Saves the current instance. It will either insert, or update it into the database.
+        /// </summary>
+        /// <param name="OverrideValidation">Allow the object to be saved even if it is not valid.</param>
+        public void Save(bool OverrideValidation)
+        {
+            if ((IsModified && IsValid) || OverrideValidation)
             {
                 Guid CurrentUserID = SystemCore.Context.Identity.ID;
-
                 OnSave();
 
                 if (IsNew)
@@ -347,6 +355,7 @@ namespace Modular.Core
                     ModifiedBy = CurrentUserID;
 
                     Insert();
+                    
                     IsModified = false;
                     IsNew = false;
                 }
@@ -356,6 +365,7 @@ namespace Modular.Core
                     ModifiedBy = CurrentUserID;
 
                     Update();
+
                     IsModified = false;
                 }
             }

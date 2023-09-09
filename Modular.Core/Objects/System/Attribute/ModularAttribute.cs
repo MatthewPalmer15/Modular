@@ -4,7 +4,7 @@
     /// <summary>
     /// Attribute that will ignore a property when saving to the database.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class IgnoreAttribute : Attribute
     {
     }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Membership.Objects
+namespace Modular.Core.Tasks
 {
-    internal class ModularMember
+    public class ScheduledTasks
     {
     }
 }
