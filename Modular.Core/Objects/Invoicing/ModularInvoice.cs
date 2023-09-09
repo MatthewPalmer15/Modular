@@ -221,7 +221,7 @@ namespace Modular.Core.Invoicing
         {
             get
             {
-                if (_Items == null || _LastRetrievedItems.AddMinutes(5) > DateTime.Now)
+                if (_Items.Count == 0 || _LastRetrievedItems.AddMinutes(5) > DateTime.Now)
                 {
                     _Items = InvoiceItem.LoadList().Where(InvoiceItem => InvoiceItem.Invoice.ID == ID).ToList();
                     _LastRetrievedItems = DateTime.Now;
@@ -236,7 +236,7 @@ namespace Modular.Core.Invoicing
         {
             get
             {
-                if (_Payments == null || _LastRetrievedPayments.AddMinutes(5) > DateTime.Now)
+                if (_Payments.Count == 0 || _LastRetrievedPayments.AddMinutes(5) > DateTime.Now)
                 {
                     _Payments = InvoicePayment.LoadList().Where(InvoicePayment => InvoicePayment.Invoice.ID == ID).ToList();
                     _LastRetrievedPayments = DateTime.Now;

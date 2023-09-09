@@ -58,52 +58,36 @@ namespace Modular.Core.Entity
 
         [Required]
         [Unique(ErrorMessage = "Contact already has an account.")]
-        public Guid ContactID
+        public Entity.Contact Contact
         {
             get
             {
-                return _ContactID;
+                return Entity.Contact.Load(_ContactID);
             }
             set
             {
-                if (_ContactID != value)
+                if (_ContactID != value.ID)
                 {
-                    _ContactID = value;
+                    _ContactID = value.ID;
                     OnPropertyChanged("ContactID");
                 }
             }
         }
 
         [Required]
-        public Guid RoleID
-        {
-            get
-            {
-                return _RoleID;
-            }
-            set
-            {
-                if (_RoleID != value)
-                {
-                    _RoleID = value;
-                    OnPropertyChanged("RoleID");
-                }
-            }
-        }
-
         public Role Role
         {
             get
             {
-                return Role.Load(RoleID);
+                return Role.Load(_RoleID);
             }
-        }
-
-        public Contact Contact
-        {
-            get
+            set
             {
-                return Contact.Load(_ContactID);
+                if (_RoleID != value.ID)
+                {
+                    _RoleID = value.ID;
+                    OnPropertyChanged("RoleID");
+                }
             }
         }
 
@@ -112,22 +96,6 @@ namespace Modular.Core.Entity
             get
             {
                 return Contact.FullName;
-            }
-        }
-
-        [Unique]
-        public string Email
-        {
-            get
-            {
-                if (Contact != null)
-                {
-                    return Contact.Email;
-                }
-                else
-                {
-                    return string.Empty;
-                }
             }
         }
 
@@ -208,7 +176,7 @@ namespace Modular.Core.Entity
             {
                 objAccount = new Account();
                 objAccount.SetDefaultValues();
-                objAccount.ContactID = ContactID;
+                objAccount.Contact.ID = ContactID;
                 objAccount.Save();
 
                 return objAccount;
@@ -229,9 +197,9 @@ namespace Modular.Core.Entity
         /// <param name="Username"></param>
         /// <param name="Password"></param>
         /// <returns></returns>
-        public static Account Create(Guid ContactID, string Username, string Password)
+        public static Account Create(Contact Contact, string Username, string Password)
         {
-            Account obj = Load(ContactID);
+            Account obj = Load(Contact.ID);
             if (obj != null)
             {
                 return obj;
@@ -241,7 +209,7 @@ namespace Modular.Core.Entity
                 obj = new Account()
                 {
                     ID = Guid.Empty,
-                    ContactID = ContactID,
+                    Contact = Contact,
                     Username = Username,
                     Password = HashPassword(Password),
                 };

@@ -3,6 +3,8 @@ using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
+using Modular.Core.System.Attributes;
+using Modular.Core.Entity;
 
 namespace Modular.Core.Security
 {
@@ -21,6 +23,8 @@ namespace Modular.Core.Security
         #region "  Constants  "
 
         protected static new readonly string MODULAR_DATABASE_TABLE = "tbl_Modular_Role";
+        protected static new readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_Role";
+        protected static new readonly Type MODULAR_OBJECTTYPE = typeof(Role);
 
         #endregion
 
@@ -28,7 +32,17 @@ namespace Modular.Core.Security
 
         private string _Name = string.Empty;
 
+        [Ignore]
         private List<RolePermission> _Permissions = new List<RolePermission>();
+
+        [Ignore]
+        private DateTime _LastRetrievedPermissions = DateTime.MinValue;
+
+        [Ignore]
+        private List<Account> _AccountsInRole = new List<Account>();
+
+        [Ignore]
+        private DateTime _LastRetrievedAccounts = DateTime.MinValue;
 
         #endregion
 
@@ -54,8 +68,25 @@ namespace Modular.Core.Security
         {
             get
             {
-                LoadPermissions();
+                if (_Permissions.Count == 0 || _LastRetrievedPermissions.AddMinutes(5) > DateTime.Now)
+                {
+                    _Permissions = RolePermission.LoadList().Where(Permission => Permission.Role.ID == ID).ToList();
+                    _LastRetrievedPermissions = DateTime.Now;
+                }
                 return _Permissions;
+            }
+        }
+
+        public List<Account> Users
+        {
+            get
+            {
+                if (_AccountsInRole.Count == 0 || _LastRetrievedAccounts.AddMinutes(5) > DateTime.Now)
+                {
+                    _AccountsInRole = Account.LoadList().Where(Account => Account.Role.ID == ID).ToList();
+                    _LastRetrievedAccounts = DateTime.Now;
+                }
+                return _AccountsInRole;
             }
         }
 
@@ -63,11 +94,10 @@ namespace Modular.Core.Security
 
         #region "  Static Methods  "
 
-        private void LoadPermissions()
-        {
-            _Permissions = RolePermission.LoadList().Where(Permission => Permission.RoleID == ID).ToList();
-        }
-
+        /// <summary>
+        /// Create a new instance.
+        /// </summary>
+        /// <returns></returns>
         public static new Role Create()
         {
             Role obj = new Role();
@@ -75,16 +105,109 @@ namespace Modular.Core.Security
             return obj;
         }
 
-        public static new List<Role> LoadList()
-        {
-            return FetchAll();
-        }
-
+        /// <summary>
+        /// Load an existing instance from the database.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static new Role Load(Guid ID)
         {
             Role obj = new Role();
             obj.Fetch(ID);
             return obj;
+        }
+
+        /// <summary>
+        /// Loads all instances from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        public static new List<Role> LoadList()
+        {
+            List<Role> AllRoles = new List<Role>();
+
+            // Check if the database can be connected to.
+            if (Database.CheckDatabaseConnection())
+            {
+                FieldInfo[] AllFields = CurrentClass.GetFields();
+
+                // If table does not exist within the database, create it.
+                if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
+                {
+                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllFields);
+                }
+
+                switch (Database.ConnectionMode)
+                {
+                    // If the database is a remote database, connect to it.
+                    case Database.DatabaseConnectivityMode.Remote:
+                        using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+
+                            // If stored procedures are enabled, and the stored procedure does not exist, create it.
+                            if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
+                            {
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                            }
+
+                            using (SqlCommand Command = new SqlCommand())
+                            {
+                                Command.Connection = Connection;
+                                Command.CommandType = Database.EnableStoredProcedures ? CommandType.StoredProcedure : CommandType.Text;
+                                Command.CommandText = Database.EnableStoredProcedures ? StoredProcedureName : DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqlDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    Role obj = GetOrdinals(DataReader);
+                                    while (DataReader.Read())
+                                    {
+                                        AllRoles.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                    case Database.DatabaseConnectivityMode.Local:
+                        using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
+                        {
+                            Connection.Open();
+
+                            using (SqliteCommand Command = new SqliteCommand())
+                            {
+                                Command.Connection = Connection;
+
+                                // Stored procedures are not supported in SQLite, so use a query.
+                                Command.CommandType = CommandType.Text;
+                                Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
+
+                                using (SqliteDataReader DataReader = Command.ExecuteReader())
+                                {
+                                    Role obj = GetOrdinals(DataReader);
+
+                                    while (DataReader.Read())
+                                    {
+                                        AllRoles.Add(obj);
+                                    }
+                                }
+                            }
+
+                            Connection.Close();
+                        }
+                        break;
+
+                }
+            }
+            else
+            {
+                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
+            }
+
+            return AllRoles;
         }
 
         #endregion
@@ -96,124 +219,26 @@ namespace Modular.Core.Security
             return Name.ToString();
         }
 
+        public override Role Clone()
+        {
+            return Role.Load(ID);
+        }
+
         #endregion
 
         #region "  Data Methods  "
 
-        /// <summary>
-        /// Fetches all the contacts from the database
-        /// </summary>
-        /// <returns></returns>
-        protected static List<Role> FetchAll()
-        {
-            List<Role> AllObjects = new List<Role>();
-
-            if (Database.CheckDatabaseConnection())
-            {
-                Database.DatabaseConnectivityMode DatabaseConnectionMode = Database.ConnectionMode;
-                PropertyInfo[] AllProperties = GetProperties();
-                if (AllProperties != null)
-                {
-                    switch (DatabaseConnectionMode)
-                    {
-
-                        case Database.DatabaseConnectivityMode.Remote:
-                            using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
-                            {
-                                Connection.Open();
-
-                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
-                                {
-                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
-                                }
-
-                                using (SqlCommand Command = new SqlCommand())
-                                {
-                                    Command.Connection = Connection;
-                                    Command.CommandType = CommandType.Text;
-                                    Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
-
-                                    using (SqlDataReader DataReader = Command.ExecuteReader())
-                                    {
-                                        Role obj = GetOrdinals(DataReader);
-
-                                        while (DataReader.Read())
-                                        {
-                                            AllObjects.Add(obj);
-                                        }
-                                    }
-                                }
-
-                                Connection.Close();
-                            }
-                            break;
-
-                        case Database.DatabaseConnectivityMode.Local:
-                            using (SqliteConnection Connection = new SqliteConnection(Database.ConnectionString))
-                            {
-                                Connection.Open();
-
-                                if (Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
-                                {
-                                    using (SqliteCommand Command = new SqliteCommand())
-                                    {
-
-                                        Command.Connection = Connection;
-                                        Command.CommandType = CommandType.Text;
-                                        Command.CommandText = DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE);
-
-                                        using (SqliteDataReader DataReader = Command.ExecuteReader())
-                                        {
-                                            Role obj = GetOrdinals(DataReader);
-
-                                            while (DataReader.Read())
-                                            {
-                                                AllObjects.Add(obj);
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    DatabaseUtils.CreateDatabaseTable(MODULAR_DATABASE_TABLE, AllProperties);
-                                }
-                                Connection.Close();
-                            }
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                throw new ModularException(ExceptionType.DatabaseConnectionError, "There was an issue trying to connect to the database.");
-            }
-
-            return AllObjects;
-        }
-
         protected static Role GetOrdinals(SqlDataReader DataReader)
         {
             Role obj = new Role();
-
-            PropertyInfo[] AllProperties = GetProperties();
-            if (AllProperties != null)
-            {
-                obj.SetPropertyValues(AllProperties, DataReader);
-            }
-
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }
 
         protected static Role GetOrdinals(SqliteDataReader DataReader)
         {
             Role obj = new Role();
-
-            PropertyInfo[] AllProperties = GetProperties();
-            if (AllProperties != null)
-            {
-                obj.SetPropertyValues(AllProperties, DataReader);
-            }
-
+            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }
 

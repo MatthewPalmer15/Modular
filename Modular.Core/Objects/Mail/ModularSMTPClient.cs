@@ -89,7 +89,5 @@ namespace Modular.Core.Mail
 
         #endregion
 
-
-
     }
 }

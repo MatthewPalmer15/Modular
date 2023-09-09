@@ -220,7 +220,7 @@ namespace Modular.Core.Credits
         {
             get
             {
-                if (_Items == null || _LastRetrievedItems.AddMinutes(5) > DateTime.Now)
+                if (_Items.Count == 0 || _LastRetrievedItems.AddMinutes(5) < DateTime.Now)
                 {
                     _Items = CreditItem.LoadList().Where(CreditItem => CreditItem.Credit.ID == ID).ToList();
                     _LastRetrievedItems = DateTime.Now;
@@ -235,7 +235,7 @@ namespace Modular.Core.Credits
         {
             get
             {
-                if (_Payments == null || _LastRetrievedPayments.AddMinutes(5) > DateTime.Now)
+                if (_Payments.Count == 0 || _LastRetrievedPayments.AddMinutes(5) < DateTime.Now)
                 {
                     _Payments = CreditPayment.LoadList().Where(CreditPayment => CreditPayment.Credit.ID == ID).ToList();
                     _LastRetrievedPayments = DateTime.Now;
@@ -536,5 +536,6 @@ namespace Modular.Core.Credits
         }
 
         #endregion
-    }
+
+    }   
 }

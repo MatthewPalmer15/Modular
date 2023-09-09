@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using Modular.Core.Audit;
+using Modular.Core.Utility;
 
 namespace Modular.Core.Mail
 {
@@ -25,7 +27,7 @@ namespace Modular.Core.Mail
 
                 if (Audit)
                 {
-                    //  TODO: Create Audit Log.
+                    AuditLog.Create(ObjectTypes.ObjectType.Email, Guid.Empty, $"Email Sent to {Email.To}{Environment.NewLine}{Email.Subject}");
                 }
 
             }

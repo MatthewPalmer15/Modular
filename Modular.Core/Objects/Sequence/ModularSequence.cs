@@ -101,14 +101,14 @@ namespace Modular.Core.Sequences
         public static Sequence Load(string Name)
         {
             Sequence obj = new Sequence();
-            obj.Fetch(GetField(Name), Name);
+            obj.Fetch(CurrentClass.GetField(Name), Name);
             return obj;
         }
 
         public static int GetNextNumber(string Name)
         {
             Sequence obj = new Sequence();
-            obj.Fetch(GetField(Name), Name);
+            obj.Fetch(CurrentClass.GetField(Name), Name);
             obj.Count++;
             obj.Save();
 
