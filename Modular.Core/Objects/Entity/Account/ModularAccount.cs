@@ -271,11 +271,11 @@ namespace Modular.Core.Entity
             {
 
                 case LoginMethodType.Email:
-                    obj.Fetch(GetField("Email"), Credentials);
+                    obj.Fetch(CurrentClass.GetField("Email"), Credentials);
                     break;
 
                 case LoginMethodType.Username:
-                    obj.Fetch(GetField("Username"), Credentials);
+                    obj.Fetch(CurrentClass.GetField("Username"), Credentials);
                     break;
             }
 

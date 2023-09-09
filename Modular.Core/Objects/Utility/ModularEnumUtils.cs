@@ -19,6 +19,17 @@
             Deleted = 4,
         }
 
+        public enum PaymentMethodType
+        {
+            Unknown = 0,
+            Cash = 1,
+            Cheque = 2,
+            CreditCard = 3,
+            DirectDebit = 4,
+            EFT = 5,
+            PayPal = 6
+        }
+
 
         public enum SourceType
         {

@@ -17,6 +17,8 @@ namespace Modular.Core.Audit
         #region "  Constants  "
 
         protected static readonly new string MODULAR_DATABASE_TABLE = "tbl_Modular_AuditLog";
+        protected static new readonly string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_AuditLog";
+        protected static new readonly Type MODULAR_OBJECTTYPE = typeof(AuditLog);
 
         #endregion
 
@@ -34,7 +36,7 @@ namespace Modular.Core.Audit
 
         #region "  Properties  "
 
-        [Required]
+        [Display(Name = "Type")]
         public ObjectTypes.ObjectType ObjectType
         {
             get
@@ -50,7 +52,7 @@ namespace Modular.Core.Audit
             }
         }
 
-        [Required]
+
         public Guid ObjectID
         {
             get
@@ -66,9 +68,9 @@ namespace Modular.Core.Audit
             }
         }
 
-        [Required]
-        [MinLength(2)]
-        [MaxLength(1000)]
+
+        [Required(ErrorMessage = "Please enter a message.")]
+        [MaxLength(2048, ErrorMessage = "Message should be less than 2048 Characters.")]
         public string Message
         {
             get
@@ -77,13 +79,11 @@ namespace Modular.Core.Audit
             }
             private set
             {
-                if (_Message != value)
-                {
-                    _Message = value;
-                }
+                _Message = value;
             }
         }
 
+        [Required]
         public string DeviceInformation
         {
             get
@@ -92,10 +92,7 @@ namespace Modular.Core.Audit
             }
             private set
             {
-                if (_DeviceInformation != value)
-                {
-                    _DeviceInformation = value;
-                }
+                _DeviceInformation = value;
             }
         }
 
@@ -120,6 +117,12 @@ namespace Modular.Core.Audit
             obj.Save();
         }
 
+
+        /// <summary>
+        /// Loads an existing instance from the database.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static new AuditLog Load(Guid ID)
         {
             AuditLog obj = new AuditLog();
@@ -128,5 +131,20 @@ namespace Modular.Core.Audit
         }
 
         #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return Message;
+        }
+
+        public override AuditLog Clone()
+        {
+            return AuditLog.Load(ID);
+        }
+
+        #endregion
+
     }
 }

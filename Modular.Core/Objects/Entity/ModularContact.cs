@@ -6,7 +6,6 @@ using System.Data;
 using System.Reflection;
 using Modular.Core.Databases;
 using Modular.Core.Geo;
-using Modular.Core.System.Attributes;
 
 namespace Modular.Core.Entity
 {
@@ -631,7 +630,7 @@ namespace Modular.Core.Entity
         #region "  Static Methods  "
 
         /// <summary>
-        /// Creates a new instance with default values
+        /// Creates a new instance.
         /// </summary>
         /// <returns>A new instance</returns>
         public static new Contact Create()
@@ -641,12 +640,12 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        public static new List<Contact> LoadList()
-        {
-            List<Contact> obj = FetchAll();
-            return obj;
-        }
 
+        /// <summary>
+        /// Loads an existing instance from the database.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static new Contact Load(Guid ID)
         {
             Contact obj = new Contact();
@@ -654,29 +653,13 @@ namespace Modular.Core.Entity
             return obj;
         }
 
-        #endregion
-
-        #region "  Instance Methods  "
-
-        public override string ToString()
-        {
-            return FullName;
-        }
-
-        public override Contact Clone()
-        {
-            return Contact.Load(ID);
-        }
-
-        #endregion
-
-        #region "  Data Methods  "
 
         /// <summary>
-        /// Fetches all the contacts from the database
+        /// Loads all instances from the database
         /// </summary>
         /// <returns></returns>
-        protected static List<Contact> FetchAll()
+        /// <exception cref="ModularException"></exception>
+        public static new List<Contact> LoadList()
         {
             List<Contact> AllContacts = new List<Contact>();
 
@@ -753,6 +736,7 @@ namespace Modular.Core.Entity
                             Connection.Close();
                         }
                         break;
+
                 }
             }
             else
@@ -762,6 +746,24 @@ namespace Modular.Core.Entity
 
             return AllContacts;
         }
+
+        #endregion
+
+        #region "  Instance Methods  "
+
+        public override string ToString()
+        {
+            return FullName;
+        }
+
+        public override Contact Clone()
+        {
+            return Contact.Load(ID);
+        }
+
+        #endregion
+
+        #region "  Data Methods  "
 
         protected static Contact GetOrdinals(SqlDataReader DataReader)
         {
