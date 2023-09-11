@@ -1,16 +1,16 @@
-﻿using System.Net;
-using System.Net.Mail;
-using Modular.Core.Audit;
+﻿using Modular.Core.Audit;
 using Modular.Core.Utility;
+using System.Net;
+using System.Net.Mail;
 
 namespace Modular.Core.Mail
 {
-    public static class Email
+    public static class EmailUtils
     {
 
         #region "  Methods  "
 
-        public static void SendEmail(MailMessage Email, bool Audit = false)
+        public static void SendEmail(MailMessage Email, bool Audit = true)
         {
             try
             {

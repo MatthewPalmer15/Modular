@@ -1,6 +1,6 @@
 ﻿using Modular.Core.Configuration;
 
-namespace Modular.Core.System
+namespace Modular.Core
 {
     public static class SystemApplication
     {

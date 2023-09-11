@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,6 +6,11 @@ namespace Modular.Core.Utility
 {
     public static class ModularUtils
     {
+
+        public static readonly string DateFormatString = "dd/MM/yyyy";
+
+
+
 
         #region "  Remove Illegal Characters Methods  "
 
@@ -76,13 +80,13 @@ namespace Modular.Core.Utility
         /// <param name="Filename"></param>
         /// <param name="FileExtension">File Format. Do not add '.' to this parameter.</param>
         /// <param name="FilePath"></param>
-        public static void ConvertBytesToFile(byte[] FileBytes, string Filename,  string FileExtension,  string FilePath = "")
+        public static void ConvertBytesToFile(byte[] FileBytes, string Filename, string FileExtension, string FilePath = "")
         {
             string OutputDestination;
-            
+
             if (FileExtension.StartsWith('.')) FileExtension = FileExtension.Replace(".", "");
-            
-            
+
+
             if (string.IsNullOrEmpty(FilePath))
             {
                 OutputDestination = $"{Environment.SpecialFolder.UserProfile}\\Downloads\\{Filename}.{FileExtension}";
@@ -106,7 +110,7 @@ namespace Modular.Core.Utility
         }
 
         public static Stream ConvertBytesToStream(byte[] File)
-        {             
+        {
             return new MemoryStream(File);
         }
 
@@ -130,7 +134,7 @@ namespace Modular.Core.Utility
         public static string GetDeviceSummary()
         {
             IDeviceInfo CurrentIdentityDevice = DeviceInfo.Current;
-            return  $"Device Name: {CurrentIdentityDevice.Name}" + Environment.NewLine +
+            return $"Device Name: {CurrentIdentityDevice.Name}" + Environment.NewLine +
                     $"Device Type: {CurrentIdentityDevice.Manufacturer} {CurrentIdentityDevice.Model}" + Environment.NewLine +
                     $"Device OS: {CurrentIdentityDevice.Platform} v{CurrentIdentityDevice.VersionString}";
         }

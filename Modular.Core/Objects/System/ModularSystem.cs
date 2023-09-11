@@ -1,6 +1,6 @@
 ﻿using Modular.Core.Entity;
 
-namespace Modular.Core.System
+namespace Modular.Core
 {
     public partial class SystemCore
     {

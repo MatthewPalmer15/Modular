@@ -1,11 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using Modular.Core.Databases;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Reflection;
-using Modular.Core.Databases;
 
-namespace Modular.Core.System.Attributes
+namespace Modular.Core.Attributes
 {
 
     /// <summary>
@@ -129,27 +128,27 @@ namespace Modular.Core.System.Attributes
     //  public string Username { get; set; }
 
 
-   //[AttributeUsage(AttributeTargets.Property)]
-   //public class UniqueWithIdentifierAttribute : ValidationAttribute
-   //{
-   //
-   //    private readonly string Identifier;
-   //    private readonly string Value;
-   //
-   //    public UniqueWithIdentifierAttribute(string Identifier, string Value)
-   //    {
-   //        this.Identifier = Identifier;
-   //        this.Value = Value;
-   //    }
-   //
-   //    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-   //    {
-   //        PropertyInfo IdentifierProperty = validationContext.ObjectType.GetProperty(Identifier);
-   //        
-   //
-   //    }
-   //
-   //}
+    //[AttributeUsage(AttributeTargets.Property)]
+    //public class UniqueWithIdentifierAttribute : ValidationAttribute
+    //{
+    //
+    //    private readonly string Identifier;
+    //    private readonly string Value;
+    //
+    //    public UniqueWithIdentifierAttribute(string Identifier, string Value)
+    //    {
+    //        this.Identifier = Identifier;
+    //        this.Value = Value;
+    //    }
+    //
+    //    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    //    {
+    //        PropertyInfo IdentifierProperty = validationContext.ObjectType.GetProperty(Identifier);
+    //        
+    //
+    //    }
+    //
+    //}
 
 
 }

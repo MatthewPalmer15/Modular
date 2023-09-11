@@ -1,5 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using Modular.Core.Audit;
+using Modular.Core.Databases;
+using Modular.Core.Attributes;
+using Modular.Core.Utility;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -7,11 +11,6 @@ using System.Data.SqlTypes;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using Modular.Core.Audit;
-using Modular.Core.System.Attributes;
-using Modular.Core.Databases;
-using Modular.Core.System;
-using Modular.Core.Utility;
 
 namespace Modular.Core
 {
@@ -243,7 +242,7 @@ namespace Modular.Core
         /// Whether the object is locked, and cannot be modified.
         /// </summary>
         [Ignore]
-        [DefaultValue (false)]
+        [DefaultValue(false)]
         public bool IsLocked { get; private set; }
 
 
@@ -326,30 +325,30 @@ namespace Modular.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ModularException"></exception>
-         protected static ModularBase Create()
-         {
-             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-         }
-         
-         /// <summary>
-         /// Loads all instances of the object.
-         /// </summary>
-         /// <returns></returns>
-         /// <exception cref="ModularException"></exception>
-         protected static List<ModularBase> LoadList()
-         {
-             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-         }
-         
-         /// <summary>
-         /// Loads an instance of the object.
-         /// </summary>
-         /// <returns></returns>
-         /// <exception cref="ModularException"></exception>
-         protected static ModularBase Load(Guid ID)
-         {
-             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-         }
+        protected static ModularBase Create()
+        {
+            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+        }
+
+        /// <summary>
+        /// Loads all instances of the object.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        protected static List<ModularBase> LoadList()
+        {
+            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+        }
+
+        /// <summary>
+        /// Loads an instance of the object.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        protected static ModularBase Load(Guid ID)
+        {
+            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+        }
 
         /// <summary>
         /// Checks to see if instance already exists
@@ -462,7 +461,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -563,7 +562,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Field));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, Field), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -664,7 +663,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllFields));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateInsertQuery(MODULAR_DATABASE_TABLE, AllFields), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -678,7 +677,7 @@ namespace Modular.Core
                                 // Add all the properties as parameters.
                                 foreach (FieldInfo Field in AllFields)
                                 {
-                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_","")}", Field.GetValue(this));
+                                    SqlParameter Parameter = new SqlParameter($"@{Field.Name.Trim().Replace("_", "")}", Field.GetValue(this));
                                     Command.Parameters.Add(Parameter);
                                 }
 
@@ -759,7 +758,7 @@ namespace Modular.Core
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllFields));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateUpdateQuery(MODULAR_DATABASE_TABLE, AllFields), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())
@@ -857,7 +856,7 @@ namespace Modular.Core
                                     // If stored procedures are enabled, and the stored procedure does not exist, create it.
                                     if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                                     {
-                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                        DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateDeleteQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                                     }
 
                                     using (SqlCommand Command = new SqlCommand())

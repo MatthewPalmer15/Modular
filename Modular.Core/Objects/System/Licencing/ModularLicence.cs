@@ -1,6 +1,7 @@
 ﻿using Modular.Core.Configuration;
+using Modular.Core.Exporter;
 
-namespace Modular.Core.System.Licencing
+namespace Modular.Core.Licencing
 {
     public static class Licence
     {
@@ -11,6 +12,8 @@ namespace Modular.Core.System.Licencing
         {
             get
             {
+                DataExporterItem Item = DataExporter.GetScript("Modular_LicenceKey.sql");
+
                 return AppConfig.GetValue("Modular_LicenceKey");
             }
         }

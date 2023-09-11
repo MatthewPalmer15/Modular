@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Modular.Core.Interfaces
+﻿namespace Modular.Core.Interfaces
 {
     public interface IModularPage
     {
@@ -32,7 +26,7 @@ namespace Modular.Core.Interfaces
             // Method intentionally left empty.
         }
 
-        public void OnChange() 
+        public void OnChange()
         {
 
             // Method intentionally left empty.

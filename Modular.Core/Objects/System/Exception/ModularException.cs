@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-using Modular.Core.Utility;
+﻿using Modular.Core.Utility;
+using System.Runtime.Serialization;
 
 namespace Modular.Core
 {
@@ -30,7 +30,7 @@ namespace Modular.Core
             throw new ModularException($"{Type}: {Message}");
         }
 
-        protected ModularException(SerializationInfo info, StreamingContext context): base(info, context)
+        protected ModularException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

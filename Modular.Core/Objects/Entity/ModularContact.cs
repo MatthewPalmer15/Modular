@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using Modular.Core.Databases;
+using Modular.Core.Geo;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
-using Modular.Core.Databases;
-using Modular.Core.Geo;
 
 namespace Modular.Core.Entity
 {
@@ -176,7 +176,7 @@ namespace Modular.Core.Entity
 
 
         [DataType(DataType.Date, ErrorMessage = "Date must be in format DD/MM/YYYY.")]
-        [Display(Name = "Date of Birth", ShortName = "DoB"), DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Date of Birth", ShortName = "DoB")]
         public DateTime DateOfBirth
         {
             get
@@ -686,7 +686,7 @@ namespace Modular.Core.Entity
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())

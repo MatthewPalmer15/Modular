@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Modular.Core.Configuration;
+﻿using Modular.Core.Configuration;
 
 namespace Modular.Core.Templates
 {
@@ -46,6 +41,27 @@ namespace Modular.Core.Templates
         #endregion
 
         #region "  Public Methods  "
+
+        public static FileTemplateItem GetFileTemplate(string FileName)
+        {
+            if (TemplateFolder.Exists)
+            {
+                foreach (FileInfo File in TemplateFolder.GetFiles())
+                {
+                    if (File.Name == FileName)
+                    {
+                        return new FileTemplateItem(File);
+                    }
+                }
+                return new FileTemplateItem();
+
+            }
+            else
+            {
+                TemplateFolder.Create();
+                return new FileTemplateItem();
+            }
+        }
 
         public static List<FileTemplateItem> GetFileTemplates()
         {

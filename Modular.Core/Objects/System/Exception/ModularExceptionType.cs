@@ -20,6 +20,11 @@
         SMTPClientAuthenticationError = 000021,
         SMTPClientEmailSendError = 000022,
 
+        // Data Exporter
+        ExecutionOfScriptFailed = 000030,
+
+
+
         // Network
         IPAddressError = 000031,
 

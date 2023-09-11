@@ -1,4 +1,4 @@
-﻿namespace Modular.Core.System.Attributes
+﻿namespace Modular.Core.Attributes
 {
 
     /// <summary>

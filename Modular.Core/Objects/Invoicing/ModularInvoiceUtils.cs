@@ -2,7 +2,7 @@
 using Modular.Core.Utility;
 
 namespace Modular.Core.Invoicing
-{ 
+{
     public static class InvoiceUtils
     {
 

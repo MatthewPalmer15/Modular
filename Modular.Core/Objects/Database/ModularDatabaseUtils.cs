@@ -1,7 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using System.Text;
 
 namespace Modular.Core.Databases
 {
@@ -36,12 +38,32 @@ namespace Modular.Core.Databases
             RunQuery(DatabaseQueryUtils.CreateAlterTableQuery(DatabaseTableName, AllProperties));
         }
 
-        public static void CreateStoredProcedure(string DatabaseQuery)
+
+        /// <summary>
+        /// Creates a Stored Procedure using Dynamic Database
+        /// </summary>
+        /// <param name="DatabaseQuery"></param>
+        /// <param name="StoredProcedureName"></param>
+        /// <returns></returns>
+        public static void CreateStoredProcedure(string DatabaseQuery, string StoredProcedureName)
         {
-            if (DatabaseQuery.Contains("CREATE PROCEDURE") || DatabaseQuery.Contains("ALTER PROCEDURE"))
+            CreateStoredProcedure(DatabaseQuery, StoredProcedureName, new List<DatabaseParameter>());
+        }
+
+        public static void CreateStoredProcedure(string DatabaseQuery, string StoredProcedureName, DatabaseParameter Parameter)
+        {
+            CreateStoredProcedure(DatabaseQuery, StoredProcedureName, new List<DatabaseParameter>() { Parameter });
+        }
+
+        public static void CreateStoredProcedure(string DatabaseQuery, string StoredProcedureName, List<DatabaseParameter> Parameters)
+        {
+            string StoredProcedureQuery = DatabaseQueryUtils.CreateStoredProcedureQuery(DatabaseQuery, StoredProcedureName, Parameters);
+
+            if (Database.CheckStoredProcedureExists(StoredProcedureName))
             {
-                RunQuery(DatabaseQuery);
+                StoredProcedureQuery = StoredProcedureQuery.Replace("CREATE PROCEDURE", "ALTER PROCEDURE");
             }
+            RunQuery(StoredProcedureQuery);
         }
 
         #endregion
@@ -101,8 +123,8 @@ namespace Modular.Core.Databases
                 throw new ModularException(ExceptionType.DatabaseConnectionError, "Database connection error. Please check your database connection settings.");
             }
         }
-    }
 
     #endregion
 
+    }
 }

@@ -1,18 +1,13 @@
 ﻿using Modular.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Modular
+namespace Modular.Core.Media
 {
-    public class MDFile : ModularBase
+    public class File : ModularBase
     {
 
         #region "  Constructors  "
-        
-        public MDFile()
+
+        public File()
         {
         }
 
@@ -23,7 +18,7 @@ namespace Modular
         private string _FilePath;
 
         private byte[] _FileBytes;
-        
+
         private string _FileName;
 
         private string _FileExtension;
@@ -49,7 +44,7 @@ namespace Modular
                 }
             }
         }
-        
+
         public byte[] FileBytes
         {
             get

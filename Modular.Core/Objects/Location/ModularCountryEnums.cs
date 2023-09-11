@@ -1,12 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
-using System.Data;
-using System.Reflection;
-using Modular.Core.Databases;
-using Modular.Core.System.Attributes;
-using System.ComponentModel.DataAnnotations;
-
-namespace Modular.Core.Geo
+﻿namespace Modular.Core.Geo
 {
     public partial class Country : ModularBase
     {

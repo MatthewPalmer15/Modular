@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Modular.Core.Attributes;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
-using Modular.Core.System.Attributes;
 
 namespace Modular.Core.Databases
 {
@@ -234,7 +234,7 @@ namespace Modular.Core.Databases
 
             return StrBuilder.ToString();
         }
-        
+
         public static string CreateFetchQuery(string DatabaseTableName, PropertyInfo[] AllProperties)
         {
             bool IsFirstIteration = true;
@@ -637,6 +637,45 @@ namespace Modular.Core.Databases
             else
             {
                 throw new ModularException(ExceptionType.DataTypeNotSupported, $"DataType {Property.PropertyType} is not supported.");
+            }
+        }
+
+        #endregion
+
+        #region "  Methods (Stored Procedure)  "
+
+        public static string CreateStoredProcedureQuery(string DatabaseQuery, string StoredProcedureName)
+        {
+            return CreateStoredProcedureQuery(DatabaseQuery, StoredProcedureName, new List<DatabaseParameter>());
+        }
+
+        public static string CreateStoredProcedureQuery(string DatabaseQuery, string StoredProcedureName, DatabaseParameter Parameter)
+        {
+            return CreateStoredProcedureQuery(DatabaseQuery, StoredProcedureName, new List<DatabaseParameter>() { Parameter });
+        }
+
+        public static string CreateStoredProcedureQuery(string DatabaseQuery, string StoredProcedureName, List<DatabaseParameter> Parameters)
+        {
+
+            if (!DatabaseQuery.Contains("CREATE PROCEDURE") || DatabaseQuery.Contains("ALTER PROCEDURE"))
+            {
+                StringBuilder StringBuilder = new StringBuilder();
+                StringBuilder.AppendLine("CREATE PROCEDURE " + StoredProcedureName);
+
+                foreach (DatabaseParameter Parameter in Parameters)
+                {
+                    StringBuilder.AppendLine("@" + Parameter.Name + " " + Parameter.Value + ",");
+                }
+
+                StringBuilder.AppendLine("AS");
+                StringBuilder.AppendLine(DatabaseQuery);
+                StringBuilder.AppendLine("RETURN");
+
+                return StringBuilder.ToString();
+            }
+            else
+            {
+                return DatabaseQuery;
             }
         }
 

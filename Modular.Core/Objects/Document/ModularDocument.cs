@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using Modular.Core.Databases;
 using System.Data;
 using System.Reflection;
-using Modular.Core.Databases;
 
 namespace Modular.Core.Documents
 {
@@ -198,7 +198,7 @@ namespace Modular.Core.Documents
             return obj;
         }
 
-        
+
         /// <summary>
         /// Loads an existing instance from the database.
         /// </summary>
@@ -243,7 +243,7 @@ namespace Modular.Core.Documents
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())

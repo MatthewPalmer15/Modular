@@ -1,22 +1,19 @@
-﻿using Modular.Core.System;
-using System.Linq;
-
-namespace Modular.Core.Security
+﻿namespace Modular.Core.Security
 {
     public static partial class Security
     {
 
         ////////////////////////////////////////////
         //  MODULAR.CORE
-        
+
         // Document
         public enum Document
         {
-            View        = 100000,
-            Fetch       = 100001,
-            Insert      = 100002,
-            Update      = 100003,
-            Delete      = 100004,
+            View = 100000,
+            Fetch = 100001,
+            Insert = 100002,
+            Update = 100003,
+            Delete = 100004,
         }
 
         public enum DocumentPack
@@ -32,17 +29,17 @@ namespace Modular.Core.Security
 
         public enum Email
         {
-            Create  = 200000,
-            Send    = 200001,
+            Create = 200000,
+            Send = 200001,
         }
 
         public enum EmailLog
-        {             
+        {
             View = 200005,
             Fetch = 200006,
             Insert = 200007,
             Update = 200008,
-            Delete = 200009,      
+            Delete = 200009,
         }
 
         public enum SMTPClient
@@ -137,10 +134,10 @@ namespace Modular.Core.Security
 
         public enum Country
         {
-            View = 100005, 
-            Fetch = 100006, 
-            Insert = 100007, 
-            Update = 100008, 
+            View = 100005,
+            Fetch = 100006,
+            Insert = 100007,
+            Update = 100008,
             Delete = 100009,
         }
 
@@ -179,7 +176,7 @@ namespace Modular.Core.Security
             Fetch = 100006,
             Insert = 100007,
             Update = 100008,
-            Delete = 100009, 
+            Delete = 100009,
         }
 
         public enum DiscountVoucher
@@ -193,28 +190,28 @@ namespace Modular.Core.Security
 
         public enum Invoice
         {
-            View = 100005, 
-            Fetch = 100006, 
-            Insert = 100007, 
-            Update = 100008, 
+            View = 100005,
+            Fetch = 100006,
+            Insert = 100007,
+            Update = 100008,
             Delete = 100009,
         }
 
         public enum InvoiceItem
         {
-            View = 100005, 
-            Fetch = 100006, 
-            Insert = 100007, 
-            Update = 100008, 
+            View = 100005,
+            Fetch = 100006,
+            Insert = 100007,
+            Update = 100008,
             Delete = 100009,
         }
 
         public enum InvoicePayment
         {
-            View = 100005, 
-            Fetch = 100006, 
-            Insert = 100007, 
-            Update = 100008, 
+            View = 100005,
+            Fetch = 100006,
+            Insert = 100007,
+            Update = 100008,
             Delete = 100009,
         }
 
@@ -231,10 +228,10 @@ namespace Modular.Core.Security
 
         public enum SystemConfig
         {
-            View = 100005, 
-            Fetch = 100006, 
-            Insert = 100007, 
-            Update = 100008, 
+            View = 100005,
+            Fetch = 100006,
+            Insert = 100007,
+            Update = 100008,
             Delete = 100009,
         }
 

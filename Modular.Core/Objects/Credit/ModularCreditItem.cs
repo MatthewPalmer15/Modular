@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Modular.Core.Databases;
-using Modular.Core.Utility;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
@@ -179,7 +178,7 @@ namespace Modular.Core.Credits
                 }
             }
         }
-        
+
 
         [Display(Name = "Total Price Exc VAT")]
         public decimal TotalPriceeExcVAT
@@ -285,7 +284,7 @@ namespace Modular.Core.Credits
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())

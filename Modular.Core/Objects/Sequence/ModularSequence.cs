@@ -1,4 +1,4 @@
-﻿using Modular.Core.System.Attributes;
+﻿using Modular.Core.Attributes;
 
 namespace Modular.Core.Sequences
 {

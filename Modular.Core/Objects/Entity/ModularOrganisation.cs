@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
-using System.Data;
-using System.Reflection;
 using Modular.Core.Databases;
 using Modular.Core.Geo;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Reflection;
 
 namespace Modular.Core.Entity
 {
@@ -360,7 +360,7 @@ namespace Modular.Core.Entity
         }
 
 
-        [Display (Name = "Country")]
+        [Display(Name = "Country")]
         public Country AddressCountry
         {
             get
@@ -378,7 +378,7 @@ namespace Modular.Core.Entity
         }
 
 
-        [Display (Name = "Postcode")]
+        [Display(Name = "Postcode")]
         public string AddressPostcode
         {
             get
@@ -466,7 +466,7 @@ namespace Modular.Core.Entity
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))));
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())

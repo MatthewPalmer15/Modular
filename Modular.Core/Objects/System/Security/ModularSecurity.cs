@@ -1,7 +1,4 @@
-﻿using Modular.Core.System;
-using System.Linq;
-
-namespace Modular.Core.Security
+﻿namespace Modular.Core.Security
 {
     public static partial class Security
     {

@@ -1,15 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Syncfusion.XlsIO;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using Modular.Core.Databases;
-using Modular.Core.Configuration;
-using Modular.Core.Utility;
+﻿using Modular.Core.Configuration;
 
 namespace Modular.Core.Exporter
 {
@@ -56,43 +45,32 @@ namespace Modular.Core.Exporter
 
         public static void ExcecuteScript(DataExporterItem Item)
         {
-            if (Database.CheckDatabaseConnection())
+            Item.Excecute();
+        }
+
+        public static DataExporterItem GetScript(string ScriptName)
+        {
+            if (ScriptFolder.Exists)
             {
-                switch (Database.ConnectionMode)
+                foreach (FileInfo ScriptFile in ScriptFolder.GetFiles("*.sql"))
                 {
-                    case Database.DatabaseConnectivityMode.Remote:
-                        using (SqlConnection Connection = new SqlConnection())
-                        {
-                            Connection.Open();
-
-                            using (SqlCommand Command = new SqlCommand())
-                            {
-                                Command.Connection = Connection;
-                                Command.CommandType = CommandType.Text;
-                                Command.CommandText = File.ReadAllText(Item.Name);
-
-                                SqlDataReader DataReader = Command.ExecuteReader();
-                                ExportToFile(Item, DataReader);
-                            }
-
-                            Connection.Close();
-                        }
-
-                        break;
-
-                    case Database.DatabaseConnectivityMode.Local:
-                        break;
+                    if (ScriptFile.Name == ScriptName)
+                    {
+                        return new DataExporterItem(ScriptFile);
+                    }
                 }
+                return new DataExporterItem();
             }
             else
             {
-                throw new ModularException(ExceptionType.DatabaseConnectionError, "Database connection is not available.");
+                ScriptFolder.Create();
+                return new DataExporterItem();
             }
         }
 
         public static List<DataExporterItem> GetAllScripts()
         {
-           if (ScriptFolder.Exists)
+            if (ScriptFolder.Exists)
             {
                 List<DataExporterItem> AllDataExportScripts = new List<DataExporterItem>();
 
@@ -102,52 +80,10 @@ namespace Modular.Core.Exporter
                 }
                 return AllDataExportScripts;
             }
-           else
+            else
             {
                 ScriptFolder.Create();
                 return new List<DataExporterItem>();
-            }
-        }
-
-        #endregion
-
-        #region "  Private Methods  "
-
-        private static void ExportToFile(DataExporterItem Script, SqlDataReader DataReader)
-        {
-            using (ExcelEngine ExcelEngine = new ExcelEngine())
-            {
-                Syncfusion.XlsIO.IApplication ExcelApplication = ExcelEngine.Excel;
-                ExcelApplication.DefaultVersion = ExcelVersion.Xlsx;
-
-
-                // Create a new workbook
-                IWorkbook ExcelWorkbook = ExcelApplication.Workbooks.Create();
-
-                // Access first worksheet from the workbook instance.
-                IWorksheet ExcelWorksheet = ExcelWorkbook.Worksheets[0];
-
-                int RowIndex = 1;
-
-                // Set the column headers
-                for (int ColumnIndex = 0; ColumnIndex < DataReader.FieldCount; ColumnIndex++)
-                {
-                    ExcelWorksheet[RowIndex, ColumnIndex + 1].Text = DataReader.GetName(ColumnIndex);
-                }
-
-                // Set the data
-                while (DataReader.Read())
-                {
-                    RowIndex++;
-                    for (int ColumnIndex = 0; ColumnIndex < DataReader.FieldCount; ColumnIndex++)
-                    {
-                        ExcelWorksheet[RowIndex, ColumnIndex + 1].Text = DataReader.GetValue(ColumnIndex).ToString();
-                    }
-                }
-
-                // Save the workbook to disk in xlsx format
-                ExcelWorkbook.SaveAs(ModularUtils.ConvertFileToStream($"{ExportFolder.FullName}\\{DateTime.Now:yyyy-MM-dd HH:mm} {Script.Name}.xlsx"));
-                ExcelWorkbook.Close();
             }
         }
 

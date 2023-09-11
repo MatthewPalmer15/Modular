@@ -1,5 +1,5 @@
-﻿using System.Net.Mail;
-using Modular.Core.Configuration;
+﻿using Modular.Core.Configuration;
+using System.Net.Mail;
 
 namespace Modular.Core.Mail
 {

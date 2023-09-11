@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
-using System.Configuration;
 using Modular.Core.Configuration;
+using System.Configuration;
 
 namespace Modular.Core.Databases
 {
