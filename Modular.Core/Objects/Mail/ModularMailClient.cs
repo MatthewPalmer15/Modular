@@ -1,4 +1,7 @@
-﻿using Modular.Core.Configuration;
+﻿using Modular.Core.Audit;
+using Modular.Core.Utility;
+using Modular.Core.Configuration;
+using System.Net;
 using System.Net.Mail;
 
 namespace Modular.Core.Mail
@@ -84,6 +87,51 @@ namespace Modular.Core.Mail
             get
             {
                 return AppConfig.GetValue("SMTPClientEnableSSL").ToUpper() == "TRUE";
+            }
+        }
+
+        public static SmtpClient SMTPClient
+        {
+            get
+            {
+                return new SmtpClient()
+                {
+                    Host = MailClient.Host,
+                    Port = MailClient.Port,
+                    Credentials = new NetworkCredential(MailClient.Credentials.Username, MailClient.Credentials.Password),
+                    DeliveryMethod = MailClient.DeliveryMethod,
+                    EnableSsl = MailClient.EnableSSL
+                };
+            }
+        }
+
+        #endregion
+
+        #region "  Public Methods  "
+
+        public static void SendEmail(MailMessage Email)
+        {
+            try
+            {
+                SMTPClient.Send(Email);
+            }
+            catch
+            {
+                throw new ModularException(ExceptionType.SMTPClientEmailSendError, "There was an issue sending an email.");
+            }
+        }
+
+        public static void SendAuditedEmail(MailMessage Email)
+        {
+            try
+            {
+                SMTPClient.Send(Email);
+                AuditLog.Create(ObjectTypes.ObjectType.Email, Guid.Empty, $"Email was successfully sent from {Email.From.Address} | Subject: {Email.Subject}.");
+            }
+            catch
+            {
+                AuditLog.Create(ObjectTypes.ObjectType.Email, Guid.Empty, $"Email failed to be sent from {Email.From.Address} | Subject: {Email.Subject}.");
+                throw new ModularException(ExceptionType.SMTPClientEmailSendError, "There was an issue sending an email.");
             }
         }
 

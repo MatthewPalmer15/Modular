@@ -79,7 +79,7 @@ namespace Modular.Core.Configuration
         public static string GetValue(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(CurrentClass.GetField("Key"), Key);
+            obj.Fetch(CurrentClass.GetField("_Key"), Key);
             return obj.Value;
         }
 
@@ -117,7 +117,7 @@ namespace Modular.Core.Configuration
         public static SystemConfig Load(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(CurrentClass.GetField("Key"), Key);
+            obj.Fetch(CurrentClass.GetField("_Key"), Key);
             return obj;
         }
 
@@ -149,12 +149,12 @@ namespace Modular.Core.Configuration
                         using (SqlConnection Connection = new SqlConnection(Database.ConnectionString))
                         {
                             Connection.Open();
-                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_Fetch";
+                            string StoredProcedureName = $"{MODULAR_DATABASE_STOREDPROCEDURE_PREFIX}_FetchList";
 
                             // If stored procedures are enabled, and the stored procedure does not exist, create it.
                             if (Database.EnableStoredProcedures && !Database.CheckStoredProcedureExists(StoredProcedureName))
                             {
-                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE, AllFields.SingleOrDefault(x => x.Name.Equals("_ID"))), StoredProcedureName);
+                                DatabaseUtils.CreateStoredProcedure(DatabaseQueryUtils.CreateFetchQuery(MODULAR_DATABASE_TABLE), StoredProcedureName);
                             }
 
                             using (SqlCommand Command = new SqlCommand())

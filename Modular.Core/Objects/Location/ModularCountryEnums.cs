@@ -1,6 +1,6 @@
 ﻿namespace Modular.Core.Geo
 {
-    public partial class Country : ModularBase
+    public partial class Country
     {
 
         // A
