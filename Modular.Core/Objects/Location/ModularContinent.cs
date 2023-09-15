@@ -7,12 +7,12 @@ using System.Reflection;
 namespace Modular.Core.Geo
 {
     [Serializable]
-    public class Region : ModularBase
+    public partial class Continent : ModularBase
     {
 
         #region "  Constructor  "
 
-        public Region()
+        public Continent()
         {
         }
 
@@ -20,9 +20,9 @@ namespace Modular.Core.Geo
 
         #region "  Constants  "
 
-        protected static readonly new string MODULAR_DATABASE_TABLE = "tbl_Modular_Region";
-        protected static readonly new string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_Region";
-        protected static readonly new Type MODULAR_OBJECTTYPE = typeof(Region);
+        protected static readonly new string MODULAR_DATABASE_TABLE = "tbl_Modular_Continent";
+        protected static readonly new string MODULAR_DATABASE_STOREDPROCEDURE_PREFIX = "usp_Modular_Continent";
+        protected static readonly new Type MODULAR_OBJECTTYPE = typeof(Continent);
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace Modular.Core.Geo
             {
                 if (_Countries.Count == 0 || _LastRetrievedCountries.AddMinutes(5) < DateTime.Now)
                 {
-                    _Countries = Country.LoadList().Where(Country => Country.Region.ID == ID).ToList();
+                    _Countries = Country.LoadList().Where(Country => Country.Continent.ID == ID).ToList();
                     _LastRetrievedCountries = DateTime.Now;
                 }
                 return _Countries;
@@ -68,9 +68,9 @@ namespace Modular.Core.Geo
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public static new Region Load(Guid ID)
+        public static new Continent Load(Guid ID)
         {
-            Region obj = new Region();
+            Continent obj = new Continent();
             obj.Fetch(ID);
             return obj;
         }
@@ -80,9 +80,9 @@ namespace Modular.Core.Geo
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ModularException"></exception>
-        public static new List<Region> LoadList()
+        public static new List<Continent> LoadList()
         {
-            List<Region> AllRegions = new List<Region>();
+            List<Continent> AllRegions = new List<Continent>();
 
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
@@ -118,7 +118,7 @@ namespace Modular.Core.Geo
 
                                 using (SqlDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    Region obj = GetOrdinals(DataReader);
+                                    Continent obj = GetOrdinals(DataReader);
                                     while (DataReader.Read())
                                     {
                                         AllRegions.Add(obj);
@@ -145,7 +145,7 @@ namespace Modular.Core.Geo
 
                                 using (SqliteDataReader DataReader = Command.ExecuteReader())
                                 {
-                                    Region obj = GetOrdinals(DataReader);
+                                    Continent obj = GetOrdinals(DataReader);
 
                                     while (DataReader.Read())
                                     {
@@ -181,16 +181,16 @@ namespace Modular.Core.Geo
 
         #region "  Data Methods  "
 
-        protected static Region GetOrdinals(SqlDataReader DataReader)
+        protected static Continent GetOrdinals(SqlDataReader DataReader)
         {
-            Region obj = new Region();
+            Continent obj = new Continent();
             obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }
 
-        protected static Region GetOrdinals(SqliteDataReader DataReader)
+        protected static Continent GetOrdinals(SqliteDataReader DataReader)
         {
-            Region obj = new Region();
+            Continent obj = new Continent();
             obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
             return obj;
         }

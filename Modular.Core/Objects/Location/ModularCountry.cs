@@ -33,7 +33,7 @@ namespace Modular.Core.Geo
 
         private string _Code = string.Empty;
 
-        private Guid _RegionID;
+        private Guid _ContinentID;
 
         #endregion
 
@@ -59,12 +59,12 @@ namespace Modular.Core.Geo
         }
 
 
-        [Display(Name = "Region")]
-        public Region Region
+        [Display(Name = "Continent")]
+        public Continent Continent
         {
             get
             {
-                return Region.Load(_RegionID);
+                return Continent.Load(_ContinentID);
             }
         }
 

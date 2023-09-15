@@ -235,7 +235,7 @@ namespace Modular.Core.Exporter
                     ExcelWorkbook.Close();
                 }
             }
-            catch (Exception Exception)
+            catch
             {
                 throw new ModularException(ExceptionType.ExecutionOfScriptFailed, $"Exporter: Script failed to export to file.");
             }

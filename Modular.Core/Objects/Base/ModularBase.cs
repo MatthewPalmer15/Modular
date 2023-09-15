@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using Microsoft.SqlServer.Types;
 using Modular.Core.Audit;
 using Modular.Core.Databases;
 using Modular.Core.Attributes;
@@ -975,6 +976,12 @@ namespace Modular.Core
                         Property.SetValue(this, new SqlXml());
                     }
 
+                    // DataType: Geography
+                    else if (Property.PropertyType == typeof(SqlGeography))
+                    {
+                        Property.SetValue(this, SqlGeography.Point(0, 0, 0));
+                    }
+
                     // DataType: String
                     else if (Property.PropertyType == typeof(string))
                     {
@@ -1114,6 +1121,12 @@ namespace Modular.Core
                     else if (Field.FieldType == typeof(SqlXml))
                     {
                         Field.SetValue(this, DataReader.GetSqlXml(FieldOrdinal));
+                    }
+
+                    // DataType: Geography
+                    else if (Field.FieldType == typeof(SqlGeography))
+                    {
+                        Field.SetValue(this, (SqlGeography)DataReader.GetValue(FieldOrdinal));
                     }
 
                     // DataType: String
@@ -1268,6 +1281,12 @@ namespace Modular.Core
                         Field.SetValue(this, new SqlXml(new XmlTextReader(DataReader.GetString(DataReader.GetOrdinal(FieldName)), XmlNodeType.Document, null)));
                     }
 
+                    // DataType: Geography
+                    else if (Field.FieldType == typeof(SqlGeography))
+                    {
+                        Field.SetValue(this, (SqlGeography)DataReader.GetValue(FieldOrdinal));
+                    }
+
                     // DataType: String
                     else if (Field.FieldType == typeof(string))
                     {
@@ -1420,6 +1439,12 @@ namespace Modular.Core
                         Property.SetValue(this, DataReader.GetSqlXml(PropertyOrdinal));
                     }
 
+                    // DataType: Geography
+                    else if (Property.PropertyType == typeof(SqlGeography))
+                    {
+                        Property.SetValue(this, (SqlGeography)DataReader.GetValue(PropertyOrdinal));
+                    }
+
                     // DataType: String
                     else if (Property.PropertyType == typeof(string))
                     {
@@ -1570,6 +1595,12 @@ namespace Modular.Core
                     else if (Property.PropertyType == typeof(SqlXml))
                     {
                         Property.SetValue(this, new SqlXml(new XmlTextReader(DataReader.GetString(DataReader.GetOrdinal(Property.Name)), XmlNodeType.Document, null)));
+                    }
+
+                    // DataType: Geography
+                    else if (Property.PropertyType == typeof(SqlGeography))
+                    {
+                        Property.SetValue(this, (SqlGeography)DataReader.GetValue(PropertyOrdinal));
                     }
 
                     // DataType: String

@@ -195,7 +195,7 @@ namespace Modular.Core.Entity
         /// <summary>
         /// Creates a new account, linked to the Contact.
         /// </summary>
-        /// <param name="ContactID">The ID of the Contact.</param>
+        /// <param name="Contact">The Contact.</param>
         /// <param name="Username"></param>
         /// <param name="Password"></param>
         /// <returns></returns>
