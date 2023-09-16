@@ -12,9 +12,15 @@ namespace Modular.Core.Licencing
         {
             get
             {
-                DataExporterItem Item = DataExporter.GetScript("Modular_LicenceKey.sql");
-
                 return AppConfig.GetValue("Modular_LicenceKey");
+            }
+        }
+
+        public static bool IsValid
+        {
+            get
+            {
+                return false;
             }
         }
 

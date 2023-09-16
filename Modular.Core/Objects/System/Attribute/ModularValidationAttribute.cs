@@ -36,7 +36,7 @@ namespace Modular.Core.Attributes
                                 {
                                     Command.Connection = Connection;
                                     Command.CommandType = CommandType.Text;
-                                    Command.CommandText = $"SELECT COUNT(*) FROM tbl_{SystemApplication.Name}_{validationContext.ObjectType} WHERE {validationContext.MemberName} = @Value";
+                                    Command.CommandText = $"SELECT COUNT(*) FROM tbl_{SystemCore.Application.Name}_{validationContext.ObjectType} WHERE {validationContext.MemberName} = @Value";
                                     Command.Parameters.AddWithValue("@Value", validationContext.ObjectType.GetProperty(validationContext.MemberName).GetValue(validationContext.ObjectInstance));
 
                                     Count = (int)Command.ExecuteScalar();
@@ -54,7 +54,7 @@ namespace Modular.Core.Attributes
                                 {
                                     Command.Connection = Connection;
                                     Command.CommandType = CommandType.Text;
-                                    Command.CommandText = $"SELECT COUNT(*) FROM tbl_{SystemApplication.Name}_{validationContext.ObjectType} WHERE {validationContext.MemberName} = @Value";
+                                    Command.CommandText = $"SELECT COUNT(*) FROM tbl_{SystemCore.Application.Name}_{validationContext.ObjectType} WHERE {validationContext.MemberName} = @Value";
                                     Command.Parameters.AddWithValue("@Value", validationContext.ObjectType.GetProperty(validationContext.MemberName).GetValue(validationContext.ObjectInstance));
 
                                     Count = (int)Command.ExecuteScalar();

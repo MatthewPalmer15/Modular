@@ -1742,6 +1742,13 @@ namespace Modular.Core
 
         public static class CurrentClass
         {
+
+            public readonly static string Name = MODULAR_OBJECTTYPE.Name;
+
+            public readonly static string Namespace = MODULAR_OBJECTTYPE.Namespace;
+
+            public readonly static string FullName = MODULAR_OBJECTTYPE.FullName;
+
             public static FieldInfo? GetField(string Name)
             {
                 string FieldName = Name.Trim().StartsWith('_') ? Name.Trim() : $"_{Name.Trim()}";
@@ -1769,7 +1776,7 @@ namespace Modular.Core
                     .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                     .Where(Property => !Property.IsDefined(typeof(IgnoreAttribute), false))
                     .ToArray();
-            }
+            }  
 
         }
         #endregion
