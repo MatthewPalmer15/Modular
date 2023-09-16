@@ -368,6 +368,17 @@ namespace Modular.Core
 
         public virtual ModularBase Clone()
         {
+            return Clone(false);
+        }
+
+        /// <summary>
+        /// Clones current object, and optionally clones linked objects.
+        /// </summary>
+        /// <param name="CloneLinkedObjects"></param>
+        /// <returns></returns>
+        /// <exception cref="ModularException"></exception>
+        public virtual ModularBase Clone(bool CloneLinkedObjects)
+        {
             throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
         }
 

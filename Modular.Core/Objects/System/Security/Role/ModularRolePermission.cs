@@ -10,6 +10,8 @@ namespace Modular.Core.Security
     public class RolePermission : ModularBase
     {
 
+        // Could do this? (int)Security.Document.View
+
         #region "  Constructors  "
 
         public RolePermission()
