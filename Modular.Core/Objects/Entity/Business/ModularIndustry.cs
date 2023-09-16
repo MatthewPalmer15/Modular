@@ -7,7 +7,8 @@ using System.Reflection;
 
 namespace Modular.Core.Entity
 {
-    public class Industry : ModularBase
+    [Serializable]
+    public partial class Industry : ModularBase
     {
 
         #region "  Constructors  "
