@@ -43,6 +43,7 @@
 	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
 	  <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.9" />
 	  <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" />
+	  <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
 	  <PackageReference Include="Syncfusion.DocIO.NET" Version="22.1.38" />
 	  <PackageReference Include="Syncfusion.Pdf.NET" Version="22.1.38" />
 	  <PackageReference Include="Syncfusion.Presentation.NET" Version="22.1.38" />
