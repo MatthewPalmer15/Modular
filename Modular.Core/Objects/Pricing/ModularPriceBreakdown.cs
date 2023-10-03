@@ -109,10 +109,12 @@ namespace Modular.Core.Objects
 
         public static PriceBreakdown Create(decimal StandardRate, decimal StandardRateVAT, decimal ZeroRate)
         {
-            PriceBreakdown obj = new PriceBreakdown();
-            obj.StandardRate = StandardRate;
-            obj.StandardRateVAT = StandardRateVAT;
-            obj.ZeroRate = ZeroRate;
+            PriceBreakdown obj = new PriceBreakdown
+            {
+                StandardRate = StandardRate,
+                StandardRateVAT = StandardRateVAT,
+                ZeroRate = ZeroRate
+            };
             return obj;
         }
 

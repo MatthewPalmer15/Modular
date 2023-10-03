@@ -236,11 +236,11 @@ namespace Modular.Core.Entity
             {
 
                 case LoginMethodType.Email:
-                    obj.Fetch(CurrentClass.GetField("Email"), Credentials);
+                    obj.Fetch(Class.GetField("Email"), Credentials);
                     break;
 
                 case LoginMethodType.Username:
-                    obj.Fetch(CurrentClass.GetField("Username"), Credentials);
+                    obj.Fetch(Class.GetField("Username"), Credentials);
                     break;
             }
 
@@ -260,7 +260,7 @@ namespace Modular.Core.Entity
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -406,7 +406,7 @@ namespace Modular.Core.Entity
 
             if (Database.CheckDatabaseConnection())
             {
-                PropertyInfo[] AllProperties = CurrentClass.GetProperties();
+                PropertyInfo[] AllProperties = Class.GetProperties();
 
                 switch (Database.ConnectionMode)
                 {
@@ -507,14 +507,14 @@ namespace Modular.Core.Entity
         protected static Account GetOrdinals(SqlDataReader DataReader)
         {
             Account obj = new Account();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static Account GetOrdinals(SqliteDataReader DataReader)
         {
             Account obj = new Account();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

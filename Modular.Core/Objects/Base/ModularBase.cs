@@ -320,46 +320,78 @@ namespace Modular.Core
 
         #region "  Static Methods  "
 
-        /// <summary>
-        /// Creates a new instance of the object (With Default Values).
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ModularException"></exception>
-        protected static ModularBase Create()
+        public static class Instances
         {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+
+            /// <summary>
+            /// Creates a new instance of the object (With Default Values).
+            /// </summary>
+            /// <returns></returns>
+            /// <exception cref="ModularException"></exception>
+            public static ModularBase Create()
+            {
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            /// <summary>
+            /// Loads an instance of the object.
+            /// </summary>
+            /// <returns></returns>
+            /// <exception cref="ModularException"></exception>
+            public static ModularBase Get(Guid ID)
+            {
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            /// <summary>
+            /// Loads an instance of the object.
+            /// </summary>
+            /// <returns></returns>
+            /// <exception cref="ModularException"></exception>
+            public static ModularBase GetFirst()
+            {
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            /// <summary>
+            /// Loads all instances of the object.
+            /// </summary>
+            /// <returns></returns>
+            /// <exception cref="ModularException"></exception>
+            public static List<ModularBase> All()
+            {
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            public static List<ModularBase> Filter()
+            {
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            public static List<ModularBase> OrderBy()
+            {
+                // Get all objects and order by
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+            public static List<ModularBase> OrderByDescending()
+            {
+                // Get all objects and order by descending
+                throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
+            }
+
+            /// <summary>
+            /// Checks to see if instance already exists
+            /// </summary>
+            /// <param name="ID"></param>
+            /// <returns></returns>
+            public static bool Exists(Guid ID)
+            {
+                object obj = Get(ID);
+                return obj != null;
+            }
+
         }
 
-        /// <summary>
-        /// Loads all instances of the object.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ModularException"></exception>
-        protected static List<ModularBase> LoadList()
-        {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-        }
-
-        /// <summary>
-        /// Loads an instance of the object.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ModularException"></exception>
-        protected static ModularBase Load(Guid ID)
-        {
-            throw new ModularException(ExceptionType.BaseClassAccess, "Access denied to base class.");
-        }
-
-        /// <summary>
-        /// Checks to see if instance already exists
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <returns></returns>
-        public static bool Exists(Guid ID)
-        {
-            object obj = Load(ID);
-            return obj != null;
-        }
 
         #endregion
 
@@ -1423,7 +1455,7 @@ namespace Modular.Core
 
         #region "  Other Methods  "
 
-        public static class CurrentClass
+        public static class Class
         {
 
             public readonly static string Name = MODULAR_OBJECTTYPE.Name;
@@ -1431,6 +1463,8 @@ namespace Modular.Core
             public readonly static string Namespace = MODULAR_OBJECTTYPE.Namespace;
 
             public readonly static string FullName = MODULAR_OBJECTTYPE.FullName;
+
+            public readonly static Type Type = MODULAR_OBJECTTYPE;
 
             public static FieldInfo? GetField(string Name)
             {
