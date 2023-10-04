@@ -94,7 +94,7 @@ namespace Modular.Core.Entity
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -207,14 +207,14 @@ namespace Modular.Core.Entity
         protected static Industry GetOrdinals(SqlDataReader DataReader)
         {
             Industry obj = new Industry();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static Industry GetOrdinals(SqliteDataReader DataReader)
         {
             Industry obj = new Industry();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

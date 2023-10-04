@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modular.Core.Objects
+namespace Modular.Core.Objects.Database
 {
-    public static class EnumerableExtension
+    public class ModularDatabaseContext
     {
     }
-
 }

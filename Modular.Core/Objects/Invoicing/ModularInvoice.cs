@@ -414,7 +414,7 @@ namespace Modular.Core.Invoicing
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -511,14 +511,14 @@ namespace Modular.Core.Invoicing
         protected static Invoice GetOrdinals(SqlDataReader DataReader)
         {
             Invoice obj = new Invoice();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static Invoice GetOrdinals(SqliteDataReader DataReader)
         {
             Invoice obj = new Invoice();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

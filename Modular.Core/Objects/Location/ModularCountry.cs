@@ -110,7 +110,7 @@ namespace Modular.Core.Geo
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -302,14 +302,14 @@ namespace Modular.Core.Geo
         protected static Country GetOrdinals(SqlDataReader DataReader)
         {
             Country obj = new Country();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static Country GetOrdinals(SqliteDataReader DataReader)
         {
             Country obj = new Country();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

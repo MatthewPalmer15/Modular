@@ -777,7 +777,7 @@ namespace Modular.Core
 
         #region "  Other Methods  "
 
-        public static class CurrentClass
+        public static class Class
         {
 
             public readonly static string Name = MODULAR_OBJECTTYPE.Name;

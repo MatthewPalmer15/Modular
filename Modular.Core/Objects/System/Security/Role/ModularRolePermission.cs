@@ -112,7 +112,7 @@ namespace Modular.Core.Security
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -214,14 +214,14 @@ namespace Modular.Core.Security
         protected static RolePermission GetOrdinals(SqlDataReader DataReader)
         {
             RolePermission obj = new RolePermission();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static RolePermission GetOrdinals(SqliteDataReader DataReader)
         {
             RolePermission obj = new RolePermission();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

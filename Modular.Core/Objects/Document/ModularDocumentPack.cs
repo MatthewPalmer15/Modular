@@ -147,7 +147,7 @@ namespace Modular.Core.Documents
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -249,14 +249,14 @@ namespace Modular.Core.Documents
         protected static DocumentPack GetOrdinals(SqlDataReader DataReader)
         {
             DocumentPack obj = new DocumentPack();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static DocumentPack GetOrdinals(SqliteDataReader DataReader)
         {
             DocumentPack obj = new DocumentPack();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

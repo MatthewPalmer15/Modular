@@ -79,7 +79,7 @@ namespace Modular.Core.Configuration
         public static string GetValue(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(CurrentClass.GetField("_Key"), Key);
+            obj.Fetch(Class.GetField("_Key"), Key);
             return obj.Value;
         }
 
@@ -117,7 +117,7 @@ namespace Modular.Core.Configuration
         public static SystemConfig Load(string Key)
         {
             SystemConfig obj = new SystemConfig();
-            obj.Fetch(CurrentClass.GetField("_Key"), Key);
+            obj.Fetch(Class.GetField("_Key"), Key);
             return obj;
         }
 
@@ -134,7 +134,7 @@ namespace Modular.Core.Configuration
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -237,14 +237,14 @@ namespace Modular.Core.Configuration
         protected static SystemConfig GetOrdinals(SqlDataReader DataReader)
         {
             SystemConfig obj = new SystemConfig();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static SystemConfig GetOrdinals(SqliteDataReader DataReader)
         {
             SystemConfig obj = new SystemConfig();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

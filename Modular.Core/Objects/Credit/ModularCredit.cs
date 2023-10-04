@@ -421,7 +421,7 @@ namespace Modular.Core.Credits
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -523,14 +523,14 @@ namespace Modular.Core.Credits
         protected static Credit GetOrdinals(SqlDataReader DataReader)
         {
             Credit obj = new Credit();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static Credit GetOrdinals(SqliteDataReader DataReader)
         {
             Credit obj = new Credit();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 

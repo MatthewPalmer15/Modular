@@ -178,7 +178,7 @@ namespace Modular.Core
             // Check if the database can be connected to.
             if (Database.CheckDatabaseConnection())
             {
-                FieldInfo[] AllFields = CurrentClass.GetFields();
+                FieldInfo[] AllFields = Class.GetFields();
 
                 // If table does not exist within the database, create it.
                 if (!Database.CheckDatabaseTableExists(MODULAR_DATABASE_TABLE))
@@ -280,14 +280,14 @@ namespace Modular.Core
         protected static ExceptionLog GetOrdinals(SqlDataReader DataReader)
         {
             ExceptionLog obj = new ExceptionLog();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
         protected static ExceptionLog GetOrdinals(SqliteDataReader DataReader)
         {
             ExceptionLog obj = new ExceptionLog();
-            obj.SetFieldValues(CurrentClass.GetFields(), DataReader);
+            obj.SetFieldValues(Class.GetFields(), DataReader);
             return obj;
         }
 
