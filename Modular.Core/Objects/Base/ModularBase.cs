@@ -392,7 +392,6 @@ namespace Modular.Core
 
         }
 
-
         #endregion
 
         #region "  Instance Methods  "
