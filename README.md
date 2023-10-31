@@ -10,20 +10,6 @@
 After completing this step, you should now be able to take full advantage of Modular!
 
 
-## Dependencies/Packages
-You MUST have the Modular.Base DLL within your project reference for the other modules to work. This class library also only works with projects using the .NET Framework.
-
-NUGET Packages:
-- Microsoft.Data.SqlClient v5.1.1
-- Microsoft.Data.Sqlite v7.0.9
-- Microsoft.Maui.Graphics v7.0.86
-- Syncfusion.DocIO.NET v22.1.38
-- Syncfusion.Pdf.NET v22.1.38
-- Syncfusion.Presentation.NET v22.1.38
-- Syncfusion.XlsIO.NET v22.1.38
-- System.Configuration.ConfigurationManager v7.0.0
-
-
 ## Licence
 
 MIT License
